@@ -13,9 +13,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return savedName || null;
   });
   
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
-    return localStorage.getItem('isAdmin') === 'true';
-  });
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return localStorage.getItem('isAuthenticated') === 'true';
@@ -28,7 +26,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(true);
     localStorage.setItem('username', username);
     localStorage.setItem('name', displayName);
-    localStorage.setItem('isAdmin', admin.toString());
     localStorage.setItem('isAuthenticated', 'true');
   };
 
@@ -39,7 +36,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
     localStorage.removeItem('username');
     localStorage.removeItem('name');
-    localStorage.removeItem('isAdmin');
     localStorage.removeItem('isAuthenticated');
   };
 
