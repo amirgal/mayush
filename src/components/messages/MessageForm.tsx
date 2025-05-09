@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useMutation } from '../../mocks/convex';
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 const MessageForm = () => {
   const [author, setAuthor] = useState('');
@@ -8,7 +9,7 @@ const MessageForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   // We don't need any values from useAuth() here, but we need to call it for authentication
   
-  const addMessage = useMutation("messages.add");
+  const addMessage = useMutation(api.messages.add);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

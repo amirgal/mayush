@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '../mocks/convex';
+import { useQuery } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 import { useAuth } from '../context/AuthContext';
 // We don't need to import Message type here as it's used internally by the components
 // Use explicit imports to help TypeScript recognize the files
@@ -17,11 +18,10 @@ const GuestbookPage = () => {
   
   // Use username for personalized welcome message
   const welcomeMessage = username ? `Welcome, ${username}!` : 'Welcome to the Guestbook!';
-  // Properly type the messages from useQuery
-  const messages = useQuery<Message[]>("messages.getAllWithPinnedFirst") || [];
+  // Get messages from Convex database
+  const messages = useQuery(api.messages.getAllWithPinnedFirst) || [];
   
-  // Import the Message type only for typing the useQuery result
-  type Message = import('../types').Message;
+  // No need to import Message type anymore as we're using the Convex API
   
   // Redirect to login if not authenticated
   if (!isAuthenticated) {

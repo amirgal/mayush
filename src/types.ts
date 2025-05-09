@@ -1,9 +1,9 @@
-// We're creating our own type definitions since the Convex generated files might not be accessible directly
-// These types match the schema we defined in convex/schema.ts
+import type { Id } from '../convex/_generated/dataModel';
 
-// Generic document type
-export type Doc<T> = T & {
-  _id: string;
+// Generic document type with Convex ID
+// Use a more specific type for TableName to satisfy the constraint
+export type Doc<T, TableName extends 'messages' | 'reactions' | 'users'> = T & {
+  _id: Id<TableName>;
   _creationTime: number;
 };
 
@@ -14,14 +14,14 @@ export type Message = Doc<{
   imageUrl?: string;
   createdAt: number;
   isPinned: boolean;
-}>;
+}, 'messages'>;
 
 // Reaction type
 export type Reaction = Doc<{
-  messageId: string;
+  messageId: Id<'messages'>;
   emoji: string;
   count: number;
-}>;
+}, 'reactions'>;
 
 // User type
 export type User = Doc<{
@@ -29,7 +29,7 @@ export type User = Doc<{
   passwordHash: string;
   isAdmin: boolean;
   createdAt: number;
-}>;
+}, 'users'>;
 
 // Auth response type
 export type AuthResponse = {

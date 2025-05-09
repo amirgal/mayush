@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import type { FC } from 'react';
-import { useMutation, useQuery } from '../../mocks/convex';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 import type { Message, Reaction } from '../../types';
+import type { Id } from '../../../convex/_generated/dataModel';
 
 type MessageCardProps = {
   message: Message;
@@ -12,11 +14,11 @@ type MessageCardProps = {
 const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
   const [showReactionPicker, setShowReactionPicker] = useState(false);
   
-  const togglePin = useMutation("messages.togglePin");
-  const addReaction = useMutation("reactions.addReaction");
-  const removeReaction = useMutation("reactions.removeReaction");
-  // Mock reactions data for development
-  const reactions = useQuery<Reaction[]>("reactions.getForMessage", { messageId: message._id }) || [];
+  const togglePin = useMutation(api.messages.togglePin);
+  const addReaction = useMutation(api.reactions.addReaction);
+  const removeReaction = useMutation(api.reactions.removeReaction);
+  // Get reactions data from Convex
+  const reactions = useQuery(api.reactions.getForMessage, { messageId: message._id }) || [];
   
   const handleTogglePin = async () => {
     try {
@@ -36,7 +38,8 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
     }
   };
   
-  const handleRemoveReaction = async (reactionId: string) => {
+  // Use proper typing for the reaction ID
+  const handleRemoveReaction = async (reactionId: Id<'reactions'>) => {
     try {
       await removeReaction({ reactionId });
     } catch (err) {

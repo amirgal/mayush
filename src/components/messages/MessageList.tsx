@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import type { Message } from '../../types';
 import MessageCard from './MessageCard';
-import BookView from './BookView';
+import BookView from './BookView.tsx';
 
 type MessageListProps = {
   messages: Message[];
