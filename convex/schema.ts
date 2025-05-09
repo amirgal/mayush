@@ -20,6 +20,7 @@ export default defineSchema({
 
   users: defineTable({
     username: v.string(),
+    name: v.string(),
     passwordHash: v.string(), // In a real app, this would be properly hashed
     isAdmin: v.boolean(),
     createdAt: v.number(),

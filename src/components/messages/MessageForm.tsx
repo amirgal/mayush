@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
+import { useAuth } from '../../context/AuthContext';
 
 const MessageForm = () => {
-  const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // We don't need any values from useAuth() here, but we need to call it for authentication
+  // Get the user's name from the auth context
+  const { name } = useAuth();
   
   const addMessage = useMutation(api.messages.add);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!author.trim() || !content.trim()) {
-      alert('Please fill in your name and message');
+    if (!name || !content.trim()) {
+      alert('Please log in and fill in your message');
       return;
     }
     
@@ -23,13 +24,12 @@ const MessageForm = () => {
     
     try {
       await addMessage({
-        author: author.trim(),
+        author: name,
         content: content.trim(),
         imageUrl: imageUrl.trim() || undefined
       });
       
       // Reset form after successful submission
-      setAuthor('');
       setContent('');
       setImageUrl('');
     } catch (err) {
@@ -67,14 +67,12 @@ const MessageForm = () => {
           <input
             id="author"
             type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            onKeyDown={(e) => handleKeyDown(e, 'author')}
-            placeholder="Enter your name"
+            value={name || ''}
+            disabled={true}
+            placeholder="Log in to leave a message"
             className="input-field handwritten"
-            disabled={isSubmitting}
             tabIndex={0}
-            aria-label="Your name"
+            aria-label="Your name (from your profile)"
             required
           />
         </div>

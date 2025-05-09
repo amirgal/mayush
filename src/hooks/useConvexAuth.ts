@@ -30,9 +30,9 @@ export const useConvexAuth = () => {
     }
   };
 
-  const register = async (username: string, password: string, isAdmin: boolean = false, adminRequest: boolean = false): Promise<RegisterUserResult> => {
+  const register = async (username: string, name: string, password: string, isAdmin: boolean = false, adminRequest: boolean = false): Promise<RegisterUserResult> => {
     try {
-      const result = await registerUser({ username, password, isAdmin, adminRequest });
+      const result = await registerUser({ username, name, password, isAdmin, adminRequest });
       return result as RegisterUserResult;
     } catch (error) {
       console.error('Registration error:', error);

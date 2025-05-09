@@ -6,6 +6,7 @@ import { useConvexAuth } from '../hooks/useConvexAuth';
 const LoginPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -26,6 +27,11 @@ const LoginPage = () => {
       return;
     }
     
+    if (!isLoginMode && !name.trim()) {
+      setError('Please enter your name');
+      return;
+    }
+    
     if (!password.trim()) {
       setError('Please enter a password');
       return;
@@ -37,7 +43,9 @@ const LoginPage = () => {
         const result = await login(username, password);
         
         if (result.success) {
-          setAuth(username, result.isAdmin);
+          // For login, we need to get the user's name from the database
+          // For simplicity, we'll use the username as the display name if we don't have it
+          setAuth(username, username, result.isAdmin);
           navigate('/guestbook');
         } else {
           setError(result.message || 'Invalid credentials. Please try again.');
@@ -45,7 +53,8 @@ const LoginPage = () => {
       } else {
         // Register using our custom hook
         const result = await register(
-          username, 
+          username,
+          name,
           password, 
           false, // Regular users aren't admins
           false  // This isn't an admin creating the user
@@ -56,7 +65,7 @@ const LoginPage = () => {
           const loginResult = await login(username, password);
           
           if (loginResult.success) {
-            setAuth(username, loginResult.isAdmin);
+            setAuth(username, name, loginResult.isAdmin);
             navigate('/guestbook');
           } else {
             setError('Registration successful. Please log in.');
@@ -75,6 +84,12 @@ const LoginPage = () => {
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode);
     setError('');
+    if (isLoginMode) {
+      // Switching to register mode, reset fields
+      setUsername('');
+      setName('');
+      setPassword('');
+    }
   };
 
   return (
@@ -99,6 +114,25 @@ const LoginPage = () => {
             tabIndex={0}
           />
         </div>
+        
+        {!isLoginMode && (
+          <div className="mb-4">
+            <label htmlFor="name" className="block mb-1 text-book-dark">Display Name</label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setError('');
+              }}
+              placeholder="Enter your name"
+              className="input-field"
+              aria-label="Display name input"
+              tabIndex={0}
+            />
+          </div>
+        )}
         
         <div className="mb-6">
           <label htmlFor="password" className="block mb-1 text-book-dark">Password</label>

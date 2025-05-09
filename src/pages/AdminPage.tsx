@@ -6,8 +6,9 @@ import { useConvexAdmin } from '../hooks/useConvexAdmin';
 import type { User as UserData } from '../hooks/useConvexAdmin';
 
 const AdminPage = () => {
-  // Remove access code related state
+  // User creation state
   const [newUsername, setNewUsername] = useState('');
+  const [newName, setNewName] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isAdminUser, setIsAdminUser] = useState(false);
   const { username, isAdmin, isAuthenticated, logout } = useAuth();
@@ -34,6 +35,11 @@ const AdminPage = () => {
       return;
     }
     
+    if (!newName.trim()) {
+      alert('Please enter a name');
+      return;
+    }
+    
     if (!newPassword.trim()) {
       alert('Please enter a password');
       return;
@@ -41,11 +47,12 @@ const AdminPage = () => {
     
     try {
       // Use our custom createUser function
-      const result = await createUser(newUsername, newPassword, isAdminUser);
+      const result = await createUser(newUsername, newName, newPassword, isAdminUser);
       
       if (result.success) {
         alert(`User ${newUsername} created successfully!`);
         setNewUsername('');
+        setNewName('');
         setNewPassword('');
         setIsAdminUser(false);
       } else {
@@ -110,6 +117,19 @@ const AdminPage = () => {
                   />
                 </div>
                 <div>
+                  <label htmlFor="name" className="block mb-1 text-book-dark">Display Name</label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Enter display name"
+                    className="input-field w-full"
+                    aria-label="Display name input"
+                    tabIndex={0}
+                  />
+                </div>
+                <div>
                   <label htmlFor="password" className="block mb-1 text-book-dark">Password</label>
                   <input
                     id="password"
@@ -150,6 +170,7 @@ const AdminPage = () => {
                   <thead className="bg-book-light/50">
                     <tr className="border-b border-book-dark/20">
                       <th className="text-left p-2">Username</th>
+                      <th className="text-left p-2">Name</th>
                       <th className="text-left p-2">Role</th>
                     </tr>
                   </thead>
@@ -157,6 +178,7 @@ const AdminPage = () => {
                     {users.map((user: UserData) => (
                       <tr key={user._id} className="border-b border-book-dark/10 hover:bg-book-light/50">
                         <td className="p-2">{user.username}</td>
+                        <td className="p-2">{user.name}</td>
                         <td className="p-2">{user.isAdmin ? 'Admin' : 'User'}</td>
                       </tr>
                     ))}

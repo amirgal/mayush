@@ -34,6 +34,7 @@ export const verifyCredentials = mutation({
 export const registerUser = mutation({
   args: {
     username: v.string(),
+    name: v.string(),
     password: v.string(),
     isAdmin: v.boolean(),
     adminRequest: v.boolean(),
@@ -58,6 +59,7 @@ export const registerUser = mutation({
     // Create the user
     const userId = await ctx.db.insert("users", {
       username: args.username,
+      name: args.name,
       // In a real app, this would be properly hashed
       passwordHash: args.password,
       isAdmin: args.isAdmin,
@@ -69,28 +71,29 @@ export const registerUser = mutation({
 });
 
 // Initialize the system with an admin user if none exists
-export const initializeSystem = mutation({
-  args: {},
-  handler: async (ctx) => {
-    // Check if any users exist
-    const existingUsers = await ctx.db.query("users").collect();
+// export const initializeSystem = mutation({
+//   args: {},
+//   handler: async (ctx) => {
+//     // Check if any users exist
+//     const existingUsers = await ctx.db.query("users").collect();
     
-    if (existingUsers.length === 0) {
-      // Create default admin user
-      await ctx.db.insert("users", {
-        username: "admin",
-        // In a real app, this would be properly hashed
-        passwordHash: "admin123",
-        isAdmin: true,
-        createdAt: Date.now(),
-      });
+//     if (existingUsers.length === 0) {
+//       // Create default admin user
+//       await ctx.db.insert("users", {
+//         username: "admin",
+//         name: "Administrator",
+//         // In a real app, this would be properly hashed
+//         passwordHash: "admin123",
+//         isAdmin: true,
+//         createdAt: Date.now(),
+//       });
 
-      return { initialized: true };
-    }
+//       return { initialized: true };
+//     }
 
-    return { initialized: false };
-  },
-});
+//     return { initialized: false };
+//   },
+// });
 
 // Get all users (admin only)
 export const getAllUsers = query({
