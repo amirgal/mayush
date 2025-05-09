@@ -1,7 +1,7 @@
 import { useAction, useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import type { Id } from '../../convex/_generated/dataModel';
-import { useAuth } from '../context/authUtils';
+import { useAuth } from '../context/utils/authUtils';
 
 // Define types for admin-related results
 export type User = {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
-import { useAuth } from '../../context/authUtils';
+import { useAuth } from '../../context/utils/authUtils';
 
 const MessageForm = () => {
   const [content, setContent] = useState('');
