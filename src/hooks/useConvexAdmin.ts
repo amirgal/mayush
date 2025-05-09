@@ -1,7 +1,7 @@
 import { useAction, useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import type { Id } from '../../convex/_generated/dataModel';
-import { useAuth } from '../context/utils/authUtils';
+import { useAuthContext } from '../context/utils/authUtils';
 
 // Define types for admin-related results
 export type User = {
@@ -21,7 +21,7 @@ export type CreateUserResult = {
 // Custom hook for admin-related Convex functions
 export const useConvexAdmin = () => {
   // Get the admin status from auth context
-  const { isAdmin } = useAuth();
+  const { isAdmin } = useAuthContext();
   
   // Use the type-safe query and mutation references
   const getAllUsersQuery = useQuery(api.auth.getAllUsers, { isAdmin });

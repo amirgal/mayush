@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/utils/authUtils';
+import { useAuthContext } from '../context/utils/authUtils';
 import { useConvexAuth } from '../hooks/useConvexAuth';
 
 const LoginPage = () => {
@@ -10,8 +10,13 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { setAuth, isAuthenticated } = useAuth();
-  console.log(isAuthenticated);
+  const { setAuth, isAuthenticated } = useAuthContext();
+  
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/guestbook');
+    }
+  }, []);
   
   // Use our custom hook for Convex authentication
   const { login, register } = useConvexAuth();
@@ -57,8 +62,6 @@ const LoginPage = () => {
           username,
           name,
           password, 
-          false, // Regular users aren't admins
-          false  // This isn't an admin creating the user
         );
         
         if (result.success) {

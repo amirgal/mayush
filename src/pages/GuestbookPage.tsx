@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
-import { useAuth } from '../context/utils/authUtils';
+import { useAuthContext } from '../context/utils/authUtils';
 // We don't need to import Message type here as it's used internally by the components
 // Use explicit imports to help TypeScript recognize the files
 import MessageForm from '../components/messages/MessageForm';
@@ -13,7 +13,7 @@ type ViewMode = 'card' | 'book';
 
 const GuestbookPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('card');
-  const { username, isAdmin, isAuthenticated, logout } = useAuth();
+  const { username, isAdmin, isAuthenticated, logout } = useAuthContext();
   const navigate = useNavigate();
   
   // Use username for personalized welcome message

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/utils/authUtils';
+import { useAuthContext } from '../context/utils/authUtils';
 import Header from '../components/layout/Header';
 import { useConvexAdmin } from '../hooks/useConvexAdmin';
 import type { User as UserData } from '../hooks/useConvexAdmin';
@@ -11,7 +11,7 @@ const AdminPage = () => {
   const [newName, setNewName] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isAdminUser, setIsAdminUser] = useState(false);
-  const { username, isAdmin, isAuthenticated, logout } = useAuth();
+  const { username, isAdmin, isAuthenticated, logout } = useAuthContext();
   
   // Set page title with admin username
   const pageTitle = username ? `Admin Dashboard (${username})` : 'Admin Dashboard';

@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
-import { useAuth } from '../../context/utils/authUtils';
+import { useAuthContext } from '../../context/utils/authUtils';
 
 const MessageForm = () => {
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Get the user's name from the auth context
-  const { name } = useAuth();
+  const { name } = useAuthContext();
   
   const addMessage = useMutation(api.messages.add);
   
