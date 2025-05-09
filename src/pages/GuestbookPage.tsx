@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
@@ -24,10 +24,11 @@ const GuestbookPage = () => {
   // No need to import Message type anymore as we're using the Convex API
   
   // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    navigate('/');
-    return null;
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
   
   const handleToggleView = () => {
     setViewMode(prev => prev === 'card' ? 'book' : 'card');
