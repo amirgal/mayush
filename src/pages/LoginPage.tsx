@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/utils/authUtils';
 import { useConvexAuth } from '../hooks/useConvexAuth';
+import type { Id } from '../../convex/_generated/dataModel';
 
 const LoginPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -52,7 +53,7 @@ const LoginPage = () => {
           console.log(result);
           
           // For login, we need to get the user's name from the database
-          setAuth(result.userId, username, result.name, result.isAdmin);
+          setAuth(result.userId as Id<"users">, username, result.name, result.isAdmin);
           navigate('/guestbook');
         } else {
           setError(result.message || 'Invalid credentials. Please try again.');
@@ -70,7 +71,7 @@ const LoginPage = () => {
           const loginResult = await login(username, password);
           
           if (loginResult.success) {
-            setAuth(loginResult.userId, username, loginResult.name, loginResult.isAdmin);
+            setAuth(loginResult.userId as Id<"users">, username, loginResult.name, loginResult.isAdmin);
             navigate('/guestbook');
           } else {
             setError('Registration successful. Please log in.');

@@ -11,8 +11,16 @@ type InsertUserResult =
 
 // Define the return type for verifyLoginAction
 type VerifyLoginResult = 
-  | { success: true; userId: string; name: string; isAdmin: boolean } 
+  | { success: true; userId: Id<"users">; name: string; isAdmin: boolean } 
   | { success: false; message: string; isAdmin: false };
+
+// Query: Get user by id
+export const getUserById = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId);
+  }
+});
 
 // Query: Get user by username (internal use for login action)
 export const getUserByUsername = query({
