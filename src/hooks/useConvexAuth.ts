@@ -3,7 +3,7 @@ import { api } from '../../convex/_generated/api';
 
 // Define the result type for the login action, matching the backend
 export type VerifyLoginResult = 
-  | { success: true; userId: string; name: string; isAdmin: boolean } 
+  | { success: true; userId: string; displayName: string; isAdmin: boolean } 
   | { success: false; message: string; isAdmin: false };
 
 export type RegisterUserResult = {
@@ -28,9 +28,15 @@ export const useConvexAuth = () => {
     }
   };
 
-  const register = async (username: string, name: string, password: string, isAdmin: boolean = false, adminRequest: boolean = false): Promise<RegisterUserResult> => {
+  const register = async (username: string, displayName: string, password: string, isAdmin: boolean = false, adminRequest: boolean = false): Promise<RegisterUserResult> => {
     try {
-      const result = await registerUserAction({ username, name, password, isAdmin, adminRequest });
+      const result = await registerUserAction({
+        username,
+        displayName,
+        password,
+        isAdmin,
+        adminRequest,
+      });
       return result as RegisterUserResult;
     } catch (error) {
       console.error('Registration error:', error);

@@ -2,11 +2,11 @@ import { useContext, createContext } from 'react';
 import type { Id } from "../../../convex/_generated/dataModel";
 type AuthContextType = {
   username: string | null;
-  name: string | null;
+  displayName: string | null;
   userId: Id<"users"> | null;
   isAdmin: boolean;
   isAuthenticated: boolean;
-  setAuth: (userId: Id<"users">, username: string, name: string, isAdmin: boolean) => void;
+  setAuth: (userId: Id<"users">, username: string, displayName: string, isAdmin: boolean) => void;
   logout: () => void;
 };
 

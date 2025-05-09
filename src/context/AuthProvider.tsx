@@ -7,7 +7,7 @@ import { api } from "../../convex/_generated/api";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(() => localStorage.getItem('username') || null);
-  const [name, setName] = useState<string | null>(() => localStorage.getItem('name') || null);
+  const [displayName, setDisplayName] = useState<string | null>(() => localStorage.getItem('displayName') || null);
   const [userId, setUserId] = useState<Id<"users"> | null>(() => {
     const savedId = localStorage.getItem('userId');
     return savedId ? (savedId as Id<"users">) : null;
@@ -24,36 +24,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (userQuery) {
       setIsAdmin(userQuery.isAdmin);
-      setName(userQuery.name); // Optional: keep name in sync with backend
+      setDisplayName(userQuery.displayName); // Optional: keep displayName in sync with backend
     }
   }, [userQuery]);
 
   const setAuth = (userId: Id<"users">, username: string, displayName: string, admin: boolean) => {
+    console.log('Setting auth state:', { userId, username, displayName, admin });
     setUserId(userId);
     setUsername(username);
-    setName(displayName);
+    setDisplayName(displayName);
     setIsAdmin(admin);
     setIsAuthenticated(true);
     localStorage.setItem('userId', userId);
     localStorage.setItem('username', username);
-    localStorage.setItem('name', displayName);
+    localStorage.setItem('displayName', displayName);
     localStorage.setItem('isAuthenticated', 'true');
   };
 
   const logout = () => {
     setUserId(null);
     setUsername(null);
-    setName(null);
+    setDisplayName(null);
     setIsAdmin(false);
     setIsAuthenticated(false);
     localStorage.removeItem('userId');
     localStorage.removeItem('username');
-    localStorage.removeItem('name');
+    localStorage.removeItem('displayName');
     localStorage.removeItem('isAuthenticated');
   };
 
   return (
-    <AuthContext.Provider value={{ username, name, userId, isAdmin, isAuthenticated, setAuth, logout }}>
+    <AuthContext.Provider value={{ username, displayName, userId, isAdmin, isAuthenticated, setAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );

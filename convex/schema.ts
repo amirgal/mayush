@@ -20,8 +20,8 @@ export default defineSchema({
 
   users: defineTable({
     username: v.string(),
-    name: v.string(),
-    passwordHash: v.string(), // In a real app, this would be properly hashed
+    displayName: v.string(),
+    passwordHash: v.string(),
     isAdmin: v.boolean(),
     createdAt: v.number(),
   }).index("by_username", ["username"]),

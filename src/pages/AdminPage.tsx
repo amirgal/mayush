@@ -178,7 +178,7 @@ const AdminPage = () => {
                     {users.map((user: UserData) => (
                       <tr key={user._id} className="border-b border-book-dark/10 hover:bg-book-light/50">
                         <td className="p-2">{user.username}</td>
-                        <td className="p-2">{user.name}</td>
+                        <td className="p-2">{user.displayName}</td>
                         <td className="p-2">{user.isAdmin ? 'Admin' : 'User'}</td>
                       </tr>
                     ))}

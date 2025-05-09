@@ -7,7 +7,7 @@ import type { Id } from '../../convex/_generated/dataModel';
 const LoginPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [username, setUsername] = useState('');
-  const [name, setName] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -34,8 +34,8 @@ const LoginPage = () => {
       return;
     }
     
-    if (!isLoginMode && !name.trim()) {
-      setError('Please enter your name');
+    if (!isLoginMode && !displayName.trim()) {
+      setError('Please enter your display name');
       return;
     }
     
@@ -53,7 +53,7 @@ const LoginPage = () => {
           console.log(result);
           
           // For login, we need to get the user's name from the database
-          setAuth(result.userId as Id<"users">, username, result.name, result.isAdmin);
+          setAuth(result.userId as Id<"users">, username, result.displayName, result.isAdmin);
           navigate('/guestbook');
         } else {
           setError(result.message || 'Invalid credentials. Please try again.');
@@ -62,7 +62,7 @@ const LoginPage = () => {
         // Register using our custom hook
         const result = await register(
           username,
-          name,
+          displayName,
           password, 
         );
         
@@ -71,7 +71,7 @@ const LoginPage = () => {
           const loginResult = await login(username, password);
           
           if (loginResult.success) {
-            setAuth(loginResult.userId as Id<"users">, username, loginResult.name, loginResult.isAdmin);
+            setAuth(loginResult.userId as Id<"users">, username, loginResult.displayName, loginResult.isAdmin);
             navigate('/guestbook');
           } else {
             setError('Registration successful. Please log in.');
@@ -93,7 +93,7 @@ const LoginPage = () => {
     if (isLoginMode) {
       // Switching to register mode, reset fields
       setUsername('');
-      setName('');
+      setDisplayName('');
       setPassword('');
     }
   };
@@ -127,12 +127,12 @@ const LoginPage = () => {
             <input
               id="name"
               type="text"
-              value={name}
+              value={displayName}
               onChange={(e) => {
-                setName(e.target.value);
+                setDisplayName(e.target.value);
                 setError('');
               }}
-              placeholder="Enter your name"
+              placeholder="Enter your display name"
               className="input-field"
               aria-label="Display name input"
               tabIndex={0}

@@ -7,7 +7,7 @@ import { useAuthContext } from '../context/utils/authUtils';
 export type User = {
   _id: Id<'users'>;
   username: string;
-  name: string;
+  displayName: string;
   isAdmin: boolean;
   createdAt: number;
 };
@@ -40,11 +40,11 @@ export const useConvexAdmin = () => {
     }
   };
 
-  const createUser = async (username: string, name: string, password: string, isAdmin: boolean): Promise<CreateUserResult> => {
+  const createUser = async (username: string, displayName: string, password: string, isAdmin: boolean): Promise<CreateUserResult> => {
     try {
       const result = await registerUserMutation({ 
         username, 
-        name,
+        displayName,
         password, 
         isAdmin, 
         adminRequest: true // This is an admin creating the user

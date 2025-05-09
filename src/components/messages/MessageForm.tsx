@@ -8,14 +8,14 @@ const MessageForm = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Get the user's name from the auth context
-  const { name } = useAuthContext();
+  const { displayName } = useAuthContext();
   
   const addMessage = useMutation(api.messages.add);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name || !content.trim()) {
+    if (!displayName || !content.trim()) {
       alert('Please log in and fill in your message');
       return;
     }
@@ -24,7 +24,7 @@ const MessageForm = () => {
     
     try {
       await addMessage({
-        author: name,
+        author: displayName,
         content: content.trim(),
         imageUrl: imageUrl.trim() || undefined
       });
@@ -67,7 +67,7 @@ const MessageForm = () => {
           <input
             id="author"
             type="text"
-            value={name || ''}
+            value={displayName || ''}
             disabled={true}
             placeholder="Log in to leave a message"
             className="input-field handwritten"

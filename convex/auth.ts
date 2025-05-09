@@ -11,7 +11,7 @@ type InsertUserResult =
 
 // Define the return type for verifyLoginAction
 type VerifyLoginResult = 
-  | { success: true; userId: Id<"users">; name: string; isAdmin: boolean } 
+  | { success: true; userId: Id<"users">; displayName: string; isAdmin: boolean } 
   | { success: false; message: string; isAdmin: false };
 
 // Query: Get user by id
@@ -54,7 +54,7 @@ export const verifyLoginAction = action({
       return { success: false, message: "Invalid password", isAdmin: false };
     }
 
-    return { success: true, userId: user._id, name: user.name, isAdmin: user.isAdmin };
+    return { success: true, userId: user._id, displayName: user.displayName, isAdmin: user.isAdmin };
   },
 });
 
@@ -62,7 +62,7 @@ export const verifyLoginAction = action({
 export const registerUserAction = action({
   args: {
     username: v.string(),
-    name: v.string(),
+    displayName: v.string(),
     password: v.string(),
     isAdmin: v.boolean(),
     adminRequest: v.boolean(),
@@ -71,7 +71,7 @@ export const registerUserAction = action({
     const passwordHash = await bcrypt.hash(args.password, 10);
     return await ctx.runMutation(api.auth.insertUser, {
       username: args.username,
-      name: args.name,
+      displayName: args.displayName,
       passwordHash,
       isAdmin: args.isAdmin,
       adminRequest: args.adminRequest,
@@ -83,7 +83,7 @@ export const registerUserAction = action({
 export const insertUser = mutation({
   args: {
     username: v.string(),
-    name: v.string(),
+    displayName: v.string(),
     passwordHash: v.string(),
     isAdmin: v.boolean(),
     adminRequest: v.boolean(),
@@ -105,7 +105,7 @@ export const insertUser = mutation({
     // Create the user
     const userId = await ctx.db.insert("users", {
       username: args.username,
-      name: args.name,
+      displayName: args.displayName,
       passwordHash: args.passwordHash,
       isAdmin: args.isAdmin,
       createdAt: Date.now(),
