@@ -1,41 +1,82 @@
-import { mutation, query } from "./_generated/server";
+import { mutation, query, action } from "./_generated/server";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel"; // Correct import for Id type
+import bcrypt from "bcryptjs";
+import { api } from "./_generated/api";
 
-// Verify username and password
-export const verifyCredentials = mutation({
+// Define the return type for insertUser, which will be the return type for registerUserAction's handler
+type InsertUserResult = 
+  | { success: true; userId: Id<"users"> } 
+  | { success: false; message: string };
+
+// Define the return type for verifyLoginAction
+type VerifyLoginResult = 
+  | { success: true; isAdmin: boolean } 
+  | { success: false; message: string; isAdmin: false };
+
+// Query: Get user by username (internal use for login action)
+export const getUserByUsername = query({
+  args: { username: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_username") // Assuming an index "by_username" exists on the "username" field
+      .filter((q) => q.eq(q.field("username"), args.username))
+      .first();
+    return user; // Returns the user object (which includes passwordHash) or null
+  },
+});
+
+// Action: Verify login credentials (handles password comparison)
+export const verifyLoginAction = action({
   args: {
     username: v.string(),
     password: v.string(),
   },
-  handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_username")
-      .filter((q) => q.eq(q.field("username"), args.username))
-      .first();
+  handler: async (ctx, args): Promise<VerifyLoginResult> => {
+    const user = await ctx.runQuery(api.auth.getUserByUsername, { username: args.username });
 
     if (!user) {
-      return { success: false, isAdmin: false, message: "User not found" };
+      return { success: false, message: "User not found", isAdmin: false };
     }
 
-    // In a real app, this would use proper password hashing
-    if (user.passwordHash !== args.password) {
-      return { success: false, isAdmin: false, message: "Invalid password" };
+    const isPasswordValid = await bcrypt.compare(args.password, user.passwordHash);
+
+    if (!isPasswordValid) {
+      return { success: false, message: "Invalid password", isAdmin: false };
     }
 
-    return {
-      success: true,
-      isAdmin: user.isAdmin,
-    };
+    return { success: true, isAdmin: user.isAdmin };
   },
 });
 
-// Register a new user
-export const registerUser = mutation({
+// Action: Register a new user (handles password hashing)
+export const registerUserAction = action({
   args: {
     username: v.string(),
     name: v.string(),
     password: v.string(),
+    isAdmin: v.boolean(),
+    adminRequest: v.boolean(),
+  },
+  handler: async (ctx, args): Promise<InsertUserResult> => { // <<< ANNOTATION ADDED HERE
+    const passwordHash = await bcrypt.hash(args.password, 10);
+    return await ctx.runMutation(api.auth.insertUser, {
+      username: args.username,
+      name: args.name,
+      passwordHash,
+      isAdmin: args.isAdmin,
+      adminRequest: args.adminRequest,
+    }) as InsertUserResult;
+  },
+});
+
+// Mutation: Insert user (no hashing)
+export const insertUser = mutation({
+  args: {
+    username: v.string(),
+    name: v.string(),
+    passwordHash: v.string(),
     isAdmin: v.boolean(),
     adminRequest: v.boolean(),
   },
@@ -44,56 +85,26 @@ export const registerUser = mutation({
     if (args.isAdmin && !args.adminRequest) {
       throw new Error("Unauthorized: Only admins can create admin users");
     }
-
     // Check if username already exists
     const existingUser = await ctx.db
       .query("users")
       .withIndex("by_username")
       .filter((q) => q.eq(q.field("username"), args.username))
       .first();
-
     if (existingUser) {
       return { success: false, message: "Username already exists" };
     }
-
     // Create the user
     const userId = await ctx.db.insert("users", {
       username: args.username,
       name: args.name,
-      // In a real app, this would be properly hashed
-      passwordHash: args.password,
+      passwordHash: args.passwordHash,
       isAdmin: args.isAdmin,
       createdAt: Date.now(),
     });
-
     return { success: true, userId };
   },
 });
-
-// Initialize the system with an admin user if none exists
-// export const initializeSystem = mutation({
-//   args: {},
-//   handler: async (ctx) => {
-//     // Check if any users exist
-//     const existingUsers = await ctx.db.query("users").collect();
-    
-//     if (existingUsers.length === 0) {
-//       // Create default admin user
-//       await ctx.db.insert("users", {
-//         username: "admin",
-//         name: "Administrator",
-//         // In a real app, this would be properly hashed
-//         passwordHash: "admin123",
-//         isAdmin: true,
-//         createdAt: Date.now(),
-//       });
-
-//       return { initialized: true };
-//     }
-
-//     return { initialized: false };
-//   },
-// });
 
 // Get all users (admin only)
 export const getAllUsers = query({

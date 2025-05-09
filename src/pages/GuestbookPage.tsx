@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authUtils';
 // We don't need to import Message type here as it's used internally by the components
 // Use explicit imports to help TypeScript recognize the files
 import MessageForm from '../components/messages/MessageForm';

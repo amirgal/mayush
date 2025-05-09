@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authUtils';
 import Header from '../components/layout/Header';
 import { useConvexAdmin } from '../hooks/useConvexAdmin';
 import type { User as UserData } from '../hooks/useConvexAdmin';

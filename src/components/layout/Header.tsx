@@ -27,7 +27,7 @@ const Header: FC<HeaderProps> = ({
     <header className="bg-book-dark text-white py-4 shadow-md">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold handwritten">Birthday Guestbook</h1>
+          <h1 className="text-2xl font-bold handwritten">TESTBOOK</h1>
         </div>
         
         <div className="flex items-center space-x-4">

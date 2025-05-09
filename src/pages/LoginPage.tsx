@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authUtils';
 import { useConvexAuth } from '../hooks/useConvexAuth';
 
 const LoginPage = () => {
@@ -95,7 +95,7 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-book-light">
       <div className="book-page max-w-md w-full p-8">
-        <h1 className="text-3xl font-bold text-center mb-6 text-book-dark">Birthday Guestbook</h1>
+        <h1 className="text-3xl font-bold text-center mb-6 text-book-dark">TESTBOOK</h1>
         <p className="text-center mb-8 handwritten text-xl">{isLoginMode ? 'Please log in to continue' : 'Create a new account'}</p>
         
         <div className="mb-4">
