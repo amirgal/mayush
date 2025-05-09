@@ -115,14 +115,15 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       <div className={`
         relative
         flex 
-        ${isMobile ? 'flex-col bg-book-page rounded-xl' : 'flex-row bg-gradient-to-r from-book-accent/5 via-book-page to-book-accent/5'}
+        ${isMobile ? 'flex-col bg-book-page rounded-lg shadow-[5px_5px_15px_rgba(0,0,0,0.3)] transform rotate-[0.5deg] max-w-[95%] w-[500px]' : 'flex-row bg-gradient-to-r from-book-accent/5 via-book-page to-book-accent/5'}
         min-h-[80vh] 
         mx-auto
         overflow-hidden
         shadow-2xl
         ${!isMobile ? 'before:content-[""] before:absolute before:top-0 before:bottom-0 before:left-1/2 before:w-[3px] before:bg-book-dark/20 before:z-10 before:shadow-[0_0_10px_rgba(0,0,0,0.2)]' : ''}
-        ${!isMobile ? 'after:content-[""] after:absolute after:w-full after:h-full after:top-0 after:left-0 after:pointer-events-none after:shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]' : ''}
+        after:content-[""] after:absolute after:w-full after:h-full after:top-0 after:left-0 after:pointer-events-none after:shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]
         border border-book-dark/20
+        ${isMobile ? 'border-l-[24px] border-l-book-dark/70 border-r-[24px] border-r-book-dark/70 before:content-[""] before:absolute before:left-[10px] before:top-0 before:bottom-0 before:w-[2px] before:bg-book-accent/20 before:z-10 before:opacity-80 after:absolute after:left-[16px] after:top-0 after:bottom-0 after:w-[1px] after:bg-white/10 after:z-10 before:right-[10px] before:w-[2px] before:bg-book-accent/20 after:right-[16px] after:w-[1px] after:bg-white/10' : ''}
         book-spine
         `}
       >
@@ -130,7 +131,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         {leftPageMessage && (
           <div 
             key={leftPageMessage._id} 
-            className={`${isMobile ? 'w-full' : 'w-1/2'} min-h-full flex-grow flex items-stretch justify-center p-8 ${!isMobile ? 'pr-12 border-r border-book-dark/10' : ''} handwritten-bg`}
+            className={`${isMobile ? 'w-full' : 'w-1/2'} min-h-full flex-grow flex items-stretch justify-center ${isMobile ? 'p-10 pb-16' : 'p-8'} ${!isMobile ? 'pr-12 border-r border-book-dark/10' : ''} handwritten-bg`}
           >
             <MessageCard 
               message={leftPageMessage} 
