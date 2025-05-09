@@ -1,10 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Dancing+Script:wght@400;700&family=Assistant:wght@300;400;500;600;700&display=swap');
 
+@import './BookTheme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --foreground-rgb: 255, 255, 255;
+      --background-start-rgb: 0, 0, 0;
+      --background-end-rgb: 0, 0, 0;
+    }
+  }
+  
   body {
     @apply bg-book-light text-book-dark font-sans;
     font-family: 'Assistant', system-ui, sans-serif;
@@ -21,26 +37,34 @@
 
 @layer components {
   .book-page {
-    @apply bg-book-page rounded-md shadow-lg p-6 border-book-dark border;
+    @apply bg-book-page rounded-md shadow-lg p-6 border border-book-dark/20;
   }
   
   .book-spine {
-    @apply bg-book-dark text-book-page py-2 px-4 rounded-sm;
-  }
-  
-  .btn-primary {
-    @apply bg-book-accent hover:bg-book-dark text-white py-2 px-4 rounded-md transition-colors duration-300 ease-in-out;
+    @apply bg-book-dark text-book-light rounded-sm p-2;
   }
   
   .input-field {
-    @apply border border-book-dark/30 rounded-md p-2 w-full focus:ring-2 focus:ring-book-accent focus:outline-none;
+    @apply w-full px-3 py-2 border border-book-dark/30 rounded-md focus:outline-none focus:ring-2 focus:ring-book-accent/50;
+  }
+  
+  .btn-primary {
+    @apply bg-book-accent text-book-light px-4 py-2 rounded-md hover:bg-book-dark transition-colors duration-300;
+  }
+  
+  .btn-secondary {
+    @apply bg-book-light text-book-dark border border-book-dark px-4 py-2 rounded-md hover:bg-book-dark/10 transition-colors duration-300;
+  }
+  
+  .handwritten {
+    @apply font-handwritten text-book-dark;
+  }
+  
+  .book-title {
+    @apply font-book-title text-book-dark font-bold;
   }
   
   .message-card {
     @apply book-page mb-4 hover:shadow-xl transition-shadow duration-300;
-  }
-  
-  .handwritten {
-    @apply font-sans italic;
   }
 }

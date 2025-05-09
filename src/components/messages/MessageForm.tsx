@@ -56,12 +56,12 @@ const MessageForm = () => {
   };
 
   return (
-    <div className="book-page">
-      <h2 className="text-2xl font-bold mb-4 text-book-dark">Leave a Birthday Wish</h2>
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Leave a Birthday Wish</h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="author" className="block mb-1 text-book-dark">
+          <label htmlFor="author" className="block mb-1 text-gray-800">
             Your Name
           </label>
           <input
@@ -70,7 +70,7 @@ const MessageForm = () => {
             value={displayName || ''}
             disabled={true}
             placeholder="Log in to leave a message"
-            className="input-field handwritten"
+            className="input-field"
             tabIndex={0}
             aria-label="Your name (from your profile)"
             required
@@ -86,7 +86,7 @@ const MessageForm = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Write your birthday wish here..."
-            className="input-field handwritten min-h-[120px] resize-y"
+            className="input-field min-h-[120px] resize-y"
             disabled={isSubmitting}
             tabIndex={0}
             aria-label="Your message"

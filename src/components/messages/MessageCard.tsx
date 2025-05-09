@@ -63,11 +63,11 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
 
   const cardClassName = viewMode === 'card' 
     ? 'message-card' 
-    : 'book-page mb-4 transform transition-transform hover:scale-105 border-r border-b border-book-dark/20';
+    : 'w-full h-full';
 
   return (
     <div className={cardClassName}>
-      <div className="flex justify-between items-start mb-2">
+      <div className={`flex justify-between items-start mb-4 ${viewMode === 'book' ? 'pb-2 border-b border-book-dark/10' : ''}`}>
         <h3 className="font-bold text-lg text-book-dark">{message.author}</h3>
         <div className="text-book-dark/60 text-sm">{formattedDate}</div>
       </div>
@@ -94,7 +94,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
         </div>
       )}
       
-      <div className="handwritten text-lg mb-4 whitespace-pre-wrap">{message.content}</div>
+      <div className={`${viewMode === 'book' ? 'handwritten text-lg leading-relaxed' : 'text-lg'} mb-4 whitespace-pre-wrap`}>{message.content}</div>
       
       {message.imageUrl && (
         <div className="mb-4">
