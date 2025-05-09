@@ -11,7 +11,7 @@ type InsertUserResult =
 
 // Define the return type for verifyLoginAction
 type VerifyLoginResult = 
-  | { success: true; isAdmin: boolean } 
+  | { success: true; userId: string; name: string; isAdmin: boolean } 
   | { success: false; message: string; isAdmin: false };
 
 // Query: Get user by username (internal use for login action)
@@ -46,7 +46,7 @@ export const verifyLoginAction = action({
       return { success: false, message: "Invalid password", isAdmin: false };
     }
 
-    return { success: true, isAdmin: user.isAdmin };
+    return { success: true, userId: user._id, name: user.name, isAdmin: user.isAdmin };
   },
 });
 

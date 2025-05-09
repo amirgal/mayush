@@ -49,9 +49,10 @@ const LoginPage = () => {
         const result = await login(username, password);
         
         if (result.success) {
+          console.log(result);
+          
           // For login, we need to get the user's name from the database
-          // For simplicity, we'll use the username as the display name if we don't have it
-          setAuth(username, username, result.isAdmin);
+          setAuth(result.userId, username, result.name, result.isAdmin);
           navigate('/guestbook');
         } else {
           setError(result.message || 'Invalid credentials. Please try again.');
@@ -69,7 +70,7 @@ const LoginPage = () => {
           const loginResult = await login(username, password);
           
           if (loginResult.success) {
-            setAuth(username, name, loginResult.isAdmin);
+            setAuth(loginResult.userId, username, loginResult.name, loginResult.isAdmin);
             navigate('/guestbook');
           } else {
             setError('Registration successful. Please log in.');

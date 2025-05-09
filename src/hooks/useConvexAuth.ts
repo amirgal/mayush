@@ -3,7 +3,7 @@ import { api } from '../../convex/_generated/api';
 
 // Define the result type for the login action, matching the backend
 export type VerifyLoginResult = 
-  | { success: true; isAdmin: boolean } 
+  | { success: true; userId: string; name: string; isAdmin: boolean } 
   | { success: false; message: string; isAdmin: false };
 
 export type RegisterUserResult = {
