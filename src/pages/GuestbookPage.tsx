@@ -1,0 +1,81 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '../mocks/convex';
+import { useAuth } from '../context/AuthContext';
+// We don't need to import Message type here as it's used internally by the components
+// Use explicit imports to help TypeScript recognize the files
+import MessageForm from '../components/messages/MessageForm';
+import MessageList from '../components/messages/MessageList';
+import Header from '../components/layout/Header';
+
+type ViewMode = 'card' | 'book';
+
+const GuestbookPage = () => {
+  const [viewMode, setViewMode] = useState<ViewMode>('card');
+  const { username, isAdmin, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  
+  // Use username for personalized welcome message
+  const welcomeMessage = username ? `Welcome, ${username}!` : 'Welcome to the Guestbook!';
+  // Properly type the messages from useQuery
+  const messages = useQuery<Message[]>("messages.getAllWithPinnedFirst") || [];
+  
+  // Import the Message type only for typing the useQuery result
+  type Message = import('../types').Message;
+  
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    navigate('/');
+    return null;
+  }
+  
+  const handleToggleView = () => {
+    setViewMode(prev => prev === 'card' ? 'book' : 'card');
+  };
+  
+  const handleAdminPage = () => {
+    navigate('/admin');
+  };
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  return (
+    <div className="min-h-screen bg-book-light">
+      <Header 
+        isAdmin={isAdmin} 
+        onAdminClick={handleAdminPage} 
+        onLogout={handleLogout} 
+        viewMode={viewMode}
+        onToggleView={handleToggleView}
+      />
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-2">
+          <p className="text-lg text-book-dark/80">{welcomeMessage}</p>
+        </div>
+        <h1 className="text-4xl font-bold text-center mb-8 text-book-dark handwritten">
+          Happy Birthday!
+        </h1>
+        
+        <MessageForm />
+        
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6 text-book-dark">
+            Birthday Wishes
+          </h2>
+          
+          <MessageList 
+            messages={messages} 
+            viewMode={viewMode} 
+            isAdmin={isAdmin}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default GuestbookPage;

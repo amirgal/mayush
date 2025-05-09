@@ -1,68 +1,46 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Dancing+Script:wght@400;700&family=Assistant:wght@300;400;500;600;700&display=swap');
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  body {
+    @apply bg-book-light text-book-dark font-sans;
+    font-family: 'Assistant', system-ui, sans-serif;
   }
-  a:hover {
-    color: #747bff;
+  
+  h1, h2, h3 {
+    @apply font-sans font-bold;
   }
-  button {
-    background-color: #f9f9f9;
+  
+  p, span, div, button, input, textarea {
+    @apply font-sans;
+  }
+}
+
+@layer components {
+  .book-page {
+    @apply bg-book-page rounded-md shadow-lg p-6 border-book-dark border;
+  }
+  
+  .book-spine {
+    @apply bg-book-dark text-book-page py-2 px-4 rounded-sm;
+  }
+  
+  .btn-primary {
+    @apply bg-book-accent hover:bg-book-dark text-white py-2 px-4 rounded-md transition-colors duration-300 ease-in-out;
+  }
+  
+  .input-field {
+    @apply border border-book-dark/30 rounded-md p-2 w-full focus:ring-2 focus:ring-book-accent focus:outline-none;
+  }
+  
+  .message-card {
+    @apply book-page mb-4 hover:shadow-xl transition-shadow duration-300;
+  }
+  
+  .handwritten {
+    @apply font-sans italic;
   }
 }
