@@ -36,7 +36,7 @@ const Header: FC<HeaderProps> = ({
               onClick={onToggleView}
               onKeyDown={handleKeyDown(onToggleView)}
               className="text-white hover:text-book-accent transition-colors"
-              aria-label={`Switch to ${viewMode === 'card' ? 'book' : 'card'} view`}
+              aria-label={`Switch to ${viewMode === 'book' ? 'card' : 'book'} view`}
               tabIndex={0}
             >
               <span className="flex items-center">
@@ -47,23 +47,23 @@ const Header: FC<HeaderProps> = ({
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
                 >
-                  {viewMode === 'card' ? (
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" 
-                    />
-                  ) : (
+                  {viewMode === 'book' ? (
                     <path 
                       strokeLinecap="round" 
                       strokeLinejoin="round" 
                       strokeWidth={2} 
                       d="M4 6h16M4 10h16M4 14h16M4 18h16" 
                     />
+                  ) : (
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" 
+                    />
                   )}
                 </svg>
-                {viewMode === 'card' ? 'Book View' : 'Card View'}
+                {viewMode === 'book' ? 'Card View' : 'Book View'}
               </span>
             </button>
           )}

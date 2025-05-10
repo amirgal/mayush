@@ -12,7 +12,7 @@ import Header from '../components/layout/Header';
 type ViewMode = 'card' | 'book';
 
 const GuestbookPage = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>('card');
+  const [viewMode, setViewMode] = useState<ViewMode>('book');
   const { username, isAdmin, isAuthenticated, logout } = useAuthContext();
   const navigate = useNavigate();
   

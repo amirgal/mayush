@@ -20,7 +20,9 @@ const MessageList: FC<MessageListProps> = ({ messages, viewMode, isAdmin }) => {
 
   return (
     <div>
-      {viewMode === 'card' ? (
+      {viewMode === 'book' ? (
+        <BookView messages={messages} isAdmin={isAdmin} />
+      ) : (
         <div className="space-y-4">
           {messages.map((message) => (
             <MessageCard 
@@ -31,8 +33,6 @@ const MessageList: FC<MessageListProps> = ({ messages, viewMode, isAdmin }) => {
             />
           ))}
         </div>
-      ) : (
-        <BookView messages={messages} isAdmin={isAdmin} />
       )}
     </div>
   );
