@@ -156,26 +156,35 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
       
       {/* Display images from imageUrls array (new format) */}
       {message.imageUrls && message.imageUrls.length > 0 && (
-        <div className="mb-4">
-          {message.imageUrls.length === 1 ? (
-            <img
-              src={message.imageUrls[0].url}
-              alt={`Image shared by ${message.author}`}
-              className="max-w-full rounded-md shadow-sm"
-            />
-          ) : (
-            <div className="grid grid-cols-2 gap-2">
-              {message.imageUrls.map((image, index) => (
-                <div key={image.storageId} className="relative rounded-md overflow-hidden h-40 bg-gray-100">
+        <div className="mb-6 flex flex-wrap gap-4 justify-center">
+          {message.imageUrls.map((image, index) => {
+            // Generate a random slight rotation between -5 and 5 degrees for the polaroid effect
+            const randomRotation = Math.floor(Math.random() * 11) - 5;
+            
+            return (
+              <div 
+                key={image.storageId} 
+                className="polaroid-image bg-white p-2 pb-8 shadow-md max-w-[200px] relative"
+                style={{ 
+                  transform: `rotate(${randomRotation}deg)`,
+                  transition: 'transform 0.3s ease'
+                }}
+              >
+                <div className="overflow-hidden">
                   <img
                     src={image.url}
                     alt={`Image ${index + 1} shared by ${message.author}`}
-                    className="h-full w-full object-cover"
+                    className="w-full h-[150px] object-cover"
                   />
                 </div>
-              ))}
-            </div>
-          )}
+                <div className="absolute bottom-2 left-0 right-0 text-center text-xs text-gray-500 font-handwritten">
+                  {new Date(message.createdAt).toLocaleDateString('he-IL', {month: 'short', year: 'numeric'})}
+                </div>
+                {/* Tape effect at the top */}
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-gray-200/70 rounded-sm rotate-1"></div>
+              </div>
+            );
+          })}
         </div>
       )}
       
