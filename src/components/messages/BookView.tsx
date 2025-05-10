@@ -35,8 +35,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     }
   }, [currentSpread, totalSpreads]);
 
-  const leftPageMessage = isMobile ? messages[currentSpread] : messages[currentSpread * 2];
-  const rightPageMessage = isMobile ? null : messages[currentSpread * 2 + 1];
+  const firstPageMessage = isMobile ? messages[currentSpread] : messages[currentSpread * 2];
+  const secondPageMessage = isMobile ? null : messages[currentSpread * 2 + 1];
 
   const handleKeyDown = useCallback((callback: () => void) => (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -126,10 +126,10 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
           'transition-all duration-500',
         ].join(' ')}
       `}>
-        {/* Left Page */}
-        {leftPageMessage && (
+        {/* First Page */}
+        {firstPageMessage && (
           <div 
-            key={leftPageMessage._id} 
+            key={firstPageMessage._id} 
             className={`
               ${isMobile ? 'w-full p-6' : 'w-1/2 p-8'}
               min-h-full 
@@ -140,6 +140,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               bg-gradient-to-bl from-white to-book-page
               ${!isMobile && 'border-l border-book-dark/10'}
             `}
+            id="first-page"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
             <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
@@ -156,7 +157,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             {/* Main Content */}
             <div className="relative z-[1] flex-1">
               <MessageCard 
-                message={leftPageMessage} 
+                message={firstPageMessage} 
                 isAdmin={isAdmin} 
                 viewMode="book" 
               />
@@ -167,10 +168,10 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
           </div>
         )}
         
-        {/* Right Page */}
-        {!isMobile && (rightPageMessage ? (
+        {/* Second Page */}
+        {!isMobile && (secondPageMessage ? (
           <div 
-            key={rightPageMessage._id} 
+            key={secondPageMessage._id} 
             className={`
               w-1/2 
               p-8
@@ -181,6 +182,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               relative
               bg-gradient-to-br from-book-page to-white
             `}
+            id="second-page"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
             <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
@@ -197,7 +199,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             {/* Main Content */}
             <div className="relative z-[1] flex-1">
               <MessageCard 
-                message={rightPageMessage} 
+                message={secondPageMessage} 
                 isAdmin={isAdmin} 
                 viewMode="book" 
               />
