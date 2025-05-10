@@ -14,6 +14,7 @@ export type Message = Doc<{
   imageUrl?: string;
   createdAt: number;
   isPinned: boolean;
+  userId: Id<'users'>;
 }, 'messages'>;
 
 // Reaction type
@@ -21,6 +22,7 @@ export type Reaction = Doc<{
   messageId: Id<'messages'>;
   emoji: string;
   count: number;
+  userId?: Id<'users'>;
 }, 'reactions'>;
 
 // User type

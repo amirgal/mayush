@@ -43,6 +43,7 @@ export const add = mutation({
     author: v.string(),
     content: v.string(),
     imageUrl: v.optional(v.string()),
+    userId: v.id("users"),
   },
   handler: async (ctx, args) => {
     const messageId = await ctx.db.insert("messages", {
@@ -51,6 +52,7 @@ export const add = mutation({
       imageUrl: args.imageUrl,
       createdAt: Date.now(),
       isPinned: false,
+      userId: args.userId,
     });
     return messageId;
   },

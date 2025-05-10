@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
+
 import { useAuthContext } from '../../context/utils/authUtils';
 import { PencilIcon } from '@heroicons/react/24/solid';
 
@@ -9,15 +10,15 @@ const MessageForm: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
-  // Get the user's name from the auth context
-  const { displayName } = useAuthContext();
+  // Get the user's name and ID from the auth context
+  const { displayName, user } = useAuthContext();
   
   const addMessage = useMutation(api.messages.add);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!displayName || !content.trim()) {
+    if (!displayName || !content.trim() || !user) {
       alert('Please log in and fill in your message');
       return;
     }
@@ -28,7 +29,8 @@ const MessageForm: React.FC = () => {
       await addMessage({
         author: displayName,
         content: content.trim(),
-        imageUrl: imageUrl.trim() || undefined
+        imageUrl: imageUrl.trim() || undefined,
+        userId: user._id
       });
       
       // Reset form after successful submission

@@ -6,17 +6,22 @@ export default defineSchema({
     author: v.string(),
     content: v.string(),
     imageUrl: v.optional(v.string()),
-    createdAt: v.number(),
+    createdAt: v.float64(),
     isPinned: v.boolean(),
+    userId: v.id('users'),
   })
     .index("by_timestamp", ["createdAt"])
-    .index("by_pinned", ["isPinned", "createdAt"]),
+    .index("by_pinned", ["isPinned", "createdAt"])
+    .index("by_user", ["userId"]),
 
   reactions: defineTable({
-    messageId: v.id("messages"),
+    messageId: v.id('messages'),
     emoji: v.string(),
     count: v.number(),
-  }).index("by_message", ["messageId"]),
+    userId: v.id("users"),
+  })
+    .index("by_message", ["messageId"])
+    .index("by_user", ["userId"]),
 
   users: defineTable({
     username: v.string(),

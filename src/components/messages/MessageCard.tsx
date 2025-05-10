@@ -4,6 +4,7 @@ import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import type { Message, Reaction } from '../../types';
 import type { Id } from '../../../convex/_generated/dataModel';
+import { useAuthContext } from '../../context/utils/authUtils';
 
 type MessageCardProps = {
   message: Message;
@@ -29,9 +30,19 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
     }
   };
   
+  const { user } = useAuthContext();
+
   const handleReaction = async (emoji: string) => {
     try {
-      await addReaction({ messageId: message._id, emoji });
+      if (!user) {
+        alert('Please log in to add a reaction');
+        return;
+      }
+      await addReaction({ 
+        messageId: message._id, 
+        emoji, 
+        userId: user._id
+      });
       setShowReactionPicker(false);
     } catch (err) {
       console.error(err);
@@ -41,7 +52,14 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
   // Use proper typing for the reaction ID
   const handleRemoveReaction = async (reactionId: Id<'reactions'>) => {
     try {
-      await removeReaction({ reactionId });
+      if (!user) {
+        alert('Please log in to remove a reaction');
+        return;
+      }
+      await removeReaction({ 
+        reactionId, 
+        userId: user._id 
+      });
     } catch (err) {
       console.error(err);
     }
