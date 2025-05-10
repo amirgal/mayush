@@ -13,7 +13,7 @@ const MessageList: FC<MessageListProps> = ({ messages, viewMode, isAdmin }) => {
   if (messages.length === 0) {
     return (
       <div className="book-page text-center py-8">
-        <p className="text-book-dark/70 handwritten text-xl">No messages yet. Be the first to leave a birthday wish!</p>
+        <p className="text-book-dark/70 handwritten text-xl">!עדיין אין ברכות. היה הראשון להשאיר ברכה</p>
       </div>
     );
   }
