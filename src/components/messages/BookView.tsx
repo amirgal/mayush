@@ -45,8 +45,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   }, []);
 
   const handlers = useSwipeable({
-    onSwipedLeft: () => handleNextPage(),
-    onSwipedRight: () => handlePrevPage(),
+    onSwipedRight: () => handleNextPage(),
+    onSwipedLeft: () => handlePrevPage(),
     preventScrollOnSwipe: true,
     trackMouse: true
   });
@@ -62,7 +62,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             currentSpread === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
           }`}
           onKeyDown={handleKeyDown(handlePrevPage)}
-          aria-label="Previous page"
+          aria-label="העמוד הקודם"
           tabIndex={0}
         >
           <svg 
@@ -72,7 +72,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             viewBox="0 0 24 24" 
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
         
@@ -90,7 +90,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             currentSpread === totalSpreads - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
           }`}
           onKeyDown={handleKeyDown(handleNextPage)}
-          aria-label="Next page"
+          aria-label="העמוד הבא"
           tabIndex={0}
         >
           <svg 
@@ -100,7 +100,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             viewBox="0 0 24 24" 
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
       </div>
@@ -232,7 +232,9 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         ))}
         
         {/* Book Spine Shadow */}
-        <div className="absolute inset-y-0 right-1/2 w-[2px] bg-gradient-to-l from-black/10 via-transparent to-black/10 transform translate-x-1/2 pointer-events-none"></div>
+        {!isMobile && (
+          <div className="absolute inset-y-0 right-1/2 w-[2px] bg-gradient-to-l from-black/10 via-transparent to-black/10 transform translate-x-1/2 pointer-events-none"></div>
+        )}
         
         {/* Page Numbers */}
         <div className={`

@@ -26,23 +26,19 @@ const Header: FC<HeaderProps> = ({
   return (
     <header className="bg-book-dark text-white py-4 shadow-md">
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <div className="flex items-center">
-          <h1 className="text-2xl font-bold handwritten">ספר ברכות</h1>
-        </div>
-        
-        <div className="flex items-center space-x-4">
-          {!isAdminPage && (
-            <button
-              onClick={onToggleView}
-              onKeyDown={handleKeyDown(onToggleView)}
-              className="text-white hover:text-book-accent transition-colors mr-4"
-              aria-label={`עבור לתצוגת ${viewMode === 'book' ? 'כרטיסים' : 'ספר'}`}
-              tabIndex={0}
-            >
-              <span className="flex items-center">
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6">
+            {!isAdminPage && (
+              <button
+                onClick={onToggleView}
+                onKeyDown={handleKeyDown(onToggleView)}
+                className="text-white hover:text-book-accent transition-colors flex items-center"
+                aria-label={`עבור לתצוגת ${viewMode === 'book' ? 'כרטיסים' : 'ספר'}`}
+                tabIndex={0}
+              >
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 ml-1" 
+                  className="h-5 w-5 ml-2" 
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -64,22 +60,20 @@ const Header: FC<HeaderProps> = ({
                   )}
                 </svg>
                 {viewMode === 'book' ? 'תצוגת כרטיסים' : 'תצוגת ספר'}
-              </span>
-            </button>
-          )}
-          
-          {isAdmin && !isAdminPage && (
-            <button
-              onClick={onAdminClick}
-              onKeyDown={handleKeyDown(onAdminClick)}
-              className="text-white hover:text-book-accent transition-colors"
-              aria-label="ניהול"
-              tabIndex={0}
-            >
-              <span className="flex items-center">
+              </button>
+            )}
+            
+            {isAdmin && !isAdminPage && (
+              <button
+                onClick={onAdminClick}
+                onKeyDown={handleKeyDown(onAdminClick)}
+                className="text-white hover:text-book-accent transition-colors flex items-center"
+                aria-label="ניהול"
+                tabIndex={0}
+              >
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 mr-1" 
+                  className="h-5 w-5 ml-2" 
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -98,21 +92,19 @@ const Header: FC<HeaderProps> = ({
                   />
                 </svg>
                 ניהול
-              </span>
-            </button>
-          )}
-          
-          <button
-            onClick={onLogout}
-            onKeyDown={handleKeyDown(onLogout)}
-            className="text-white hover:text-book-accent transition-colors"
-            aria-label="התנתק"
-            tabIndex={0}
-          >
-            <span className="flex items-center">
+              </button>
+            )}
+            
+            <button
+              onClick={onLogout}
+              onKeyDown={handleKeyDown(onLogout)}
+              className="text-white hover:text-book-accent transition-colors flex items-center"
+              aria-label="התנתק"
+              tabIndex={0}
+            >
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
-                className="h-5 w-5 mr-1" 
+                className="h-5 w-5 ml-2" 
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor"
@@ -125,9 +117,11 @@ const Header: FC<HeaderProps> = ({
                 />
               </svg>
               התנתק
-            </span>
-          </button>
+            </button>
+          </div>
         </div>
+
+        <h1 className="text-2xl font-bold handwritten">ספר ברכות</h1>
       </div>
     </header>
   );
