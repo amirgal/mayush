@@ -113,24 +113,19 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         min-h-[80vh] 
         mx-auto
         overflow-hidden
+        rounded-xl
         ${isMobile ? [
           'bg-book-page',
-          'rounded-lg',
-          'transform rotate-[0.5deg]',
           'max-w-[95%] w-[500px]',
-          'shadow-[2px_2px_10px_rgba(0,0,0,0.2),0_0_40px_rgba(0,0,0,0.1)_inset]',
-          'border-[20px] border-book-dark/90',
-          'before:content-[""] before:absolute before:inset-0 before:border-[1px] before:border-book-dark/10',
-          'after:content-[""] after:absolute after:inset-0 after:border-[1px] after:border-white/20',
+          'shadow-[2px_2px_10px_rgba(0,0,0,0.2)]',
+          'border-[16px] border-book-dark/90',
         ].join(' ') : [
           'bg-gradient-to-r from-book-dark/90 via-book-page to-book-page',
-          'rounded-lg',
           'shadow-[5px_5px_20px_rgba(0,0,0,0.3)]',
           'transform perspective-[2000px]',
           'hover:shadow-[8px_8px_30px_rgba(0,0,0,0.4)]',
           'transition-all duration-500',
-          'before:content-[""] before:absolute before:top-0 before:bottom-0 before:left-[calc(50%-1px)] before:w-[2px]',
-          'before:bg-book-dark/20 before:z-10 before:shadow-[0_0_10px_rgba(0,0,0,0.2)]',
+          'border-[24px] border-book-dark',
         ].join(' ')}
       `}>
         {/* Left Page */}
@@ -138,38 +133,39 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
           <div 
             key={leftPageMessage._id} 
             className={`
-              ${isMobile ? 'w-full p-8 pb-16' : 'w-1/2 p-10 pr-12'}
+              ${isMobile ? 'w-full p-6' : 'w-1/2 p-8'}
               min-h-full 
               flex-grow 
               flex 
-              items-stretch 
-              justify-center 
+              flex-col
               relative
-              transition-transform 
-              duration-500
-              bg-[linear-gradient(to_right,rgba(0,0,0,0.02)_0%,transparent_10%,transparent_90%,rgba(0,0,0,0.02)_100%)]
+              bg-gradient-to-br from-book-page to-white
               ${!isMobile && 'border-r border-book-dark/10'}
-              hover:before:opacity-100
-              before:content-[""]
-              before:absolute
-              before:bottom-0
-              before:right-0
-              before:w-[100px]
-              before:h-[100px]
-              before:bg-gradient-to-br
-              before:from-transparent
-              before:to-book-dark/5
-              before:opacity-0
-              before:transition-opacity
-              before:duration-300
-              before:pointer-events-none
             `}
           >
-            <MessageCard 
-              message={leftPageMessage} 
-              isAdmin={isAdmin} 
-              viewMode="book" 
-            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
+            
+            {/* Line Guide Background */}
+            <div 
+              className="absolute inset-0" 
+              style={{
+                backgroundImage: `repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.05) 24px)`,
+                backgroundPosition: '0 1px'
+              }}
+            ></div>
+            
+            {/* Main Content */}
+            <div className="relative z-[1] flex-1">
+              <MessageCard 
+                message={leftPageMessage} 
+                isAdmin={isAdmin} 
+                viewMode="book" 
+              />
+            </div>
+
+            {/* Page Edge Shadow */}
+            <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
           </div>
         )}
         
@@ -179,69 +175,66 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             key={rightPageMessage._id} 
             className={`
               w-1/2 
+              p-8
               min-h-full 
               flex-grow 
               flex 
-              items-stretch 
-              justify-center 
-              p-10 pl-12 
+              flex-col
               relative
-              transition-transform 
-              duration-500
-              bg-[linear-gradient(to_left,rgba(0,0,0,0.02)_0%,transparent_10%,transparent_90%,rgba(0,0,0,0.02)_100%)]
-              hover:before:opacity-100
-              before:content-[""]
-              before:absolute
-              before:bottom-0
-              before:left-0
-              before:w-[100px]
-              before:h-[100px]
-              before:bg-gradient-to-bl
-              before:from-transparent
-              before:to-book-dark/5
-              before:opacity-0
-              before:transition-opacity
-              before:duration-300
-              before:pointer-events-none
+              bg-gradient-to-bl from-white to-book-page
             `}
           >
-            <MessageCard 
-              message={rightPageMessage} 
-              isAdmin={isAdmin} 
-              viewMode="book" 
-            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
+            
+            {/* Line Guide Background */}
+            <div 
+              className="absolute inset-0" 
+              style={{
+                backgroundImage: `repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.05) 24px)`,
+                backgroundPosition: '0 1px'
+              }}
+            ></div>
+            
+            {/* Main Content */}
+            <div className="relative z-[1] flex-1">
+              <MessageCard 
+                message={rightPageMessage} 
+                isAdmin={isAdmin} 
+                viewMode="book" 
+              />
+            </div>
+
+            {/* Page Edge Shadow */}
+            <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/5 to-transparent pointer-events-none"></div>
           </div>
         ) : (
           <div className={`
             w-1/2 
+            p-8
             min-h-full 
             flex-grow 
             flex 
-            items-stretch 
-            justify-center 
-            p-10 pl-12 
+            flex-col
             relative
-            transition-transform 
-            duration-500
-            bg-[linear-gradient(to_left,rgba(0,0,0,0.02)_0%,transparent_10%,transparent_90%,rgba(0,0,0,0.02)_100%)]
-            hover:before:opacity-100
-            before:content-[""]
-            before:absolute
-            before:bottom-0
-            before:left-0
-            before:w-[100px]
-            before:h-[100px]
-            before:bg-gradient-to-bl
-            before:from-transparent
-            before:to-book-dark/5
-            before:opacity-0
-            before:transition-opacity
-            before:duration-300
-            before:pointer-events-none
+            bg-gradient-to-bl from-white to-book-page opacity-95
           `}>
-            {/* Empty right page */}
+            {/* Line Guide Background */}
+            <div 
+              className="absolute inset-0" 
+              style={{
+                backgroundImage: `repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.05) 24px)`,
+                backgroundPosition: '0 1px'
+              }}
+            ></div>
+            
+            {/* Page Edge Shadow */}
+            <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/5 to-transparent pointer-events-none"></div>
           </div>
         ))}
+        
+        {/* Book Spine Shadow */}
+        <div className="absolute inset-y-0 left-1/2 w-[2px] bg-gradient-to-r from-black/10 via-transparent to-black/10 transform -translate-x-1/2 pointer-events-none"></div>
         
         {/* Page Numbers */}
         <div className={`
@@ -254,12 +247,13 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
           font-book-title 
           text-book-dark/40 
           italic
+          select-none
         `}>
-          <span className="text-sm">
+          <span className="text-sm drop-shadow-sm">
             {isMobile ? currentSpread + 1 : currentSpread * 2 + 1}
           </span>
           {!isMobile && (
-            <span className="text-sm">
+            <span className="text-sm drop-shadow-sm">
               {Math.min(currentSpread * 2 + 2, messages.length)}
             </span>
           )}
