@@ -13,11 +13,9 @@ type ViewMode = 'card' | 'book';
 
 const GuestbookPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('book');
-  const { username, isAdmin, isAuthenticated, logout } = useAuthContext();
+  const { isAdmin, isAuthenticated, logout } = useAuthContext();
   const navigate = useNavigate();
   
-  // Use username for personalized welcome message
-  const welcomeMessage = username ? `ברוך הבא, ${username}!` : 'ברוכים הבאים לספר הברכות!';
   // Get messages from Convex database
   const messages = useQuery(api.messages.getAllWithPinnedFirst) || [];
   
@@ -54,9 +52,6 @@ const GuestbookPage = () => {
       />
       
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-2">
-          <p className="text-lg text-book-dark/80">{welcomeMessage}</p>
-        </div>
         <h1 className="text-4xl font-bold text-center mb-8 text-book-dark handwritten">
           !יום הולדת שמח
         </h1>

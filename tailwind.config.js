@@ -25,6 +25,8 @@ export default {
         'page-turn': 'pageTurn 0.5s ease-in-out',
         'fade-in': 'fade-in 0.5s ease-out forwards',
         'hover-lift': 'hoverLift 0.3s ease-in-out',
+        'book-open': 'book-open 1s ease-in-out forwards',
+        'fade-scale': 'fade-scale 0.5s ease-out forwards',
       },
       keyframes: {
         pageTurn: {
@@ -47,6 +49,26 @@ export default {
           '100%': { 
             opacity: '1',
             transform: 'translateY(0)'
+          }
+        },
+        'book-open': {
+          '0%': { 
+            transform: 'rotateY(0deg)',
+            transformOrigin: 'center'
+          },
+          '100%': { 
+            transform: 'rotateY(-180deg)',
+            transformOrigin: 'center'
+          }
+        },
+        'fade-scale': {
+          '0%': { 
+            opacity: '0',
+            transform: 'scale(0.8)'
+          },
+          '100%': { 
+            opacity: '1',
+            transform: 'scale(1)'
           }
         },
       },

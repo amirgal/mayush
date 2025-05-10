@@ -60,7 +60,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {!isBookOpen ? (
         // Closed Book Cover
-        <div 
+        <div
           onClick={handleOpenBook}
           className={`
             cursor-pointer
@@ -82,6 +82,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             justify-center
             p-8
             text-center
+            ${isBookOpen ? 'animate-book-open' : ''}
           `}
         >
           <div className="absolute inset-4 border-2 border-book-gold/30 rounded"></div>
@@ -92,60 +93,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         </div>
       ) : (
         // Open Book Content
-        <div className="animate-fade-in">
+        <div className="animate-fade-scale">
           <div className="container mx-auto px-4 py-8 max-w-4xl" {...handlers}>
-            {/* Navigation Controls - Improved styling */}
-            <div className="flex justify-between items-center mb-8 px-4">
-              <button 
-                onClick={handlePrevPage} 
-                disabled={currentSpread === 0}
-                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${
-                  currentSpread === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
-                }`}
-                onKeyDown={handleKeyDown(handlePrevPage)}
-                aria-label="העמוד הקודם"
-                tabIndex={0}
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-6 w-6 text-book-dark" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-              
-              <div className="text-book-dark/70 font-book-title text-lg">
-                {isMobile 
-                  ? `Page ${currentSpread + 1} of ${messages.length}` 
-                  : `Pages ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} of ${messages.length}`
-                }
-              </div>
-              
-              <button 
-                onClick={handleNextPage} 
-                disabled={currentSpread === totalSpreads - 1}
-                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${
-                  currentSpread === totalSpreads - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
-                }`}
-                onKeyDown={handleKeyDown(handleNextPage)}
-                aria-label="העמוד הבא"
-                tabIndex={0}
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-6 w-6 text-book-dark" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-            </div>
-            
             {/* Book Container */}
             <div className={`
               relative
@@ -169,8 +118,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             `}>
               {/* First Page */}
               {firstPageMessage && (
-                <div 
-                  key={firstPageMessage._id} 
+                <div
+                  key={firstPageMessage._id}
                   className={`
                     ${isMobile ? 'w-full p-6' : 'w-1/2 p-8'}
                     min-h-full 
@@ -185,22 +134,22 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                 >
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
                   <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
-                  
+
                   {/* Line Guide Background */}
-                  <div 
-                    className="absolute inset-0" 
+                  <div
+                    className="absolute inset-0"
                     style={{
                       backgroundImage: `repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.05) 24px)`,
                       backgroundPosition: '0 1px'
                     }}
                   ></div>
-                  
+
                   {/* Main Content */}
                   <div className="relative z-[1] flex-1">
-                    <MessageCard 
-                      message={firstPageMessage} 
-                      isAdmin={isAdmin} 
-                      viewMode="book" 
+                    <MessageCard
+                      message={firstPageMessage}
+                      isAdmin={isAdmin}
+                      viewMode="book"
                     />
                   </div>
 
@@ -208,11 +157,11 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                   <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/5 to-transparent pointer-events-none"></div>
                 </div>
               )}
-              
+
               {/* Second Page */}
               {(secondPageMessage ? (
-                <div 
-                  key={secondPageMessage._id} 
+                <div
+                  key={secondPageMessage._id}
                   className={`
                     ${isMobile ? 'w-full' : 'w-1/2'}
                     p-8
@@ -227,22 +176,22 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                 >
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
                   <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
-                  
+
                   {/* Line Guide Background */}
-                  <div 
-                    className="absolute inset-0" 
+                  <div
+                    className="absolute inset-0"
                     style={{
                       backgroundImage: `repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.05) 24px)`,
                       backgroundPosition: '0 1px'
                     }}
                   ></div>
-                  
+
                   {/* Main Content */}
                   <div className="relative z-[1] flex-1">
-                    <MessageCard 
-                      message={secondPageMessage} 
-                      isAdmin={isAdmin} 
-                      viewMode="book" 
+                    <MessageCard
+                      message={secondPageMessage}
+                      isAdmin={isAdmin}
+                      viewMode="book"
                     />
                   </div>
 
@@ -261,24 +210,24 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                   bg-gradient-to-br from-book-page to-white opacity-95
                 `}>
                   {/* Line Guide Background */}
-                  <div 
-                    className="absolute inset-0" 
+                  <div
+                    className="absolute inset-0"
                     style={{
                       backgroundImage: `repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.05) 24px)`,
                       backgroundPosition: '0 1px'
                     }}
                   ></div>
-                  
+
                   {/* Page Edge Shadow */}
                   <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
                 </div>
               ))}
-              
+
               {/* Book Spine Shadow */}
               {!isMobile && (
                 <div className="absolute inset-y-0 right-1/2 w-[2px] bg-gradient-to-l from-black/10 via-transparent to-black/10 transform translate-x-1/2 pointer-events-none"></div>
               )}
-              
+
               {/* Page Numbers */}
               <div className={`
                 absolute 
@@ -298,11 +247,59 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                 </span>
                 {!isMobile && (
                   <span className="text-sm drop-shadow-sm">
-                    {Math.min(currentSpread * 2 + 2, messages.length+1)}
+                    {Math.min(currentSpread * 2 + 2, messages.length + 1)}
                   </span>
                 )}
               </div>
             </div>
+            {/* Navigation Controls */}
+            <div className="flex justify-between items-center mt-8 px-4">
+              <button
+                onClick={handlePrevPage}
+                disabled={currentSpread === 0}
+                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${currentSpread === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+                  }`}
+                onKeyDown={handleKeyDown(handlePrevPage)}
+                aria-label="העמוד הקודם"
+                tabIndex={0}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-book-dark"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              <div className="text-book-dark/70 font-book-title text-lg">
+                {isMobile
+                  ? `עמוד ${currentSpread + 1} מתוך ${messages.length}`
+                  : `עמודים ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} מתוך ${messages.length}`
+                }
+              </div>
+              <button
+                onClick={handleNextPage}
+                disabled={currentSpread === totalSpreads - 1}
+                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${currentSpread === totalSpreads - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+                  }`}
+                onKeyDown={handleKeyDown(handleNextPage)}
+                aria-label="העמוד הבא"
+                tabIndex={0}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-book-dark"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            </div>
+
           </div>
         </div>
       )}
