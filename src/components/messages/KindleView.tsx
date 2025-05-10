@@ -60,7 +60,44 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                 <div className="h-full pt-8">
                   <h2 className="text-2xl font-sans mb-8 text-gray-800">{currentPageMessage.author}</h2>
                   <p className="text-gray-800 text-md leading-relaxed font-sans text-right">{currentPageMessage.content}</p>
-                  <div className="mt-10 flex flex-col gap-4">
+                  
+                  {/* Display images from imageUrls array (new format) */}
+                  {currentPageMessage.imageUrls && currentPageMessage.imageUrls.length > 0 && (
+                    <div className="mt-6 mb-4">
+                      {currentPageMessage.imageUrls.length === 1 ? (
+                        <img
+                          src={currentPageMessage.imageUrls[0].url}
+                          alt={`Image shared by ${currentPageMessage.author}`}
+                          className="max-w-full rounded-md shadow-sm"
+                        />
+                      ) : (
+                        <div className="grid grid-cols-2 gap-2">
+                          {currentPageMessage.imageUrls.map((image, index) => (
+                            <div key={image.storageId} className="relative rounded-md overflow-hidden h-40 bg-gray-100">
+                              <img
+                                src={image.url}
+                                alt={`Image ${index + 1} shared by ${currentPageMessage.author}`}
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Display legacy imageUrl if no imageUrls array (backward compatibility) */}
+                  {!currentPageMessage.imageUrls && currentPageMessage.imageUrl && (
+                    <div className="mt-6 mb-4">
+                      <img 
+                        src={currentPageMessage.imageUrl} 
+                        alt={`Image shared by ${currentPageMessage.author}`} 
+                        className="max-w-full rounded-md shadow-sm"
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="mt-6 flex flex-col gap-4">
                     {/* <div className="flex flex-wrap gap-2">
                       {currentPageMessage && <ReactionBar message={currentPageMessage} isAdmin={isAdmin} />}
                     </div> */}

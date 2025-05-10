@@ -7,11 +7,18 @@ export type Doc<T, TableName extends 'messages' | 'reactions' | 'users'> = T & {
   _creationTime: number;
 };
 
+// Image type for message attachments
+export type ImageAttachment = {
+  storageId: Id<'_storage'>;
+  url: string;
+};
+
 // Message type
 export type Message = Doc<{
   author: string;
   content: string;
-  imageUrl?: string;
+  imageUrl?: string; // Keeping for backward compatibility
+  imageUrls?: ImageAttachment[];
   createdAt: number;
   isPinned: boolean;
   userId: Id<'users'>;

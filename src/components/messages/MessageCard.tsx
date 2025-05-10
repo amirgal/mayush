@@ -154,7 +154,33 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
       
       <div className="handwritten text-lg leading-relaxed mb-4 whitespace-pre-wrap">{message.content}</div>
       
-      {message.imageUrl && (
+      {/* Display images from imageUrls array (new format) */}
+      {message.imageUrls && message.imageUrls.length > 0 && (
+        <div className="mb-4">
+          {message.imageUrls.length === 1 ? (
+            <img
+              src={message.imageUrls[0].url}
+              alt={`Image shared by ${message.author}`}
+              className="max-w-full rounded-md shadow-sm"
+            />
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              {message.imageUrls.map((image, index) => (
+                <div key={image.storageId} className="relative rounded-md overflow-hidden h-40 bg-gray-100">
+                  <img
+                    src={image.url}
+                    alt={`Image ${index + 1} shared by ${message.author}`}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      
+      {/* Display legacy imageUrl if no imageUrls array (backward compatibility) */}
+      {!message.imageUrls && message.imageUrl && (
         <div className="mb-4">
           <img 
             src={message.imageUrl} 

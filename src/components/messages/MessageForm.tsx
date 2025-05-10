@@ -4,10 +4,12 @@ import { api } from '../../../convex/_generated/api';
 
 import { useAuthContext } from '../../context/utils/authUtils';
 import { PencilIcon } from '@heroicons/react/24/solid';
+import FileUpload from '../ui/FileUpload';
+import type { ImageAttachment } from '../../types';
 
 const MessageForm: React.FC = () => {
   const [content, setContent] = useState<string>('');
-  const [imageUrl, setImageUrl] = useState<string>('');
+  const [images, setImages] = useState<ImageAttachment[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
   // Get the user's name and ID from the auth context
@@ -29,13 +31,13 @@ const MessageForm: React.FC = () => {
       await addMessage({
         author: displayName,
         content: content.trim(),
-        imageUrl: imageUrl.trim() || undefined,
+        imageUrls: images.length > 0 ? images : undefined,
         userId: user._id
       });
       
       // Reset form after successful submission
       setContent('');
-      setImageUrl('');
+      setImages([]);
       setIsFormVisible(false);
     } catch (err) {
       console.error(err);
@@ -45,20 +47,7 @@ const MessageForm: React.FC = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, field: string) => {
-    if (e.key === 'Enter' && field !== 'content') {
-      e.preventDefault();
-      // Get the form element safely
-      const form = e.currentTarget.closest('form');
-      if (form) {
-        const formElements = Array.from(form.elements);
-        const index = formElements.indexOf(e.currentTarget);
-        if (index !== -1 && index < formElements.length - 1) {
-          (formElements[index + 1] as HTMLElement).focus();
-        }
-      }
-    }
-  };
+  // No longer needed since we're using FileUpload component instead of input fields
 
   const toggleForm = () => {
     setIsFormVisible(!isFormVisible);
@@ -122,17 +111,14 @@ const MessageForm: React.FC = () => {
               </div>
               
               <div>
-                <input
-                  id="imageUrl"
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e, 'imageUrl')}
-                  placeholder="https://example.com/image.jpg"
-                  className="input-field"
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Images (optional)
+                </label>
+                <FileUpload
+                  onImagesChange={setImages}
                   disabled={isSubmitting}
-                  tabIndex={0}
-                  aria-label="Image URL (optional)"
+                  maxFiles={3}
+                  maxSizeMB={5}
                 />
               </div>
               

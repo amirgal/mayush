@@ -5,7 +5,11 @@ export default defineSchema({
   messages: defineTable({
     author: v.string(),
     content: v.string(),
-    imageUrl: v.optional(v.string()),
+    imageUrl: v.optional(v.string()), // Keeping for backward compatibility
+    imageUrls: v.optional(v.array(v.object({
+      storageId: v.id('_storage'),
+      url: v.string()
+    }))),
     createdAt: v.float64(),
     isPinned: v.boolean(),
     userId: v.id('users'),

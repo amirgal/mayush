@@ -43,6 +43,10 @@ export const add = mutation({
     author: v.string(),
     content: v.string(),
     imageUrl: v.optional(v.string()),
+    imageUrls: v.optional(v.array(v.object({
+      storageId: v.id('_storage'),
+      url: v.string()
+    }))),
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
@@ -50,6 +54,7 @@ export const add = mutation({
       author: args.author,
       content: args.content,
       imageUrl: args.imageUrl,
+      imageUrls: args.imageUrls,
       createdAt: Date.now(),
       isPinned: false,
       userId: args.userId,
