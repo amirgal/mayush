@@ -119,7 +119,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
           'max-w-[95%] w-[500px]',
           'shadow-[2px_2px_10px_rgba(0,0,0,0.2)]',
         ].join(' ') : [
-          'bg-gradient-to-r from-book-dark/80 via-book-page to-book-page',
+          'bg-gradient-to-l from-book-dark/80 via-book-page to-book-page',
           'shadow-[0_10px_30px_rgba(0,0,0,0.25)]',
           'transform perspective-[2000px]',
           'hover:shadow-[0_15px_40px_rgba(0,0,0,0.35)]',
@@ -137,8 +137,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               flex 
               flex-col
               relative
-              bg-gradient-to-br from-book-page to-white
-              ${!isMobile && 'border-r border-book-dark/10'}
+              bg-gradient-to-bl from-white to-book-page
+              ${!isMobile && 'border-l border-book-dark/10'}
             `}
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
@@ -163,7 +163,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             </div>
 
             {/* Page Edge Shadow */}
-            <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/5 to-transparent pointer-events-none"></div>
           </div>
         )}
         
@@ -179,7 +179,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               flex 
               flex-col
               relative
-              bg-gradient-to-bl from-white to-book-page
+              bg-gradient-to-br from-book-page to-white
             `}
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
@@ -204,7 +204,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             </div>
 
             {/* Page Edge Shadow */}
-            <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/5 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
           </div>
         ) : (
           <div className={`
@@ -215,7 +215,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             flex 
             flex-col
             relative
-            bg-gradient-to-bl from-white to-book-page opacity-95
+            bg-gradient-to-br from-book-page to-white opacity-95
           `}>
             {/* Line Guide Background */}
             <div 
@@ -227,12 +227,12 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             ></div>
             
             {/* Page Edge Shadow */}
-            <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/5 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
           </div>
         ))}
         
         {/* Book Spine Shadow */}
-        <div className="absolute inset-y-0 left-1/2 w-[2px] bg-gradient-to-r from-black/10 via-transparent to-black/10 transform -translate-x-1/2 pointer-events-none"></div>
+        <div className="absolute inset-y-0 right-1/2 w-[2px] bg-gradient-to-l from-black/10 via-transparent to-black/10 transform translate-x-1/2 pointer-events-none"></div>
         
         {/* Page Numbers */}
         <div className={`
