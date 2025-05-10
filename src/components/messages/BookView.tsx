@@ -35,8 +35,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     }
   }, [currentSpread, totalSpreads]);
 
-  const firstPageMessage = isMobile ? messages[currentSpread] : messages[currentSpread * 2];
-  const secondPageMessage = isMobile ? null : messages[currentSpread * 2 + 1];
+  const firstPageMessage = isMobile ? null : messages[currentSpread * 2];
+  const secondPageMessage = isMobile ? messages[currentSpread] : messages[currentSpread * 2 + 1];
 
   const handleKeyDown = useCallback((callback: () => void) => (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -169,11 +169,11 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         )}
         
         {/* Second Page */}
-        {!isMobile && (secondPageMessage ? (
+        {(secondPageMessage ? (
           <div 
             key={secondPageMessage._id} 
             className={`
-              w-1/2 
+              ${isMobile ? 'w-full' : 'w-1/2'}
               p-8
               min-h-full 
               flex-grow 
