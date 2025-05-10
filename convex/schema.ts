@@ -17,11 +17,12 @@ export default defineSchema({
   reactions: defineTable({
     messageId: v.id('messages'),
     emoji: v.string(),
-    count: v.number(),
     userId: v.id("users"),
   })
     .index("by_message", ["messageId"])
-    .index("by_user", ["userId"]),
+    .index("by_user", ["userId"])
+    .index("by_message_emoji", ["messageId", "emoji"])
+    .index("by_user_message_emoji", ["userId", "messageId", "emoji"]),
 
   users: defineTable({
     username: v.string(),

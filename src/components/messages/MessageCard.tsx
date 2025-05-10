@@ -2,25 +2,29 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
-import type { Message, Reaction } from '../../types';
-import type { Id } from '../../../convex/_generated/dataModel';
+import type { Message, Reaction, ReactionWithCount } from '../../types';
 import { useAuthContext } from '../../context/utils/authUtils';
 
 type MessageCardProps = {
   message: Message;
   isAdmin: boolean;
-  viewMode: 'card' | 'book';
 };
 
-const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
+const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
   const [showReactionPicker, setShowReactionPicker] = useState(false);
-  
+
   const togglePin = useMutation(api.messages.togglePin);
   const addReaction = useMutation(api.reactions.addReaction);
   const removeReaction = useMutation(api.reactions.removeReaction);
-  // Get reactions data from Convex
-  const reactions = useQuery(api.reactions.getForMessage, { messageId: message._id }) || [];
-  
+
+  const { user } = useAuthContext();
+
+  // Get reactions data from Convex with counts
+  const reactions = useQuery(api.reactions.getForMessage, {
+    messageId: message._id,
+    userId: user ? user._id : undefined,
+  }) || [];
+
   const handleTogglePin = async () => {
     try {
       await togglePin({ messageId: message._id, isAdmin });
@@ -29,8 +33,6 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
       alert('Failed to toggle pin status');
     }
   };
-  
-  const { user } = useAuthContext();
 
   const handleReaction = async (emoji: string) => {
     try {
@@ -38,63 +40,70 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
         alert('Please log in to add a reaction');
         return;
       }
-      await addReaction({ 
-        messageId: message._id, 
-        emoji, 
-        userId: user._id
+      await addReaction({
+        messageId: message._id,
+        emoji,
+        userId: user._id,
       });
       setShowReactionPicker(false);
     } catch (err) {
       console.error(err);
     }
   };
-  
-  // Use proper typing for the reaction ID
-  const handleRemoveReaction = async (reactionId: Id<'reactions'>) => {
+
+  // Handle removing a reaction
+  const handleRemoveReaction = async (emoji: string) => {
     try {
       if (!user) {
         alert('Please log in to remove a reaction');
         return;
       }
-      await removeReaction({ 
-        reactionId, 
-        userId: user._id 
+
+      // Find the user's reaction with this emoji
+      const reactionGroup = reactions.find((r: ReactionWithCount) => r.emoji === emoji);
+      if (!reactionGroup || !reactionGroup.userReacted) return;
+
+      // Find the specific reaction by this user
+      const userReaction = reactionGroup.reactions.find((r: Reaction) => r.userId === user._id);
+      if (!userReaction) return;
+
+      await removeReaction({
+        reactionId: userReaction._id,
+        userId: user._id,
       });
     } catch (err) {
       console.error(err);
     }
   };
-  
+
   const handleKeyDown = (callback: () => void) => (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       callback();
     }
   };
-  
+
   const emojis = ['❤️', '👍', '🎂', '🎁', '🎉', '🥳', '😊'];
-  
+
   const formattedDate = new Date(message.createdAt).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
   });
 
-  const cardClassName = viewMode === 'card' 
-    ? 'message-card' 
-    : 'w-full h-full';
+  const cardClassName = 'w-full h-full';
 
   return (
     <div className={cardClassName}>
-      <div className={`flex justify-between items-start mb-4 ${viewMode === 'book' ? 'pb-2 border-b border-book-dark/10' : ''}`}>
+      <div className="flex justify-between items-start mb-4 pb-2 border-b border-book-dark/10">
         <div className="flex flex-col items-start gap-2">
           {message.isPinned && (
             <div className="bg-book-accent/20 text-book-dark px-2 py-1 rounded-md text-xs inline-block">
               <span className="flex items-center">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-3 w-3 ml-1" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3 w-3 ml-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
                   <path 
@@ -113,7 +122,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
       </div>
       <h3 className="font-bold text-lg text-book-dark">{message.author}</h3>
       
-      <div className={`${viewMode === 'book' ? 'handwritten text-lg leading-relaxed' : 'text-lg'} mb-4 whitespace-pre-wrap`}>{message.content}</div>
+      <div className="handwritten text-lg leading-relaxed mb-4 whitespace-pre-wrap">{message.content}</div>
       
       {message.imageUrl && (
         <div className="mb-4">
@@ -127,17 +136,29 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
       
       <div className="flex justify-between items-center mt-4 pt-2 border-t border-book-dark/10">
         <div className="flex flex-wrap gap-2">
-          {reactions.map((reaction: Reaction) => (
+          {reactions.map((reactionGroup: ReactionWithCount) => (
             <button
-              key={reaction._id}
-              onClick={() => handleRemoveReaction(reaction._id)}
-              onKeyDown={handleKeyDown(() => handleRemoveReaction(reaction._id))}
-              className="bg-book-light hover:bg-book-accent/20 rounded-full px-2 py-1 text-sm flex items-center"
-              aria-label={`${reaction.emoji} reaction with count ${reaction.count}`}
+              key={reactionGroup.emoji}
+              onClick={() => reactionGroup.userReacted 
+                ? handleRemoveReaction(reactionGroup.emoji) 
+                : handleReaction(reactionGroup.emoji)
+              }
+              onKeyDown={handleKeyDown(() => reactionGroup.userReacted 
+                ? handleRemoveReaction(reactionGroup.emoji) 
+                : handleReaction(reactionGroup.emoji)
+              )}
+              className={`
+                rounded-full px-2 py-1 text-sm flex items-center gap-1
+                ${reactionGroup.userReacted 
+                  ? 'bg-book-accent/20 hover:bg-book-accent/30' 
+                  : 'bg-book-light hover:bg-book-accent/20'
+                }
+              `}
+              aria-label={`${reactionGroup.emoji} reaction with count ${reactionGroup.count}`}
               tabIndex={0}
             >
-              <span className="ml-1">{reaction.emoji}</span>
-              <span className="text-book-dark/70">{reaction.count}</span>
+              <span>{reactionGroup.emoji}</span>
+              <span className="text-book-dark/70">{reactionGroup.count}</span>
             </button>
           ))}
           

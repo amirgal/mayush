@@ -163,7 +163,6 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                     <MessageCard
                       message={firstPageMessage}
                       isAdmin={isAdmin}
-                      viewMode="book"
                     />
                   </div>
 
@@ -205,7 +204,6 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                     <MessageCard
                       message={secondPageMessage}
                       isAdmin={isAdmin}
-                      viewMode="book"
                     />
                   </div>
 

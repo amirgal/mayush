@@ -21,9 +21,16 @@ export type Message = Doc<{
 export type Reaction = Doc<{
   messageId: Id<'messages'>;
   emoji: string;
-  count: number;
-  userId?: Id<'users'>;
+  userId: Id<'users'>;
 }, 'reactions'>;
+
+// Reaction with count for display
+export type ReactionWithCount = {
+  emoji: string;
+  count: number;
+  userReacted: boolean;
+  reactions: Reaction[];
+};
 
 // User type
 export type User = Doc<{
