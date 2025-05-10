@@ -51,7 +51,7 @@ const GuestbookPage = () => {
         onToggleView={handleToggleView}
       />
       
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 pt-8">
         {/* <h1 className="text-4xl font-bold text-center mb-8 text-book-dark handwritten">
           !יום הולדת שמח
         </h1> */}

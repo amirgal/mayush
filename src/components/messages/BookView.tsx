@@ -108,7 +108,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       ) : (
         // Open Book Content
         <div className="animate-fade-scale">
-          <div className="container mx-auto py-8 max-w-5xl" {...handlers}>
+          <div className="container mx-auto max-w-5xl" {...handlers}>
             {/* Book Container */}
             <div className={`
               relative
