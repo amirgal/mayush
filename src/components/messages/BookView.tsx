@@ -125,13 +125,14 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         border border-book-dark/20
         ${isMobile ? 'border-l-[24px] border-l-book-dark/70 border-r-[24px] border-r-book-dark/70 before:content-[""] before:absolute before:left-[10px] before:top-0 before:bottom-0 before:w-[2px] before:bg-book-accent/20 before:z-10 before:opacity-80 after:absolute after:left-[16px] after:top-0 after:bottom-0 after:w-[1px] after:bg-white/10 after:z-10 before:right-[10px] before:w-[2px] before:bg-book-accent/20 after:right-[16px] after:w-[1px] after:bg-white/10' : ''}
         book-spine
+        p-0
         `}
       >
         {/* Left Page */}
         {leftPageMessage && (
           <div 
             key={leftPageMessage._id} 
-            className={`${isMobile ? 'w-full' : 'w-1/2'} min-h-full flex-grow flex items-stretch justify-center ${isMobile ? 'p-10 pb-16' : 'p-8'} ${!isMobile ? 'pr-12 border-r border-book-dark/10' : ''} handwritten-bg`}
+            className={`w-1/2 min-h-full flex-grow flex items-stretch justify-center ${isMobile ? 'p-10 pb-16' : 'p-8'} ${!isMobile ? 'pr-12 border-r border-book-dark/10' : ''} handwritten-bg`}
           >
             <MessageCard 
               message={leftPageMessage} 
@@ -142,10 +143,10 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         )}
         
         {/* Right Page */}
-        {!isMobile && rightPageMessage && (
+        {!isMobile && (rightPageMessage ? (
           <div 
             key={rightPageMessage._id} 
-            className={`${isMobile ? 'w-full' : 'w-1/2'} min-h-full flex-grow flex items-stretch justify-center p-8 pl-12 handwritten-bg`}
+            className={`w-1/2 min-h-full flex-grow flex items-stretch justify-center p-8 pl-12 handwritten-bg`}
           >
             <MessageCard 
               message={rightPageMessage} 
@@ -153,7 +154,11 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               viewMode="book" 
             />
           </div>
-        )}
+        ) : (
+          <div className={`w-1/2 min-h-full flex-grow flex items-stretch justify-center p-8 pl-12 handwritten-bg`}>
+            {/* Empty right page */}
+          </div>
+        ))}
         
         {/* Page number */}
         <div className={`absolute bottom-4 ${isMobile ? 'right-4' : 'right-1/4'} text-book-dark/40 text-sm italic transform -translate-x-1/2`}>
