@@ -23,7 +23,7 @@ export default {
       },
       animation: {
         'page-turn': 'pageTurn 0.5s ease-in-out',
-        'fade-in': 'fadeIn 0.5s ease-out',
+        'fade-in': 'fade-in 0.5s ease-out forwards',
         'hover-lift': 'hoverLift 0.3s ease-in-out',
       },
       keyframes: {
@@ -38,6 +38,16 @@ export default {
         hoverLift: {
           '0%': { transform: 'translateY(0)' },
           '100%': { transform: 'translateY(-5px)' },
+        },
+        'fade-in': {
+          '0%': { 
+            opacity: '0',
+            transform: 'translateY(20px)'
+          },
+          '100%': { 
+            opacity: '1',
+            transform: 'translateY(0)'
+          }
         },
       },
       fontFamily: {
