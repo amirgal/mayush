@@ -51,88 +51,119 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     trackMouse: true
   });
 
-  // Removed mobile-specific logic
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl" {...handlers}>
-      <div className="flex justify-between items-center mb-4">
+      {/* Navigation Controls - Improved styling */}
+      <div className="flex justify-between items-center mb-8 px-4">
         <button 
           onClick={handlePrevPage} 
           disabled={currentSpread === 0}
-          className={`btn-primary ${currentSpread === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${
+            currentSpread === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+          }`}
           onKeyDown={handleKeyDown(handlePrevPage)}
           aria-label="Previous page"
           tabIndex={0}
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5" 
+            className="h-6 w-6 text-book-dark" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M15 19l-7-7 7-7" 
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         
-        <div className="text-book-dark font-book-title">
+        <div className="text-book-dark/70 font-book-title text-lg">
           {isMobile 
             ? `Page ${currentSpread + 1} of ${messages.length}` 
-            : `Page ${currentSpread * 2 + 1} - ${currentSpread * 2 + 2} of ${messages.length}`
+            : `Pages ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} of ${messages.length}`
           }
         </div>
         
         <button 
           onClick={handleNextPage} 
-          disabled={currentSpread === totalSpreads - 1 || (isMobile && currentSpread === messages.length - 1)}
-          className={`btn-primary ${(currentSpread === totalSpreads - 1 || (isMobile && currentSpread === messages.length - 1)) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={currentSpread === totalSpreads - 1}
+          className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${
+            currentSpread === totalSpreads - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
+          }`}
           onKeyDown={handleKeyDown(handleNextPage)}
           aria-label="Next page"
           tabIndex={0}
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5" 
+            className="h-6 w-6 text-book-dark" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M9 5l7 7-7 7" 
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </div>
       
+      {/* Book Container */}
       <div className={`
         relative
         flex 
-        ${isMobile ? 'flex-col bg-book-page rounded-lg shadow-[5px_5px_15px_rgba(0,0,0,0.3)] transform rotate-[0.5deg] max-w-[95%] w-[500px]' : 'flex-row bg-gradient-to-r from-book-accent/5 via-book-page to-book-accent/5'}
+        ${isMobile ? 'flex-col' : 'flex-row'}
         min-h-[80vh] 
         mx-auto
         overflow-hidden
-        shadow-2xl
-        ${!isMobile ? 'before:content-[""] before:absolute before:top-0 before:bottom-0 before:left-1/2 before:w-[3px] before:bg-book-dark/20 before:z-10 before:shadow-[0_0_10px_rgba(0,0,0,0.2)]' : ''}
-        after:content-[""] after:absolute after:w-full after:h-full after:top-0 after:left-0 after:pointer-events-none after:shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]
-        border border-book-dark/20
-        ${isMobile ? 'border-l-[24px] border-l-book-dark/70 border-r-[24px] border-r-book-dark/70 before:content-[""] before:absolute before:left-[10px] before:top-0 before:bottom-0 before:w-[2px] before:bg-book-accent/20 before:z-10 before:opacity-80 after:absolute after:left-[16px] after:top-0 after:bottom-0 after:w-[1px] after:bg-white/10 after:z-10 before:right-[10px] before:w-[2px] before:bg-book-accent/20 after:right-[16px] after:w-[1px] after:bg-white/10' : ''}
-        book-spine
-        p-0
-        `}
-      >
+        ${isMobile ? [
+          'bg-book-page',
+          'rounded-lg',
+          'transform rotate-[0.5deg]',
+          'max-w-[95%] w-[500px]',
+          'shadow-[2px_2px_10px_rgba(0,0,0,0.2),0_0_40px_rgba(0,0,0,0.1)_inset]',
+          'border-[20px] border-book-dark/90',
+          'before:content-[""] before:absolute before:inset-0 before:border-[1px] before:border-book-dark/10',
+          'after:content-[""] after:absolute after:inset-0 after:border-[1px] after:border-white/20',
+        ].join(' ') : [
+          'bg-gradient-to-r from-book-dark/90 via-book-page to-book-page',
+          'rounded-lg',
+          'shadow-[5px_5px_20px_rgba(0,0,0,0.3)]',
+          'transform perspective-[2000px]',
+          'hover:shadow-[8px_8px_30px_rgba(0,0,0,0.4)]',
+          'transition-all duration-500',
+          'before:content-[""] before:absolute before:top-0 before:bottom-0 before:left-[calc(50%-1px)] before:w-[2px]',
+          'before:bg-book-dark/20 before:z-10 before:shadow-[0_0_10px_rgba(0,0,0,0.2)]',
+        ].join(' ')}
+      `}>
         {/* Left Page */}
         {leftPageMessage && (
           <div 
             key={leftPageMessage._id} 
-            className={`w-1/2 min-h-full flex-grow flex items-stretch justify-center ${isMobile ? 'p-10 pb-16' : 'p-8'} ${!isMobile ? 'pr-12 border-r border-book-dark/10' : ''} handwritten-bg`}
+            className={`
+              ${isMobile ? 'w-full p-8 pb-16' : 'w-1/2 p-10 pr-12'}
+              min-h-full 
+              flex-grow 
+              flex 
+              items-stretch 
+              justify-center 
+              relative
+              transition-transform 
+              duration-500
+              bg-[linear-gradient(to_right,rgba(0,0,0,0.02)_0%,transparent_10%,transparent_90%,rgba(0,0,0,0.02)_100%)]
+              ${!isMobile && 'border-r border-book-dark/10'}
+              hover:before:opacity-100
+              before:content-[""]
+              before:absolute
+              before:bottom-0
+              before:right-0
+              before:w-[100px]
+              before:h-[100px]
+              before:bg-gradient-to-br
+              before:from-transparent
+              before:to-book-dark/5
+              before:opacity-0
+              before:transition-opacity
+              before:duration-300
+              before:pointer-events-none
+            `}
           >
             <MessageCard 
               message={leftPageMessage} 
@@ -146,7 +177,33 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         {!isMobile && (rightPageMessage ? (
           <div 
             key={rightPageMessage._id} 
-            className={`w-1/2 min-h-full flex-grow flex items-stretch justify-center p-8 pl-12 handwritten-bg`}
+            className={`
+              w-1/2 
+              min-h-full 
+              flex-grow 
+              flex 
+              items-stretch 
+              justify-center 
+              p-10 pl-12 
+              relative
+              transition-transform 
+              duration-500
+              bg-[linear-gradient(to_left,rgba(0,0,0,0.02)_0%,transparent_10%,transparent_90%,rgba(0,0,0,0.02)_100%)]
+              hover:before:opacity-100
+              before:content-[""]
+              before:absolute
+              before:bottom-0
+              before:left-0
+              before:w-[100px]
+              before:h-[100px]
+              before:bg-gradient-to-bl
+              before:from-transparent
+              before:to-book-dark/5
+              before:opacity-0
+              before:transition-opacity
+              before:duration-300
+              before:pointer-events-none
+            `}
           >
             <MessageCard 
               message={rightPageMessage} 
@@ -155,21 +212,58 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             />
           </div>
         ) : (
-          <div className={`w-1/2 min-h-full flex-grow flex items-stretch justify-center p-8 pl-12 handwritten-bg`}>
+          <div className={`
+            w-1/2 
+            min-h-full 
+            flex-grow 
+            flex 
+            items-stretch 
+            justify-center 
+            p-10 pl-12 
+            relative
+            transition-transform 
+            duration-500
+            bg-[linear-gradient(to_left,rgba(0,0,0,0.02)_0%,transparent_10%,transparent_90%,rgba(0,0,0,0.02)_100%)]
+            hover:before:opacity-100
+            before:content-[""]
+            before:absolute
+            before:bottom-0
+            before:left-0
+            before:w-[100px]
+            before:h-[100px]
+            before:bg-gradient-to-bl
+            before:from-transparent
+            before:to-book-dark/5
+            before:opacity-0
+            before:transition-opacity
+            before:duration-300
+            before:pointer-events-none
+          `}>
             {/* Empty right page */}
           </div>
         ))}
         
-        {/* Page number */}
-        <div className={`absolute bottom-4 ${isMobile ? 'right-4' : 'right-1/4'} text-book-dark/40 text-sm italic transform -translate-x-1/2`}>
-          {isMobile ? currentSpread + 1 : currentSpread * 2 + 1}
+        {/* Page Numbers */}
+        <div className={`
+          absolute 
+          bottom-6 
+          ${isMobile ? 'w-full px-8' : 'w-full px-16'}
+          flex 
+          justify-between 
+          items-center
+          font-book-title 
+          text-book-dark/40 
+          italic
+        `}>
+          <span className="text-sm">
+            {isMobile ? currentSpread + 1 : currentSpread * 2 + 1}
+          </span>
+          {!isMobile && (
+            <span className="text-sm">
+              {Math.min(currentSpread * 2 + 2, messages.length)}
+            </span>
+          )}
         </div>
-        
-        {!isMobile && (
-          <div className="absolute bottom-4 right-4 text-book-dark/40 text-sm italic">
-            {currentSpread * 2 + 2}
-          </div>
-        )}
       </div>
     </div>
   );
