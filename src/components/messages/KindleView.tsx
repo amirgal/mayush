@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { FC } from 'react';
 import type {
   Message,
@@ -9,11 +9,35 @@ import { useSwipeable } from 'react-swipeable';
 // import { api } from '../../../convex/_generated/api';
 // import { useAuthContext } from '../../context/utils/authUtils';
 
+// Custom hook for window size
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 768,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowSize;
+};
+
 type KindleViewProps = {
   messages: Message[];
 };
 
 const KindleView: FC<KindleViewProps> = ({ messages }) => {
+  const { width } = useWindowSize();
+  const isMobile = width <= 768;
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = messages.length + 1; // +1 for first Kindle page
 
@@ -64,35 +88,29 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                   {/* Display images from imageUrls array (new format) with Kindle e-ink effect */}
                   {currentPageMessage.imageUrls && currentPageMessage.imageUrls.length > 0 && (
                     <div className="mt-6 mb-4">
-                      {currentPageMessage.imageUrls.length === 1 ? (
-                        <div className="relative rounded-md overflow-hidden w-[250px] h-[250px] mx-auto">
-                          <img
-                            src={currentPageMessage.imageUrls[0].url}
-                            alt={`Image shared by ${currentPageMessage.author}`}
-                            className="w-full h-full object-cover rounded-md shadow-inner"
-                          />
-                          {/* Kindle e-ink overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-b from-gray-200/10 to-gray-300/10 mix-blend-multiply"></div>
-                          <div className="absolute inset-0 backdrop-grayscale backdrop-contrast-125 backdrop-brightness-90"></div>
-                          <div className="absolute inset-0 bg-[url('/kindle-texture.png')] opacity-5 mix-blend-multiply"></div>
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-2 gap-2">
-                          {currentPageMessage.imageUrls.map((image, index) => (
-                            <div key={image.storageId} className="relative rounded-md overflow-hidden w-32 h-32 bg-gray-100">
-                              <img
-                                src={image.url}
-                                alt={`Image ${index + 1} shared by ${currentPageMessage.author}`}
-                                className="h-full w-full object-cover"
-                              />
-                              {/* Kindle e-ink overlay */}
-                              <div className="absolute inset-0 bg-gradient-to-b from-gray-200/10 to-gray-300/10 mix-blend-multiply"></div>
-                              <div className="absolute inset-0 backdrop-grayscale backdrop-contrast-125 backdrop-brightness-90"></div>
-                              <div className="absolute inset-0 bg-[url('/kindle-texture.png')] opacity-5 mix-blend-multiply"></div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      <div className="flex flex-wrap gap-4 justify-center max-w-full" style={{ margin: '0 auto' }}>
+                        {currentPageMessage.imageUrls.map((image, index) => (
+                          <div 
+                            key={image.storageId} 
+                            className="relative rounded-md overflow-hidden bg-gray-100"
+                            style={{
+                              width: `${isMobile ? 120 : 180}px`,
+                              height: `${isMobile ? 120 : 180}px`,
+                            }}
+                          >
+                            <img
+                              src={image.url}
+                              alt={`Image ${index + 1} shared by ${currentPageMessage.author}`}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                            {/* Kindle e-ink overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-gray-200/10 to-gray-300/10 mix-blend-multiply"></div>
+                            <div className="absolute inset-0 backdrop-grayscale backdrop-contrast-125 backdrop-brightness-90"></div>
+                            <div className="absolute inset-0 bg-[url('/kindle-texture.png')] opacity-5 mix-blend-multiply"></div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                   
