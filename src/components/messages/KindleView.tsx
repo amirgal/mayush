@@ -53,13 +53,13 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
             <div className="flex-1">
               {currentPage === 0 ? (
                 <div className="h-full flex flex-col justify-center items-center text-center">
-                  <h1 className="text-5xl font-serif font-bold text-gray-800 mb-4">ספר ברכות</h1>
+                  <h1 className="text-5xl font-sans font-bold text-gray-800 mb-4">ספר ברכות</h1>
                   <p className="text-gray-600 text-xl">Guestbook Kindle Edition</p>
                 </div>
               ) : currentPageMessage ? (
                 <div className="h-full pt-8">
-                  <h2 className="text-2xl font-serif mb-8 text-gray-800">{currentPageMessage.author}</h2>
-                  <p className="text-gray-800 text-md leading-relaxed font-serif text-right">{currentPageMessage.content}</p>
+                  <h2 className="text-2xl font-sans mb-8 text-gray-800">{currentPageMessage.author}</h2>
+                  <p className="text-gray-800 text-md leading-relaxed font-sans text-right">{currentPageMessage.content}</p>
                   <div className="mt-10 flex flex-col gap-4">
                     {/* <div className="flex flex-wrap gap-2">
                       {currentPageMessage && <ReactionBar message={currentPageMessage} isAdmin={isAdmin} />}
