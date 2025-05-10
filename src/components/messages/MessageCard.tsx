@@ -74,7 +74,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
               <span className="flex items-center">
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
-                  className="h-3 w-3 mr-1" 
+                  className="h-3 w-3 ml-1" 
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -118,7 +118,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, viewMode }) => {
               aria-label={`${reaction.emoji} reaction with count ${reaction.count}`}
               tabIndex={0}
             >
-              <span className="mr-1">{reaction.emoji}</span>
+              <span className="ml-1">{reaction.emoji}</span>
               <span className="text-book-dark/70">{reaction.count}</span>
             </button>
           ))}

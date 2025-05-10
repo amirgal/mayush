@@ -250,13 +250,14 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
           text-book-dark/40 
           italic
           select-none
+          ${isMobile ? 'flex-row-reverse' : ''}
         `}>
           <span className="text-sm drop-shadow-sm">
             {isMobile ? currentSpread + 1 : currentSpread * 2 + 1}
           </span>
           {!isMobile && (
             <span className="text-sm drop-shadow-sm">
-              {Math.min(currentSpread * 2 + 2, messages.length)}
+              {Math.min(currentSpread * 2 + 2, messages.length+1)}
             </span>
           )}
         </div>
