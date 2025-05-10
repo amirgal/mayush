@@ -79,7 +79,7 @@ const AdminPage = () => {
         isAdmin={isAdmin} 
         onAdminClick={() => {}} 
         onLogout={handleLogout} 
-        viewMode="card"
+        viewMode="book"
         onToggleView={() => {}}
         isAdminPage
       />

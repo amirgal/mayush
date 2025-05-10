@@ -43,4 +43,4 @@ export type AuthResponse = {
 // Old type definitions removed to avoid duplicates
 
 // Define view mode type
-export type ViewMode = 'card' | 'book';
+export type ViewMode = 'book' | 'kindle';

@@ -1,30 +1,21 @@
 import type { FC } from 'react';
 import type { Message } from '../../types';
-import MessageCard from './MessageCard';
 import BookView from './BookView.tsx';
+import KindleView from './KindleView';
 
 type MessageListProps = {
   messages: Message[];
-  viewMode: 'card' | 'book';
+  viewMode: 'book' | 'kindle';
   isAdmin: boolean;
 };
 
 const MessageList: FC<MessageListProps> = ({ messages, viewMode, isAdmin }) => {
   return (
     <div>
-      {viewMode === 'card' ? (
-        <div className="space-y-4">
-          {messages.map((message) => (
-            <MessageCard 
-              key={message._id} 
-              message={message} 
-              isAdmin={isAdmin}
-              viewMode={viewMode}
-            />
-          ))}
-        </div>
-      ) : (
+      {viewMode === 'book' ? (
         <BookView messages={messages} isAdmin={isAdmin} />
+      ) : (
+        <KindleView messages={messages} />
       )}
     </div>
   );

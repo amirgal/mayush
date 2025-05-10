@@ -9,7 +9,7 @@ import MessageForm from '../components/messages/MessageForm';
 import MessageList from '../components/messages/MessageList';
 import Header from '../components/layout/Header';
 
-type ViewMode = 'card' | 'book';
+type ViewMode = 'book' | 'kindle';
 
 const GuestbookPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('book');
@@ -29,7 +29,7 @@ const GuestbookPage = () => {
   }, [isAuthenticated, navigate]);
   
   const handleToggleView = () => {
-    setViewMode(prev => prev === 'card' ? 'book' : 'card');
+    setViewMode((prev) => prev === 'book' ? 'kindle' : 'book');
   };
   
   const handleAdminPage = () => {
