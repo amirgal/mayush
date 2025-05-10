@@ -62,8 +62,8 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   const currentPageMessage = currentPage === 0 ? null : messages[currentPage - 1];
 
   return (
-    <div {...handlers} className="w-full flex justify-center items-center min-h-screen">
-      <div className="w-[90%] max-w-[600px] h-[800px] overflow-hidden relative cursor-[grab] hover:cursor-[grab]">
+    <div {...handlers} className="w-full flex justify-center  min-h-screen">
+      <div className={`${isMobile ? 'w-full' : 'w-[90%] max-w-[600px]'} h-[800px] overflow-hidden relative cursor-[grab] hover:cursor-[grab]`}>
         {/* Kindle-like dark border with more rounded corners */}
         <div className="absolute inset-0 border-[25px] border-b-[70px] bg-[#f6f6f6] border-[#2F2F2F] rounded-[30px] pointer-events-none z-10">
 
