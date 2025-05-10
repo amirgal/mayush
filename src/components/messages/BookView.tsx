@@ -118,14 +118,12 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
           'bg-book-page',
           'max-w-[95%] w-[500px]',
           'shadow-[2px_2px_10px_rgba(0,0,0,0.2)]',
-          'border-[16px] border-book-dark/90',
         ].join(' ') : [
-          'bg-gradient-to-r from-book-dark/90 via-book-page to-book-page',
-          'shadow-[5px_5px_20px_rgba(0,0,0,0.3)]',
+          'bg-gradient-to-r from-book-dark/80 via-book-page to-book-page',
+          'shadow-[0_10px_30px_rgba(0,0,0,0.25)]',
           'transform perspective-[2000px]',
-          'hover:shadow-[8px_8px_30px_rgba(0,0,0,0.4)]',
+          'hover:shadow-[0_15px_40px_rgba(0,0,0,0.35)]',
           'transition-all duration-500',
-          'border-[24px] border-book-dark',
         ].join(' ')}
       `}>
         {/* Left Page */}
