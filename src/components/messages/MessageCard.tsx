@@ -93,7 +93,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
   const cardClassName = 'w-full h-full';
 
   return (
-    <div className={cardClassName}>
+    <div className={`${cardClassName} flex flex-col`}>
       <div className="flex justify-between items-start mb-4 pb-2 border-b border-book-dark/10">
         <div className="flex flex-col items-start gap-2">
           {message.isPinned && (
@@ -134,7 +134,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
         </div>
       )}
       
-      <div className="flex justify-between items-center mt-4 pt-2 border-t border-book-dark/10">
+      <div className="flex justify-between items-center mt-auto pt-2 pb-4 border-t border-book-dark/10">
         <div className="flex flex-wrap gap-2">
           {reactions.map((reactionGroup: ReactionWithCount) => (
             <button

@@ -73,9 +73,9 @@ export default {
         },
       },
       fontFamily: {
-        serif: ['Merriweather', 'serif'],
+        serif: ['Heebo', 'Merriweather', 'serif'],
         cursive: ['Dancing Script', 'cursive'],
-        sans: ['Assistant', 'system-ui', 'sans-serif'],
+        sans: ['Heebo', 'Assistant', 'system-ui', 'sans-serif'],
         'handwritten': ['"Caveat"', 'cursive'],
         'book-title': ['Heebo', '"Playfair Display"', 'serif'],
       },
