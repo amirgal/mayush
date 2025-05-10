@@ -52,17 +52,17 @@ const GuestbookPage = () => {
       />
       
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-book-dark handwritten">
+        {/* <h1 className="text-4xl font-bold text-center mb-8 text-book-dark handwritten">
           !יום הולדת שמח
-        </h1>
+        </h1> */}
         
         <MessageForm />
         
         <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6 text-book-dark">
+          {/* <h2 className="text-2xl font-bold mb-6 text-book-dark">
             ברכות ואיחולים
           </h2>
-          
+           */}
           <MessageList 
             messages={messages} 
             viewMode={viewMode} 
