@@ -49,7 +49,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
           </div>
 
           {/* Content Area */}
-          <div className="relative z-20 p-10 pb-1 h-full overflow-y-auto flex flex-col justify-between">
+          <div className="relative z-20 p-5 pb-1 h-full overflow-y-auto flex flex-col justify-between">
             <div className="flex-1">
               {currentPage === 0 ? (
                 <div className="h-full flex flex-col justify-center items-center text-center">
@@ -65,11 +65,11 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                   {currentPageMessage.imageUrls && currentPageMessage.imageUrls.length > 0 && (
                     <div className="mt-6 mb-4">
                       {currentPageMessage.imageUrls.length === 1 ? (
-                        <div className="relative rounded-md overflow-hidden max-w-full">
+                        <div className="relative rounded-md overflow-hidden w-[250px] h-[250px] mx-auto">
                           <img
                             src={currentPageMessage.imageUrls[0].url}
                             alt={`Image shared by ${currentPageMessage.author}`}
-                            className="max-w-full rounded-md shadow-inner"
+                            className="w-full h-full object-cover rounded-md shadow-inner"
                           />
                           {/* Kindle e-ink overlay */}
                           <div className="absolute inset-0 bg-gradient-to-b from-gray-200/10 to-gray-300/10 mix-blend-multiply"></div>
@@ -79,7 +79,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                       ) : (
                         <div className="grid grid-cols-2 gap-2">
                           {currentPageMessage.imageUrls.map((image, index) => (
-                            <div key={image.storageId} className="relative rounded-md overflow-hidden h-40 bg-gray-100">
+                            <div key={image.storageId} className="relative rounded-md overflow-hidden w-32 h-32 bg-gray-100">
                               <img
                                 src={image.url}
                                 alt={`Image ${index + 1} shared by ${currentPageMessage.author}`}
