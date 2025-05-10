@@ -71,7 +71,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   };
 
   return (
-    <div className="container mx-auto pb-8 max-w-4xl">
+    <div className="container mx-auto py-8 max-w-4xl">
       {!isBookOpen ? (
         // Closed Book Cover
         <div
