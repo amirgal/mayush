@@ -27,6 +27,10 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const handlePrevPage = useCallback(() => {
     if (currentSpread > 0) {
       setCurrentSpread(currentSpread - 1);
+    } else {
+      // Close book when on first page
+      setIsBookOpen(false);
+      setCurrentSpread(0);
     }
   }, [currentSpread]);
 
@@ -35,6 +39,9 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       setCurrentSpread(currentSpread + 1);
     }
   }, [currentSpread, totalSpreads]);
+
+  const canGoToPrevPage = currentSpread === 0 || isBookOpen;
+  const canGoToNextPage = currentSpread < totalSpreads - 1;
 
   const firstPageMessage = isMobile ? null : messages[currentSpread * 2];
   const secondPageMessage = isMobile ? messages[currentSpread] : messages[currentSpread * 2 + 1];
@@ -47,7 +54,14 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
 
   const handlers = useSwipeable({
     onSwipedRight: () => handleNextPage(),
-    onSwipedLeft: () => handlePrevPage(),
+    onSwipedLeft: () => {
+      if (currentSpread === 0 && !isMobile) {
+        setIsBookOpen(false);
+        setCurrentSpread(0);
+      } else {
+        handlePrevPage();
+      }
+    },
     preventScrollOnSwipe: true,
     trackMouse: true
   });
@@ -256,12 +270,11 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             <div className="flex justify-between items-center mt-8 px-4">
               <button
                 onClick={handlePrevPage}
-                disabled={currentSpread === 0}
-                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${currentSpread === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
-                  }`}
+                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${!canGoToPrevPage ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'}`}
                 onKeyDown={handleKeyDown(handlePrevPage)}
                 aria-label="העמוד הקודם"
                 tabIndex={0}
+                disabled={!canGoToPrevPage}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -281,12 +294,11 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               </div>
               <button
                 onClick={handleNextPage}
-                disabled={currentSpread === totalSpreads - 1}
-                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${currentSpread === totalSpreads - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'
-                  }`}
+                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${!canGoToNextPage ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'}`}
                 onKeyDown={handleKeyDown(handleNextPage)}
                 aria-label="העמוד הבא"
                 tabIndex={0}
+                disabled={!canGoToNextPage}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
