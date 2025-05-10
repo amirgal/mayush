@@ -71,7 +71,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto py-8 max-w-4xl">
       {!isBookOpen ? (
         // Closed Book Cover
         <div
@@ -108,7 +108,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       ) : (
         // Open Book Content
         <div className="animate-fade-scale">
-          <div className="container mx-auto px-4 py-8 max-w-4xl" {...handlers}>
+          <div className="container mx-auto py-8 max-w-5xl" {...handlers}>
             {/* Book Container */}
             <div className={`
               relative
@@ -267,7 +267,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               </div>
             </div>
             {/* Navigation Controls */}
-            <div className="flex justify-between items-center mt-8 px-4">
+            <div className="flex justify-between items-center mt-8">
               <button
                 onClick={handlePrevPage}
                 className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${!canGoToPrevPage ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'}`}
