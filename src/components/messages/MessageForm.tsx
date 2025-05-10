@@ -31,7 +31,7 @@ const MessageForm: React.FC = () => {
       await addMessage({
         author: displayName,
         content: content.trim(),
-        imageUrls: images.length > 0 ? images : undefined,
+        imageUrls: images.length > 0 ? images.map(({ storageId, url }) => ({ storageId, url })) : undefined,
         userId: user._id
       });
       

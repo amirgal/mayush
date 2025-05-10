@@ -11,6 +11,7 @@ export type Doc<T, TableName extends 'messages' | 'reactions' | 'users'> = T & {
 export type ImageAttachment = {
   storageId: Id<'_storage'>;
   url: string;
+  previewUrl?: string; // Optional temporary URL for local preview
 };
 
 // Message type

@@ -38,6 +38,18 @@ const FileUpload: React.FC<FileUploadProps> = ({
       throw error;
     }
   };
+  
+  // Helper function to call untyped queries
+  const callUntypedQuery = async <T,>(name: string, args: Record<string, unknown> = {}): Promise<T> => {
+    try {
+      // Cast to unknown first, then to the specific type for better type safety
+      const functionRef = name as unknown as FunctionReference<"query">;
+      return await convex.query(functionRef, args);
+    } catch (error) {
+      console.error(`Error calling query ${name}:`, error);
+      throw error;
+    }
+  };
 
   // Update parent component when images change
   useEffect(() => {
@@ -125,12 +137,16 @@ const FileUpload: React.FC<FileUploadProps> = ({
         // Validate the uploaded file on the server
         await callUntypedMutation('files:validateFileUpload', { storageId: storageId as Id<'_storage'> });
         
-        // Get a URL for the file
-        const url = URL.createObjectURL(file); // Using local URL for preview
+        // Get a permanent URL for the file from Convex storage for database storage
+        const url = await callUntypedQuery<string>('files:getUrl', { storageId: storageId });
+        
+        // Create a temporary blob URL for preview in the upload area
+        const previewUrl = URL.createObjectURL(file);
         
         return {
           storageId: storageId as Id<'_storage'>,
-          url,
+          url, // Permanent URL for database storage
+          previewUrl, // Temporary URL for preview
         };
       });
       
@@ -207,7 +223,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           {images.map((image, index) => (
             <div key={image.storageId} className="relative rounded-md overflow-hidden h-24 bg-gray-100">
               <img 
-                src={image.url} 
+                src={image.previewUrl || image.url} 
                 alt={`Uploaded preview ${index + 1}`} 
                 className="h-full w-full object-cover"
               />
