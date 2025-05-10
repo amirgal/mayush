@@ -61,15 +61,21 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                   <h2 className="text-2xl font-sans mb-8 text-gray-800">{currentPageMessage.author}</h2>
                   <p className="text-gray-800 text-md leading-relaxed font-sans text-right">{currentPageMessage.content}</p>
                   
-                  {/* Display images from imageUrls array (new format) */}
+                  {/* Display images from imageUrls array (new format) with Kindle e-ink effect */}
                   {currentPageMessage.imageUrls && currentPageMessage.imageUrls.length > 0 && (
                     <div className="mt-6 mb-4">
                       {currentPageMessage.imageUrls.length === 1 ? (
-                        <img
-                          src={currentPageMessage.imageUrls[0].url}
-                          alt={`Image shared by ${currentPageMessage.author}`}
-                          className="max-w-full rounded-md shadow-sm"
-                        />
+                        <div className="relative rounded-md overflow-hidden max-w-full">
+                          <img
+                            src={currentPageMessage.imageUrls[0].url}
+                            alt={`Image shared by ${currentPageMessage.author}`}
+                            className="max-w-full rounded-md shadow-inner"
+                          />
+                          {/* Kindle e-ink overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-b from-gray-200/10 to-gray-300/10 mix-blend-multiply"></div>
+                          <div className="absolute inset-0 backdrop-grayscale backdrop-contrast-125 backdrop-brightness-90"></div>
+                          <div className="absolute inset-0 bg-[url('/kindle-texture.png')] opacity-5 mix-blend-multiply"></div>
+                        </div>
                       ) : (
                         <div className="grid grid-cols-2 gap-2">
                           {currentPageMessage.imageUrls.map((image, index) => (
@@ -79,6 +85,10 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                                 alt={`Image ${index + 1} shared by ${currentPageMessage.author}`}
                                 className="h-full w-full object-cover"
                               />
+                              {/* Kindle e-ink overlay */}
+                              <div className="absolute inset-0 bg-gradient-to-b from-gray-200/10 to-gray-300/10 mix-blend-multiply"></div>
+                              <div className="absolute inset-0 backdrop-grayscale backdrop-contrast-125 backdrop-brightness-90"></div>
+                              <div className="absolute inset-0 bg-[url('/kindle-texture.png')] opacity-5 mix-blend-multiply"></div>
                             </div>
                           ))}
                         </div>
