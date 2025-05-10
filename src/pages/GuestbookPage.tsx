@@ -17,7 +17,7 @@ const GuestbookPage = () => {
   const navigate = useNavigate();
   
   // Use username for personalized welcome message
-  const welcomeMessage = username ? `Welcome, ${username}!` : 'Welcome to the Guestbook!';
+  const welcomeMessage = username ? `ברוך הבא, ${username}!` : 'ברוכים הבאים לספר הברכות!';
   // Get messages from Convex database
   const messages = useQuery(api.messages.getAllWithPinnedFirst) || [];
   
@@ -58,14 +58,14 @@ const GuestbookPage = () => {
           <p className="text-lg text-book-dark/80">{welcomeMessage}</p>
         </div>
         <h1 className="text-4xl font-bold text-center mb-8 text-book-dark handwritten">
-          Happy Birthday!
+          !יום הולדת שמח
         </h1>
         
         <MessageForm />
         
         <div className="mt-12">
           <h2 className="text-2xl font-bold mb-6 text-book-dark">
-            Birthday Wishes
+            ברכות ואיחולים
           </h2>
           
           <MessageList 

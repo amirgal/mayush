@@ -27,7 +27,7 @@ const Header: FC<HeaderProps> = ({
     <header className="bg-book-dark text-white py-4 shadow-md">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold handwritten">TESTBOOK</h1>
+          <h1 className="text-2xl font-bold handwritten">ספר ברכות</h1>
         </div>
         
         <div className="flex items-center space-x-4">
@@ -36,7 +36,7 @@ const Header: FC<HeaderProps> = ({
               onClick={onToggleView}
               onKeyDown={handleKeyDown(onToggleView)}
               className="text-white hover:text-book-accent transition-colors"
-              aria-label={`Switch to ${viewMode === 'card' ? 'book' : 'card'} view`}
+              aria-label={`עבור לתצוגת ${viewMode === 'card' ? 'ספר' : 'כרטיסים'}`}
               tabIndex={0}
             >
               <span className="flex items-center">
@@ -63,7 +63,7 @@ const Header: FC<HeaderProps> = ({
                     />
                   )}
                 </svg>
-                {viewMode === 'card' ? 'Book View' : 'Card View'}
+                {viewMode === 'card' ? 'תצוגת ספר' : 'תצוגת כרטיסים'}
               </span>
             </button>
           )}
@@ -73,7 +73,7 @@ const Header: FC<HeaderProps> = ({
               onClick={onAdminClick}
               onKeyDown={handleKeyDown(onAdminClick)}
               className="text-white hover:text-book-accent transition-colors"
-              aria-label="Go to admin page"
+              aria-label="ניהול"
               tabIndex={0}
             >
               <span className="flex items-center">
@@ -97,7 +97,7 @@ const Header: FC<HeaderProps> = ({
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" 
                   />
                 </svg>
-                Admin
+                ניהול
               </span>
             </button>
           )}
@@ -106,7 +106,7 @@ const Header: FC<HeaderProps> = ({
             onClick={onLogout}
             onKeyDown={handleKeyDown(onLogout)}
             className="text-white hover:text-book-accent transition-colors"
-            aria-label="Logout"
+            aria-label="התנתק"
             tabIndex={0}
           >
             <span className="flex items-center">
@@ -124,7 +124,7 @@ const Header: FC<HeaderProps> = ({
                   d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
                 />
               </svg>
-              Logout
+              התנתק
             </span>
           </button>
         </div>

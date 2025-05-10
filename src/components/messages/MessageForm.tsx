@@ -68,10 +68,10 @@ const MessageForm: React.FC = () => {
       <button 
         onClick={toggleForm}
         className="fixed bottom-6 right-6 bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 z-50 flex items-center justify-center"
-        aria-label="Add a page"
+        aria-label="הוסף ברכה"
       >
         <PencilIcon className="h-6 w-6" />
-        <span className="ml-2 hidden md:inline">Add a Page</span>
+        <span className="mr-2 hidden md:inline">הוסף ברכה</span>
       </button>
 
       {isFormVisible && (
@@ -82,13 +82,13 @@ const MessageForm: React.FC = () => {
           >
             <button 
               onClick={() => setIsFormVisible(false)} 
-              className="absolute top-4 right-4 text-book-dark/50 hover:text-book-dark"
-              aria-label="Close form"
+              className="absolute top-4 left-4 text-book-dark/50 hover:text-book-dark"
+              aria-label="סגור"
             >
               ✕
             </button>
 
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Leave a Birthday Wish</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">השאר ברכה</h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -97,7 +97,7 @@ const MessageForm: React.FC = () => {
                   type="text"
                   value={displayName || ''}
                   disabled={true}
-                  placeholder="Log in to leave a message"
+                  placeholder="התחבר כדי להשאיר ברכה"
                   className="input-field"
                   tabIndex={0}
                   aria-label="Your name (from your profile)"
@@ -110,7 +110,7 @@ const MessageForm: React.FC = () => {
                   id="content"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="Write your birthday wish here..."
+                  placeholder="כתוב את הברכה שלך כאן..."
                   className="input-field min-h-[120px] resize-y"
                   disabled={isSubmitting}
                   tabIndex={0}
@@ -140,7 +140,7 @@ const MessageForm: React.FC = () => {
                 disabled={isSubmitting}
                 tabIndex={0}
               >
-                {isSubmitting ? 'Sending...' : 'Send Birthday Wish'}
+                {isSubmitting ? 'שולח...' : 'שלח ברכה'}
               </button>
             </form>
           </div>
