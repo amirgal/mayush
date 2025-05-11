@@ -6,9 +6,10 @@ type ImageModalProps = {
   imageUrl: string;
   altText: string;
   onClose: () => void;
+  applyEInkEffect?: boolean;
 };
 
-const ImageModal: FC<ImageModalProps> = ({ imageUrl, altText, onClose }) => {
+const ImageModal: FC<ImageModalProps> = ({ imageUrl, altText, onClose, applyEInkEffect }) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -49,8 +50,16 @@ const ImageModal: FC<ImageModalProps> = ({ imageUrl, altText, onClose }) => {
           <img
             src={imageUrl}
             alt={altText}
-            className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg"
+            className={`max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg ${applyEInkEffect ? 'opacity-80' : ''}`}
           />
+          {applyEInkEffect && (
+            <>
+              {/* Kindle e-ink overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-gray-200/10 to-gray-300/10 mix-blend-multiply rounded-lg"></div>
+              <div className="absolute inset-0 backdrop-grayscale backdrop-contrast-125 backdrop-brightness-90 rounded-lg"></div>
+              <div className="absolute inset-0 bg-[url(\'/kindle-texture.png\')] opacity-5 mix-blend-multiply rounded-lg"></div>
+            </>
+          )}
         </div>
       </div>
     </div>

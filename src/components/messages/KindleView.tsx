@@ -91,8 +91,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                           {currentPageMessage.imageUrls.map((image, index) => (
                             <div 
                               key={image.storageId} 
-                              className="relative rounded-md overflow-hidden bg-gray-100 cursor-pointer
-                                      hover:shadow-lg transition-all duration-300 ease-in-out hover:scale-105"
+                              className="relative rounded-md overflow-hidden bg-gray-100 cursor-pointer"
                               style={{
                                 width: `${isMobile ? 120 : 180}px`,
                                 height: `${isMobile ? 120 : 180}px`,
@@ -156,6 +155,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
           imageUrl={selectedImage.url}
           altText={selectedImage.altText}
           onClose={() => setSelectedImage(null)}
+          applyEInkEffect={true}
         />
       )}
     </div>
