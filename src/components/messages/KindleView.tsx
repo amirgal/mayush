@@ -143,7 +143,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
           </div>
           
           {/* Progress indication with Hebrew page number and percentage - fixed at bottom */}
-          <div className="p-3 flex justify-between text-xs text-gray-500 border-t border-gray-200">
+          <div className="absolute bottom-0 w-full p-3 flex justify-between text-xs text-gray-500">
             <span dir="rtl">{currentPage > 0 ? `עמוד ${currentPage}` : ''}</span>
             {currentPage > 0 && <span>{`${Math.round((currentPage / (totalPages - 1)) * 100)}%`}</span>}
           </div>
