@@ -58,7 +58,7 @@ const GuestbookPage = () => {
           !יום הולדת שמח
         </h1> */}
         
-        <MessageForm />
+        <MessageForm viewMode={viewMode} />
         
         <div className="">
           {/* <h2 className="text-2xl font-bold mb-6 text-book-dark">

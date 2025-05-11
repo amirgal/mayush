@@ -7,7 +7,12 @@ import { PencilIcon } from '@heroicons/react/24/solid';
 import FileUpload from '../ui/FileUpload';
 import type { ImageAttachment } from '../../types';
 
-const MessageForm: React.FC = () => {
+type MessageFormProps = {
+  viewMode: 'book' | 'kindle';
+};
+
+
+const MessageForm: React.FC<MessageFormProps> = ({ viewMode }) => {
   const [content, setContent] = useState<string>('');
   const [images, setImages] = useState<ImageAttachment[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -68,8 +73,16 @@ const MessageForm: React.FC = () => {
       {isFormVisible && (
         <div className="fixed inset-0 bg-black/30 z-40 flex items-center justify-center" onClick={() => setIsFormVisible(false)}>
           <div 
-            className="max-w-md w-full p-6 bg-white rounded-lg shadow-2xl relative" 
+            className={`max-w-md w-full relative ${
+              viewMode === 'kindle' 
+                ? 'bg-[#f6f6f6] rounded-lg p-6 shadow-xl' 
+                : 'bg-book-light p-8 rounded-lg shadow-2xl border-2 border-book-accent/20'
+            }`}
             onClick={(e) => e.stopPropagation()}
+            style={{
+              maxHeight: '90vh',
+              overflow: 'auto'
+            }}
           >
             <button 
               onClick={() => setIsFormVisible(false)} 
@@ -79,7 +92,9 @@ const MessageForm: React.FC = () => {
               ✕
             </button>
 
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">השאר ברכה</h2>
+            <h2 className={`text-2xl font-bold mb-4 ${viewMode === 'kindle' ? 'text-gray-800' : 'text-book-dark'}`}>
+              {viewMode === 'kindle' ? 'New Message' : 'הוסף ברכה'}
+            </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -89,7 +104,11 @@ const MessageForm: React.FC = () => {
                   value={displayName || ''}
                   disabled={true}
                   placeholder="התחבר כדי להשאיר ברכה"
-                  className="input-field"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
+                    viewMode === 'kindle' 
+                      ? 'bg-[#f6f6f6] border-gray-300 focus:border-gray-500' 
+                      : 'bg-white border-book-accent/30 focus:border-book-accent'
+                  }`}
                   tabIndex={0}
                   aria-label="Your name (from your profile)"
                   required
@@ -102,7 +121,11 @@ const MessageForm: React.FC = () => {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="כתוב את הברכה שלך כאן..."
-                  className="input-field min-h-[120px] resize-y"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none min-h-[120px] resize-y ${
+                    viewMode === 'kindle' 
+                      ? 'bg-[#f6f6f6] border-gray-300 focus:border-gray-500 text-right' 
+                      : 'bg-white border-book-accent/30 focus:border-book-accent text-right'
+                  }`}
                   disabled={isSubmitting}
                   tabIndex={0}
                   aria-label="Your message"
@@ -111,7 +134,9 @@ const MessageForm: React.FC = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className={`block text-sm font-medium mb-1 ${
+                  viewMode === 'kindle' ? 'text-gray-700' : 'text-book-dark/80'
+                }`}>
                   Images (optional)
                 </label>
                 <FileUpload
@@ -124,7 +149,11 @@ const MessageForm: React.FC = () => {
               
               <button
                 type="submit"
-                className="btn-primary w-full"
+                className={`w-full py-2 px-4 font-medium rounded-md transition-colors ${
+                  viewMode === 'kindle'
+                    ? 'bg-gray-800 text-white hover:bg-gray-700'
+                    : 'bg-book-accent text-white hover:bg-book-dark'
+                }`}
                 disabled={isSubmitting}
                 tabIndex={0}
               >
