@@ -40,6 +40,10 @@
     @apply bg-book-page rounded-md shadow-lg p-6 border border-book-dark/20;
   }
   
+  .admin-panel {
+    @apply bg-white/80 rounded-lg shadow-lg p-6 border border-book-dark/10;
+  }
+  
   .book-spine {
     @apply bg-book-dark text-book-light rounded-sm p-2;
   }

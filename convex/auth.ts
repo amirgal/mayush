@@ -128,3 +128,37 @@ export const getAllUsers = query({
     return await ctx.db.query("users").collect();
   },
 });
+
+// Delete user (admin only)
+export const deleteUser = mutation({
+  args: {
+    userId: v.id("users"),
+    isAdmin: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    // Only admins can delete users
+    if (!args.isAdmin) {
+      throw new Error("Unauthorized: Only admins can delete users");
+    }
+
+    const user = await ctx.db.get(args.userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Don't allow deleting the last admin
+    if (user.isAdmin) {
+      const adminUsers = await ctx.db
+        .query("users")
+        .filter((q) => q.eq(q.field("isAdmin"), true))
+        .collect();
+      
+      if (adminUsers.length <= 1) {
+        throw new Error("Cannot delete the last admin user");
+      }
+    }
+
+    await ctx.db.delete(args.userId);
+    return { success: true };
+  },
+});
