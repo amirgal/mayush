@@ -8,6 +8,7 @@ import { useAuthContext } from '../context/utils/authUtils';
 import MessageForm from '../components/messages/MessageForm';
 import MessageList from '../components/messages/MessageList';
 import Header from '../components/layout/Header';
+import useDeviceDetect from '../hooks/useDeviceDetect';
 
 type ViewMode = 'book' | 'kindle';
 
@@ -15,6 +16,7 @@ const GuestbookPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('book');
   const { isAdmin, isAuthenticated, logout } = useAuthContext();
   const navigate = useNavigate();
+  const isMobile = useDeviceDetect();
   
   // Get messages from Convex database
   const messages = useQuery(api.messages.getAllWithPinnedFirst) || [];
@@ -51,7 +53,7 @@ const GuestbookPage = () => {
         onToggleView={handleToggleView}
       />
       
-      <div className="container mx-auto px-4 pt-8 pb-8">
+      <div className={`container mx-auto px-2 ${isMobile ? 'pt-4' : 'pt-8'} pb-8`}>
         {/* <h1 className="text-4xl font-bold text-center mb-8 text-book-dark handwritten">
           !יום הולדת שמח
         </h1> */}

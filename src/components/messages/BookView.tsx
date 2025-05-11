@@ -1,8 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { FC } from 'react';
 import type { Message } from '../../types';
 import MessageCard from './MessageCard';
 import { useSwipeable } from 'react-swipeable';
+import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 type BookViewProps = {
   messages: Message[];
@@ -10,19 +11,10 @@ type BookViewProps = {
 };
 
 const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const isMobile = useDeviceDetect();
   const [currentSpread, setCurrentSpread] = useState(0);
   const [isBookOpen, setIsBookOpen] = useState(false);
   const totalSpreads = isMobile ? messages.length : Math.ceil(messages.length / 2);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handlePrevPage = useCallback(() => {
     if (currentSpread > 0) {
