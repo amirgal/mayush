@@ -1,9 +1,13 @@
 import { useState, useCallback } from 'react';
 import type { FC } from 'react';
-import type { Message } from '../../types';
+import type { Message, ImageAttachment } from '../../types';
 import { useSwipeable } from 'react-swipeable';
 import ImageModal from '../ui/ImageModal';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { useAuthContext } from '../../context/utils/authUtils';
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import FileUpload from '../ui/FileUpload';
 
 type KindleViewProps = {
   messages: Message[];
@@ -13,7 +17,13 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   const isMobile = useDeviceDetect();
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState<{ url: string; altText: string } | null>(null);
-  const totalPages = messages.length + 1; // +1 for first Kindle page
+  const [isFormPage, setIsFormPage] = useState(false);
+  const [formContent, setFormContent] = useState('');
+  const [formImages, setFormImages] = useState<ImageAttachment[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { displayName, user } = useAuthContext();
+  const addMessage = useMutation(api.messages.add);
+  const totalPages = messages.length + 1 + (isFormPage ? 1 : 0); // +1 for first Kindle page, +1 for form page if visible
 
   const handlePrevPage = useCallback(() => {
     if (currentPage > 0) {
@@ -27,13 +37,57 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
     }
   }, [currentPage, totalPages]);
 
+  const handleShowForm = () => {
+    // First set the form page flag to true
+    setIsFormPage(true);
+    // Then calculate the new total pages which now includes the form page
+    const newTotalPages = messages.length + 1 + 1; // +1 for title page, +1 for form page
+    // Navigate directly to the form page (last page)
+    setCurrentPage(newTotalPages - 1);
+  };
+
+  const handleSubmitMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!displayName || !formContent.trim() || !user) {
+      alert('Please log in and fill in your message');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      await addMessage({
+        author: displayName,
+        content: formContent.trim(),
+        imageUrls: formImages.length > 0 ? formImages.map(({ storageId, url }) => ({ storageId, url })) : undefined,
+        userId: user._id
+      });
+      
+      // Reset form after successful submission
+      setFormContent('');
+      setFormImages([]);
+      setIsFormPage(false);
+      // Go to first page
+      setCurrentPage(0);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to add message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handlers = useSwipeable({
     onSwipedLeft: handlePrevPage, // Reversed for Hebrew reading direction
     onSwipedRight: handleNextPage, // Reversed for Hebrew reading direction
     trackMouse: true, // Enable swiping on desktop
   });
 
-  const currentPageMessage = currentPage === 0 ? null : messages[currentPage - 1];
+  // Determine what to display on the current page
+  const isFirstPage = currentPage === 0;
+  const isMessagePage = !isFirstPage && currentPage <= messages.length;
+  const currentPageMessage = isMessagePage ? messages[currentPage - 1] : null;
 
   return (
     <div {...handlers} className="w-full flex justify-center min-h-screen">
@@ -50,13 +104,14 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
         <div className="absolute inset-[25px] bottom-[70px] overflow-hidden bg-[#f6f6f6] z-10 flex flex-col">
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto">
-            <div className={`p-5 ${currentPage === 0 ? 'h-full' : ''}`}>
-              {currentPage === 0 ? (
+            <div className={`p-5 ${isFirstPage ? 'h-full' : ''}`}>
+              {isFirstPage ? (
                 <div className="min-h-full flex flex-col justify-center items-center text-center">
                   <h1 className="text-5xl font-sans font-bold text-gray-800 mb-4">ספר ברכות</h1>
                   <p className="text-gray-600 text-xl">החליקו להתחיל</p>
                 </div>
-              ) : currentPageMessage ? (
+              ) : isMessagePage && currentPageMessage ? (
+
                 <div className="min-h-full">
                   <div className="pt-8">
                     <h2 className="text-2xl font-sans mb-8 text-gray-800">{currentPageMessage.author}</h2>
@@ -115,7 +170,59 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                     </div>
                   </div>
                 </div>
+              ) : isFormPage ? (
+                <div className="min-h-full">
+                  <div className="pt-8">
+                    <h2 className="text-2xl font-sans mb-8 text-gray-800">השאר ברכה חדשה</h2>
+                    
+                    <form onSubmit={handleSubmitMessage} className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">שם</label>
+                        <input
+                          type="text"
+                          value={displayName || ''}
+                          disabled={true}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md bg-[#f6f6f6] text-right"
+                          readOnly
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">הברכה שלך</label>
+                        <textarea
+                          value={formContent}
+                          onChange={(e) => setFormContent(e.target.value)}
+                          placeholder="כתוב את הברכה שלך כאן..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md bg-[#f6f6f6] min-h-[120px] resize-y text-right"
+                          disabled={isSubmitting}
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">תמונות (אופציונלי)</label>
+                        <FileUpload
+                          onImagesChange={setFormImages}
+                          disabled={isSubmitting}
+                          maxFiles={3}
+                          maxSizeMB={5}
+                        />
+                      </div>
+                      
+                      <div className="flex justify-end">
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? 'שולח...' : 'שלח ברכה'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
               ) : null}
+
             </div>
           </div>
           
@@ -127,6 +234,18 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
         </div>
 
       </div>
+
+      {/* Add Message Button */}
+      <button 
+        onClick={handleShowForm}
+        className="fixed bottom-6 right-6 bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 z-50 flex items-center justify-center"
+        aria-label="הוסף ברכה"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+        <span className="mr-2 hidden md:inline">הוסף ברכה</span>
+      </button>
 
       {selectedImage && (
         <ImageModal

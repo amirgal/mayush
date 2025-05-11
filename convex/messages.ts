@@ -8,7 +8,7 @@ export const getAll = query({
     return await ctx.db
       .query("messages")
       .withIndex("by_timestamp")
-      .order("desc")
+      .order("asc")
       .collect();
   },
 });
@@ -22,7 +22,7 @@ export const getAllWithPinnedFirst = query({
       .query("messages")
       .withIndex("by_pinned")
       .filter((q) => q.eq(q.field("isPinned"), true))
-      .order("desc")
+      .order("asc")
       .collect();
 
     // Get non-pinned messages
@@ -30,7 +30,7 @@ export const getAllWithPinnedFirst = query({
       .query("messages")
       .withIndex("by_pinned")
       .filter((q) => q.eq(q.field("isPinned"), false))
-      .order("desc")
+      .order("asc")
       .collect();
 
     return [...pinnedMessages, ...regularMessages];
