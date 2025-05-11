@@ -37,6 +37,16 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
     }
   }, [currentPage, totalPages]);
 
+  const handleCancelForm = () => {
+    // Reset form fields
+    setFormContent('');
+    setFormImages([]);
+    // Hide the form page
+    setIsFormPage(false);
+    // Go back to the last message page
+    setCurrentPage(Math.min(messages.length, currentPage));
+  };
+
   const handleShowForm = () => {
     // First set the form page flag to true
     setIsFormPage(true);
@@ -68,8 +78,8 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
       setFormContent('');
       setFormImages([]);
       setIsFormPage(false);
-      // Go to first page
-      setCurrentPage(0);
+      // Stay on the last page (which will now show the newly created message)
+      setCurrentPage(messages.length + 1); // +1 for title page
     } catch (err) {
       console.error(err);
       alert('Failed to add message. Please try again.');
@@ -209,7 +219,14 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                         />
                       </div>
                       
-                      <div className="flex justify-end">
+                      <div className="flex justify-between mt-8">
+                        <button
+                          type="button"
+                          onClick={handleCancelForm}
+                          className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+                        >
+                          ביטול
+                        </button>
                         <button
                           type="submit"
                           className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
