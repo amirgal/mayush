@@ -17,7 +17,7 @@ const LoginPage = () => {
     if (isAuthenticated) {
       navigate('/guestbook');
     }
-  }, []);
+  }, [isAuthenticated, navigate]);
   
   // Use our custom hook for Convex authentication
   const { login, register } = useConvexAuth();
@@ -30,17 +30,17 @@ const LoginPage = () => {
 
   const handleSubmit = async () => {
     if (!username.trim()) {
-      setError('Please enter a username');
+      setError('נא להזין שם משתמש');
       return;
     }
     
     if (!isLoginMode && !displayName.trim()) {
-      setError('Please enter your display name');
+      setError('נא להזין שם תצוגה');
       return;
     }
     
     if (!password.trim()) {
-      setError('Please enter a password');
+      setError('נא להזין סיסמה');
       return;
     }
     
@@ -56,7 +56,7 @@ const LoginPage = () => {
           setAuth(result.userId as Id<"users">, username, result.displayName, result.isAdmin);
           navigate('/guestbook');
         } else {
-          setError(result.message || 'Invalid credentials. Please try again.');
+          setError(result.message || 'פרטי התחברות שגויים. נסה שוב.');
         }
       } else {
         // Register using our custom hook
@@ -74,15 +74,15 @@ const LoginPage = () => {
             setAuth(loginResult.userId as Id<"users">, username, loginResult.displayName, loginResult.isAdmin);
             navigate('/guestbook');
           } else {
-            setError('Registration successful. Please log in.');
+            setError('ההרשמה הצליחה. אנא התחבר.');
             setIsLoginMode(true);
           }
         } else {
-          setError(result.message || 'Registration failed. Please try again.');
+          setError(result.message || 'ההרשמה נכשלה. נסה שוב.');
         }
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('אירעה שגיאה. נסה שוב.');
       console.error(err);
     }
   };
@@ -101,8 +101,8 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-book-light p-4">
       <div className="bg-white/90 shadow-2xl rounded-xl max-w-md w-full p-10 border border-book-dark/10">
-        <h1 className="text-3xl font-bold text-center mb-6 text-book-dark">TESTBOOK</h1>
-        <p className="text-center mb-8 text-book-dark/70 text-xl">{isLoginMode ? 'Please log in to continue' : 'Create a new account'}</p>
+        <h1 className="text-3xl font-bold text-center mb-6 text-book-dark">ספר ברכות</h1>
+        <p className="text-center mb-8 text-book-dark/70 text-xl">{isLoginMode ? 'התחבר כדי להמשיך' : 'צור חשבון חדש'}</p>
         
         <div className="mb-4">
           <input
@@ -113,9 +113,9 @@ const LoginPage = () => {
               setUsername(e.target.value);
               setError('');
             }}
-            placeholder="Username"
-            className="w-full px-3 py-2 border border-book-dark/10 bg-white/50 rounded-md focus:outline-none focus:ring-2 focus:ring-book-accent/50"
-            aria-label="Username input"
+            placeholder="שם משתמש"
+            className="w-full px-3 py-2 border border-book-dark/10 bg-white/50 rounded-md focus:outline-none focus:ring-2 focus:ring-book-accent/50 text-right"
+            aria-label="שדה שם משתמש"
             tabIndex={0}
           />
         </div>
@@ -130,9 +130,9 @@ const LoginPage = () => {
                 setDisplayName(e.target.value);
                 setError('');
               }}
-              placeholder="Display Name"
-              className="w-full px-3 py-2 border border-book-dark/5 bg-white/90 rounded-md focus:outline-none focus:ring-2 focus:ring-book-accent/50"
-              aria-label="Display name input"
+              placeholder="שם תצוגה"
+              className="w-full px-3 py-2 border border-book-dark/5 bg-white/90 rounded-md focus:outline-none focus:ring-2 focus:ring-book-accent/50 text-right"
+              aria-label="שדה שם תצוגה"
               tabIndex={0}
             />
           </div>
@@ -148,9 +148,9 @@ const LoginPage = () => {
               setError('');
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Password"
-            className="w-full px-3 py-2 border border-book-dark/10 bg-white/50 rounded-md focus:outline-none focus:ring-2 focus:ring-book-accent/50"
-            aria-label="Password input"
+            placeholder="סיסמה"
+            className="w-full px-3 py-2 border border-book-dark/10 bg-white/50 rounded-md focus:outline-none focus:ring-2 focus:ring-book-accent/50 text-right"
+            aria-label="שדה סיסמה"
             tabIndex={0}
           />
           {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
@@ -161,7 +161,7 @@ const LoginPage = () => {
           className="w-full py-3 bg-book-dark text-white rounded-md hover:bg-book-accent transition-colors duration-300 mb-4"
           tabIndex={0}
         >
-          {isLoginMode ? 'Log In' : 'Register'}
+          {isLoginMode ? 'התחבר' : 'הירשם'}
         </button>
         
         <div className="text-center mt-4">
@@ -170,7 +170,7 @@ const LoginPage = () => {
             className="text-book-dark/60 hover:text-book-dark text-sm underline"
             tabIndex={0}
           >
-            {isLoginMode ? 'Need an account? Register' : 'Already have an account? Log in'}
+            {isLoginMode ? 'צריך חשבון? הירשם' : 'כבר יש לך חשבון? התחבר'}
           </button>
         </div>
       </div>
