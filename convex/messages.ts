@@ -1,7 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-// Get all messages, sorted by creation time (newest first)
+// Get all messages, sorted by creation time (oldest first)
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
