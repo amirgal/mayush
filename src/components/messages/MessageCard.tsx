@@ -4,6 +4,7 @@ import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import type { Message, Reaction, ReactionWithCount } from '../../types';
 import { useAuthContext } from '../../context/utils/authUtils';
+import ImageModal from '../ui/ImageModal';
 
 type MessageCardProps = {
   message: Message;
@@ -12,6 +13,7 @@ type MessageCardProps = {
 
 const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
   const [showReactionPicker, setShowReactionPicker] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{ url: string; altText: string } | null>(null);
 
   const togglePin = useMutation(api.messages.togglePin);
   const addReaction = useMutation(api.reactions.addReaction);
@@ -164,11 +166,27 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
             return (
               <div 
                 key={image.storageId} 
-                className="polaroid-image bg-white p-2 pb-8 shadow-md max-w-[200px] relative"
+                className="polaroid-image bg-white p-2 pb-8 shadow-md max-w-[200px] relative cursor-pointer
+                         hover:shadow-xl hover:scale-105 transition-all duration-300 ease-in-out"
                 style={{ 
                   transform: `rotate(${randomRotation}deg)`,
                   transition: 'transform 0.3s ease'
                 }}
+                onClick={() => setSelectedImage({
+                  url: image.url,
+                  altText: `Image ${index + 1} shared by ${message.author}`
+                })}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    setSelectedImage({
+                      url: image.url,
+                      altText: `Image ${index + 1} shared by ${message.author}`
+                    });
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                aria-label={`View enlarged image ${index + 1} shared by ${message.author}`}
               >
                 <div className="overflow-hidden">
                   <img
@@ -246,6 +264,13 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
           </div>
         </div>
       </div>
+      {selectedImage && (
+        <ImageModal
+          imageUrl={selectedImage.url}
+          altText={selectedImage.altText}
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
     </div>
   );
 };
