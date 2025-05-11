@@ -5,7 +5,6 @@ export default defineSchema({
   messages: defineTable({
     author: v.string(),
     content: v.string(),
-    imageUrl: v.optional(v.string()), // Keeping for backward compatibility
     imageUrls: v.optional(v.array(v.object({
       storageId: v.id('_storage'),
       url: v.string()

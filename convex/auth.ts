@@ -158,6 +158,48 @@ export const deleteUser = mutation({
       }
     }
 
+    // 1. Get all messages by this user
+    const userMessages = await ctx.db
+      .query("messages")
+      .withIndex("by_user")
+      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .collect();
+
+    // 2. Delete all reactions made by this user
+    const userReactions = await ctx.db
+      .query("reactions")
+      .withIndex("by_user")
+      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .collect();
+    
+    for (const reaction of userReactions) {
+      await ctx.db.delete(reaction._id);
+    }
+
+    // 3. Get all reactions to the user's messages and delete them
+    for (const message of userMessages) {
+      const messageReactions = await ctx.db
+        .query("reactions")
+        .withIndex("by_message")
+        .filter((q) => q.eq(q.field("messageId"), message._id))
+        .collect();
+      
+      for (const reaction of messageReactions) {
+        await ctx.db.delete(reaction._id);
+      }
+
+      // 4. Delete attached files from storage if any
+      if (message.imageUrls?.length) {
+        for (const image of message.imageUrls) {
+          await ctx.storage.delete(image.storageId);
+        }
+      }
+
+      // 5. Delete the message
+      await ctx.db.delete(message._id);
+    }
+
+    // 6. Finally delete the user
     await ctx.db.delete(args.userId);
     return { success: true };
   },

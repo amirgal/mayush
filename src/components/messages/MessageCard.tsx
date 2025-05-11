@@ -187,18 +187,6 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
           })}
         </div>
       )}
-      
-      {/* Display legacy imageUrl if no imageUrls array (backward compatibility) */}
-      {!message.imageUrls && message.imageUrl && (
-        <div className="mb-4">
-          <img 
-            src={message.imageUrl} 
-            alt={`Image shared by ${message.author}`} 
-            className="max-w-full rounded-md shadow-sm"
-          />
-        </div>
-      )}
-      
       <div className="flex justify-between items-center mt-auto pt-2 pb-4 border-t border-book-dark/10">
         <div className="flex flex-wrap gap-2">
           {reactions.map((reactionGroup: ReactionWithCount) => (

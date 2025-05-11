@@ -113,18 +113,6 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                       </div>
                     </div>
                   )}
-                  
-                  {/* Display legacy imageUrl if no imageUrls array (backward compatibility) */}
-                  {!currentPageMessage.imageUrls && currentPageMessage.imageUrl && (
-                    <div className="mt-6 mb-4">
-                      <img 
-                        src={currentPageMessage.imageUrl} 
-                        alt={`Image shared by ${currentPageMessage.author}`} 
-                        className="max-w-full rounded-md shadow-sm"
-                      />
-                    </div>
-                  )}
-                  
                   <div className="mt-6 flex flex-col gap-4">
                     {/* <div className="flex flex-wrap gap-2">
                       {currentPageMessage && <ReactionBar message={currentPageMessage} isAdmin={isAdmin} />}

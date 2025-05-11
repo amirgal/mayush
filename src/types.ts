@@ -18,7 +18,6 @@ export type ImageAttachment = {
 export type Message = Doc<{
   author: string;
   content: string;
-  imageUrl?: string; // Keeping for backward compatibility
   imageUrls?: ImageAttachment[];
   createdAt: number;
   isPinned: boolean;

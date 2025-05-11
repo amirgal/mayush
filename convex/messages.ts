@@ -42,7 +42,6 @@ export const add = mutation({
   args: {
     author: v.string(),
     content: v.string(),
-    imageUrl: v.optional(v.string()),
     imageUrls: v.optional(v.array(v.object({
       storageId: v.id('_storage'),
       url: v.string()
@@ -53,7 +52,6 @@ export const add = mutation({
     const messageId = await ctx.db.insert("messages", {
       author: args.author,
       content: args.content,
-      imageUrl: args.imageUrl,
       imageUrls: args.imageUrls,
       createdAt: Date.now(),
       isPinned: false,
