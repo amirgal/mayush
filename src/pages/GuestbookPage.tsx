@@ -5,7 +5,7 @@ import { api } from '../../convex/_generated/api';
 import { useAuthContext } from '../context/utils/authUtils';
 // We don't need to import Message type here as it's used internally by the components
 // Use explicit imports to help TypeScript recognize the files
-import MessageForm from '../components/messages/MessageForm';
+
 import MessageList from '../components/messages/MessageList';
 import Header from '../components/layout/Header';
 import useDeviceDetect from '../hooks/useDeviceDetect';
@@ -58,7 +58,6 @@ const GuestbookPage = () => {
           !יום הולדת שמח
         </h1> */}
         
-        <MessageForm />
         
         <div className="">
           {/* <h2 className="text-2xl font-bold mb-6 text-book-dark">
