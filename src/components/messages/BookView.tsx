@@ -1,9 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import type { FC } from 'react';
-import type { Message } from '../../types';
+import type { Message, ImageAttachment } from '../../types';
 import MessageCard from './MessageCard';
 import { useSwipeable } from 'react-swipeable';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
+import { useAuthContext } from '../../context/utils/authUtils';
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import BookFormPage from './BookFormPage';
 
 type BookViewProps = {
   messages: Message[];
@@ -14,7 +18,15 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const isMobile = useDeviceDetect();
   const [currentSpread, setCurrentSpread] = useState(0);
   const [isBookOpen, setIsBookOpen] = useState(false);
-  const totalSpreads = isMobile ? messages.length : Math.ceil(messages.length / 2);
+  const [isFormPage, setIsFormPage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { displayName, user } = useAuthContext();
+  const addMessage = useMutation(api.messages.add);
+  
+  // Calculate total spreads including form page if needed
+  const totalSpreads = isMobile 
+    ? messages.length + (isFormPage ? 1 : 0) 
+    : Math.ceil((messages.length + (isFormPage ? 1 : 0)) / 2);
 
   const handlePrevPage = useCallback(() => {
     if (currentSpread > 0) {
@@ -32,7 +44,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     }
   }, [currentSpread, totalSpreads]);
 
-  const canGoToPrevPage = currentSpread === 0 || isBookOpen;
+  const canGoToPrevPage = currentSpread > 0 || !isBookOpen;
   const canGoToNextPage = currentSpread < totalSpreads - 1;
 
   const firstPageMessage = isMobile ? null : messages[currentSpread * 2];
@@ -60,6 +72,47 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
 
   const handleOpenBook = () => {
     setIsBookOpen(true);
+  };
+
+  const handleShowForm = () => {
+    setIsFormPage(true);
+    const newTotalSpreads = isMobile ? messages.length + 1 : Math.ceil((messages.length + 1) / 2);
+    setCurrentSpread(newTotalSpreads - 1);
+  };
+
+  const handleCancelForm = () => {
+    setIsFormPage(false);
+    // Navigate to the last message spread
+    const lastMessageSpread = isMobile ? messages.length - 1 : Math.ceil(messages.length / 2) - 1;
+    setCurrentSpread(Math.max(0, lastMessageSpread));
+  };
+
+  const handleSubmitMessage = async (content: string, images: ImageAttachment[]) => {
+    if (!displayName || !content.trim() || !user) {
+      alert('Please log in and fill in your message');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      await addMessage({
+        author: displayName,
+        content: content.trim(),
+        imageUrls: images.length > 0 ? images.map(({ storageId, url }) => ({ storageId, url })) : undefined,
+        userId: user._id
+      });
+      
+      // Reset form after successful submission
+      setIsFormPage(false);
+      // Stay on the last page (which will now show the newly created message)
+      // We'll need to refetch messages, but that's handled at a higher level
+    } catch (err) {
+      console.error(err);
+      alert('Failed to add message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -164,7 +217,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               )}
 
               {/* Second Page */}
-              {(secondPageMessage ? (
+              {(secondPageMessage && !isFormPage) ? (
                 <div
                   key={secondPageMessage._id}
                   className={`
@@ -202,17 +255,56 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                   {/* Page Edge Shadow */}
                   <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
                 </div>
+              ) : isFormPage ? (
+                // Form page
+                <div
+                  className={`
+                    ${isMobile ? 'w-full' : 'w-1/2'}
+                    p-8
+                    min-h-full 
+                    flex-grow 
+                    flex 
+                    flex-col
+                    relative
+                    bg-gradient-to-br from-book-page to-white
+                  `}
+                  id="form-page"
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
+                  <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
+
+                  {/* Line Guide Background */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: `repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.05) 24px)`,
+                      backgroundPosition: '0 1px'
+                    }}
+                  ></div>
+
+                  <BookFormPage
+                    onSubmit={handleSubmitMessage}
+                    onCancel={handleCancelForm}
+                    isSubmitting={isSubmitting}
+                  />
+
+                  {/* Page Edge Shadow */}
+                  <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
+                </div>
               ) : (
-                <div className={`
-                  w-1/2 
-                  p-8
-                  min-h-full 
-                  flex-grow 
-                  flex 
-                  flex-col
-                  relative
-                  bg-gradient-to-br from-book-page to-white opacity-95
-                `}>
+                // Empty second page when there's no message
+                <div
+                  className={`
+                    ${isMobile ? 'w-full' : 'w-1/2'}
+                    p-8
+                    min-h-full 
+                    flex-grow 
+                    flex 
+                    flex-col
+                    relative
+                    bg-gradient-to-br from-book-page to-white opacity-95
+                  `}
+                >
                   {/* Line Guide Background */}
                   <div
                     className="absolute inset-0"
@@ -225,7 +317,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                   {/* Page Edge Shadow */}
                   <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
                 </div>
-              ))}
+              )}
 
               {/* Book Spine Shadow */}
               {!isMobile && (
@@ -282,26 +374,44 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                   : `עמודים ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} מתוך ${messages.length}`
                 }
               </div>
-              <button
-                onClick={handleNextPage}
-                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${!canGoToNextPage ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'}`}
-                onKeyDown={handleKeyDown(handleNextPage)}
-                aria-label="העמוד הבא"
-                tabIndex={0}
-                disabled={!canGoToNextPage}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-book-dark"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+              <div className="flex gap-4">
+                <button
+                  onClick={handleShowForm}
+                  className="transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-accent/10 hover:bg-book-accent/20 hover:scale-110"
+                  onKeyDown={handleKeyDown(handleShowForm)}
+                  aria-label="הוסף ברכה"
+                  tabIndex={0}
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-book-accent"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+                <button
+                  onClick={handleNextPage}
+                  className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${!canGoToNextPage ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'}`}
+                  onKeyDown={handleKeyDown(handleNextPage)}
+                  aria-label="העמוד הבא"
+                  tabIndex={0}
+                  disabled={!canGoToNextPage}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-book-dark"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              </div>
             </div>
-
           </div>
         </div>
       )}
