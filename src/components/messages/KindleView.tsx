@@ -21,9 +21,15 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   const [formContent, setFormContent] = useState('');
   const [formImages, setFormImages] = useState<ImageAttachment[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previousPage, setPreviousPage] = useState<number>(0);
+  const [frozenMessages, setFrozenMessages] = useState<Message[]>([]);
   const { displayName, user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
-  const totalPages = messages.length + 1 + (isFormPage ? 1 : 0); // +1 for first Kindle page, +1 for form page if visible
+  
+  // Use frozen messages or live messages based on form state
+  const activeMessages = isFormPage ? frozenMessages : messages;
+  
+  const totalPages = activeMessages.length + 1 + (isFormPage ? 1 : 0); // +1 for first Kindle page, +1 for form page if visible
 
   const handlePrevPage = useCallback(() => {
     if (currentPage > 0) {
@@ -43,12 +49,20 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
     setFormImages([]);
     // Hide the form page
     setIsFormPage(false);
-    // Go back to the last message page
-    setCurrentPage(Math.min(messages.length, currentPage));
+    // Clear frozen messages
+    setFrozenMessages([]);
+    // Return to the page the user was on before opening the form
+    setCurrentPage(previousPage);
   };
 
   const handleShowForm = () => {
-    // First set the form page flag to true
+    // Save the current page to return to later
+    setPreviousPage(currentPage);
+    
+    // Freeze the current messages
+    setFrozenMessages([...messages]);
+    
+    // Set the form page flag to true
     setIsFormPage(true);
     // Then calculate the new total pages which now includes the form page
     const newTotalPages = messages.length + 1 + 1; // +1 for title page, +1 for form page
@@ -78,8 +92,13 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
       setFormContent('');
       setFormImages([]);
       setIsFormPage(false);
-      // Stay on the last page (which will now show the newly created message)
-      setCurrentPage(messages.length + 1); // +1 for title page
+      setFrozenMessages([]); // Clear frozen messages
+      
+      // Navigate to the position where the new message will appear
+      // We calculate this directly based on the current message count
+      const newMessagePosition = messages.length;
+      // Add 1 for the title page
+      setCurrentPage(newMessagePosition + 1);
     } catch (err) {
       console.error(err);
       alert('Failed to add message. Please try again.');
@@ -95,9 +114,11 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   });
 
   // Determine what to display on the current page
-  const isFirstPage = currentPage === 0;
-  const isMessagePage = !isFirstPage && currentPage <= messages.length;
-  const currentPageMessage = isMessagePage ? messages[currentPage - 1] : null;
+  const currentPageMessage = currentPage === 0 
+    ? null // First page is the title page
+    : isFormPage && currentPage === totalPages - 1 
+      ? null // Last page is the form when isFormPage is true
+      : activeMessages[currentPage - 1]; // -1 because first page is title
 
   return (
     <div {...handlers} className="w-full flex justify-center min-h-screen">
@@ -114,13 +135,13 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
         <div className="absolute inset-[25px] bottom-[70px] overflow-hidden bg-[#f6f6f6] z-10 flex flex-col">
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto">
-            <div className={`p-5 ${isFirstPage ? 'h-full' : ''}`}>
-              {isFirstPage ? (
+            <div className={`p-5 ${currentPage === 0 ? 'h-full' : ''}`}>
+              {currentPage === 0 ? (
                 <div className="min-h-full flex flex-col justify-center items-center text-center">
                   <h1 className="text-5xl font-sans font-bold text-gray-800 mb-4">ספר ברכות</h1>
                   <p className="text-gray-600 text-xl">החליקו להתחיל</p>
                 </div>
-              ) : isMessagePage && currentPageMessage ? (
+              ) : currentPageMessage ? (
 
                 <div className="min-h-full">
                   <div className="pt-8">
