@@ -47,8 +47,17 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const canGoToPrevPage = currentSpread > 0 || !isBookOpen;
   const canGoToNextPage = currentSpread < totalSpreads - 1;
 
-  const firstPageMessage = isMobile ? null : messages[currentSpread * 2];
-  const secondPageMessage = isMobile ? messages[currentSpread] : messages[currentSpread * 2 + 1];
+  // Check if we're on the form spread (last spread when isFormPage is true)
+  const isFormSpread = isFormPage && currentSpread === totalSpreads - 1;
+  
+  // Determine if form should be in first or second position (based on even/odd message count)
+  const isEvenMessageCount = messages.length % 2 === 0;
+  const formInFirstPosition = !isMobile && isFormSpread && isEvenMessageCount;
+  const formInSecondPosition = isFormSpread && (!isEvenMessageCount || isMobile);
+  
+  // Get messages for current spread, accounting for form page
+  const firstPageMessage = isMobile ? null : (formInFirstPosition ? null : messages[currentSpread * 2]);
+  const secondPageMessage = isMobile ? (formInSecondPosition ? null : messages[currentSpread]) : (formInSecondPosition ? null : messages[currentSpread * 2 + 1]);
 
   const handleKeyDown = useCallback((callback: () => void) => (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -176,7 +185,43 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               ].join(' ')}
             `}>
               {/* First Page */}
-              {firstPageMessage && (
+              {formInFirstPosition ? (
+                // Form in first page position
+                <div
+                  className={`
+                    w-1/2 p-8
+                    min-h-full 
+                    flex-grow 
+                    flex 
+                    flex-col
+                    relative
+                    bg-gradient-to-bl from-white to-book-page
+                    border-l border-book-dark/10
+                  `}
+                  id="form-page-left"
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
+                  <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
+
+                  {/* Line Guide Background */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: `repeating-linear-gradient(transparent, transparent 23px, rgba(0,0,0,0.05) 24px)`,
+                      backgroundPosition: '0 1px'
+                    }}
+                  ></div>
+
+                  <BookFormPage
+                    onSubmit={handleSubmitMessage}
+                    onCancel={handleCancelForm}
+                    isSubmitting={isSubmitting}
+                  />
+
+                  {/* Page Edge Shadow */}
+                  <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/5 to-transparent pointer-events-none"></div>
+                </div>
+              ) : firstPageMessage && (
                 <div
                   key={firstPageMessage._id}
                   className={`
@@ -255,8 +300,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                   {/* Page Edge Shadow */}
                   <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none"></div>
                 </div>
-              ) : isFormPage ? (
-                // Form page
+              ) : formInSecondPosition ? (
+                // Form in second page position
                 <div
                   className={`
                     ${isMobile ? 'w-full' : 'w-1/2'}
@@ -268,7 +313,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                     relative
                     bg-gradient-to-br from-book-page to-white
                   `}
-                  id="form-page"
+                  id="form-page-right"
                 >
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)]"></div>
                   <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.02)_50%,transparent_100%)]"></div>
