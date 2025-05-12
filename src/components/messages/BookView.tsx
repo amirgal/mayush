@@ -22,6 +22,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lockedFormPosition, setLockedFormPosition] = useState<'left' | 'right' | null>(null);
   const [frozenMessages, setFrozenMessages] = useState<Message[]>([]);
+  const [previousSpread, setPreviousSpread] = useState<number>(0);
   const { displayName, user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
   
@@ -104,6 +105,9 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   };
 
   const handleShowForm = () => {
+    // Save the current spread to return to later
+    setPreviousSpread(currentSpread);
+    
     // Freeze the current messages
     setFrozenMessages([...messages]);
     
@@ -124,9 +128,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     setIsFormPage(false);
     setLockedFormPosition(null); // Reset locked position
     setFrozenMessages([]); // Clear frozen messages
-    // Navigate to the last message spread
-    const lastMessageSpread = isMobile ? messages.length - 1 : Math.ceil(messages.length / 2) - 1;
-    setCurrentSpread(Math.max(0, lastMessageSpread));
+    // Return to the spread the user was on before opening the form
+    setCurrentSpread(previousSpread);
   };
 
   const handleSubmitMessage = async (content: string, images: ImageAttachment[]) => {
