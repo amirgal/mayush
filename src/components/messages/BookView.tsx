@@ -29,14 +29,25 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     : Math.ceil((messages.length + (isFormPage ? 1 : 0)) / 2);
 
   const handlePrevPage = useCallback(() => {
-    if (currentSpread > 0) {
+    // Check if we're on the form page
+    const isOnFormPage = isFormPage && currentSpread === totalSpreads - 1;
+    
+    if (isOnFormPage) {
+      // If we're on the form page, exit form mode before navigating
+      setIsFormPage(false);
+      
+      // Navigate to the last message spread
+      const lastMessageSpread = isMobile ? messages.length - 1 : Math.ceil(messages.length / 2) - 1;
+      setCurrentSpread(Math.max(0, lastMessageSpread));
+    } else if (currentSpread > 0) {
+      // Normal navigation to previous spread
       setCurrentSpread(currentSpread - 1);
     } else {
       // Close book when on first page
       setIsBookOpen(false);
       setCurrentSpread(0);
     }
-  }, [currentSpread]);
+  }, [currentSpread, isFormPage, totalSpreads, isMobile, messages.length]);
 
   const handleNextPage = useCallback(() => {
     if (currentSpread < totalSpreads - 1) {
