@@ -12,7 +12,7 @@ const AdminPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserData | null>(null);
-  const { username, isAdmin, isAuthenticated, logout } = useAuthContext();
+  const { username, userId, isAdmin, isAuthenticated, logout } = useAuthContext();
   
   const pageTitle = username ? `דף ניהול (${username})` : 'דף ניהול';
   const navigate = useNavigate();
@@ -248,14 +248,16 @@ const AdminPage = () => {
                                 onClick={() => setUserToDelete(user)}
                                 className={`text-red-600 hover:text-red-800 p-1.5 rounded-full 
                                           hover:bg-red-50 transition-colors
-                                          ${user.isAdmin && users.filter(u => u.isAdmin).length <= 1 ? 
+                                          ${user.isAdmin && users.filter(u => u.isAdmin).length <= 1 || user._id === userId ? 
                                             'opacity-50 cursor-not-allowed' : 
                                             'hover:scale-110 transform transition-transform'
                                           }`}
                                 aria-label={`מחק את ${user.username}`}
-                                disabled={user.isAdmin && users.filter(u => u.isAdmin).length <= 1}
-                                title={user.isAdmin && users.filter(u => u.isAdmin).length <= 1 ? 
-                                  'לא ניתן למחוק את המנהל האחרון' : 
+                                disabled={user.isAdmin && users.filter(u => u.isAdmin).length <= 1 || user._id === userId}
+                                title={user._id === userId ?
+                                  'לא ניתן למחוק את עצמך' :
+                                  user.isAdmin && users.filter(u => u.isAdmin).length <= 1 ?
+                                  'לא ניתן למחוק את המנהל האחרון' :
                                   `מחק את ${user.username}`}
                               >
                                 <TrashIcon className="h-5 w-5" />
