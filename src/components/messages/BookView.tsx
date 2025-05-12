@@ -20,13 +20,18 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const [isBookOpen, setIsBookOpen] = useState(false);
   const [isFormPage, setIsFormPage] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lockedFormPosition, setLockedFormPosition] = useState<'left' | 'right' | null>(null);
+  const [frozenMessages, setFrozenMessages] = useState<Message[]>([]);
   const { displayName, user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
   
+  // Use frozen messages or live messages based on form state
+  const activeMessages = isFormPage ? frozenMessages : messages;
+
   // Calculate total spreads including form page if needed
   const totalSpreads = isMobile 
-    ? messages.length + (isFormPage ? 1 : 0) 
-    : Math.ceil((messages.length + (isFormPage ? 1 : 0)) / 2);
+    ? activeMessages.length + (isFormPage ? 1 : 0) 
+    : Math.ceil((activeMessages.length + (isFormPage ? 1 : 0)) / 2);
 
   const handlePrevPage = useCallback(() => {
     // Check if we're on the form page
@@ -35,6 +40,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     if (isOnFormPage) {
       // If we're on the form page, exit form mode before navigating
       setIsFormPage(false);
+      setLockedFormPosition(null); // Reset locked position
+      setFrozenMessages([]); // Clear frozen messages
       
       // Navigate to the last message spread
       const lastMessageSpread = isMobile ? messages.length - 1 : Math.ceil(messages.length / 2) - 1;
@@ -62,13 +69,15 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const isFormSpread = isFormPage && currentSpread === totalSpreads - 1;
   
   // Determine if form should be in first or second position (based on even/odd message count)
-  const isEvenMessageCount = messages.length % 2 === 0;
-  const formInFirstPosition = !isMobile && isFormSpread && isEvenMessageCount;
-  const formInSecondPosition = isFormSpread && (!isEvenMessageCount || isMobile);
+  const isEvenMessageCount = activeMessages.length % 2 === 0;
+  
+  // Use locked form position if available, otherwise calculate based on current message count
+  const formInFirstPosition = !isMobile && isFormSpread && (lockedFormPosition === 'left' || (lockedFormPosition === null && isEvenMessageCount));
+  const formInSecondPosition = isFormSpread && (lockedFormPosition === 'right' || (lockedFormPosition === null && (!isEvenMessageCount || isMobile)));
   
   // Get messages for current spread, accounting for form page
-  const firstPageMessage = isMobile ? null : (formInFirstPosition ? null : messages[currentSpread * 2]);
-  const secondPageMessage = isMobile ? (formInSecondPosition ? null : messages[currentSpread]) : (formInSecondPosition ? null : messages[currentSpread * 2 + 1]);
+  const firstPageMessage = isMobile ? null : (formInFirstPosition ? null : activeMessages[currentSpread * 2]);
+  const secondPageMessage = isMobile ? (formInSecondPosition ? null : activeMessages[currentSpread]) : (formInSecondPosition ? null : activeMessages[currentSpread * 2 + 1]);
 
   const handleKeyDown = useCallback((callback: () => void) => (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -95,6 +104,17 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   };
 
   const handleShowForm = () => {
+    // Freeze the current messages
+    setFrozenMessages([...messages]);
+    
+    // Determine and lock the form position based on current message count
+    if (!isMobile) {
+      const shouldBeOnLeft = messages.length % 2 === 0;
+      setLockedFormPosition(shouldBeOnLeft ? 'left' : 'right');
+    } else {
+      setLockedFormPosition('right'); // Mobile always uses full width
+    }
+    
     setIsFormPage(true);
     const newTotalSpreads = isMobile ? messages.length + 1 : Math.ceil((messages.length + 1) / 2);
     setCurrentSpread(newTotalSpreads - 1);
@@ -102,6 +122,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
 
   const handleCancelForm = () => {
     setIsFormPage(false);
+    setLockedFormPosition(null); // Reset locked position
+    setFrozenMessages([]); // Clear frozen messages
     // Navigate to the last message spread
     const lastMessageSpread = isMobile ? messages.length - 1 : Math.ceil(messages.length / 2) - 1;
     setCurrentSpread(Math.max(0, lastMessageSpread));
@@ -125,8 +147,19 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       
       // Reset form after successful submission
       setIsFormPage(false);
-      // Stay on the last page (which will now show the newly created message)
-      // We'll need to refetch messages, but that's handled at a higher level
+      setLockedFormPosition(null); // Reset locked position
+      setFrozenMessages([]); // Clear frozen messages
+      
+      // Navigate to the position where the new message will appear
+      // We calculate this directly based on the current message count
+      // The new message will be at position messages.length (0-indexed)
+      const newMessagePosition = messages.length;
+      const newMessageSpread = isMobile
+        ? newMessagePosition // In mobile, each message is its own spread
+        : Math.floor(newMessagePosition / 2); // In desktop, two messages per spread
+      
+      // Set the current spread to show the new message
+      setCurrentSpread(newMessageSpread);
     } catch (err) {
       console.error(err);
       alert('Failed to add message. Please try again.');
