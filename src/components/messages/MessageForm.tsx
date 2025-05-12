@@ -7,12 +7,8 @@ import { PencilIcon } from '@heroicons/react/24/solid';
 import FileUpload from '../ui/FileUpload';
 import type { ImageAttachment } from '../../types';
 
-type MessageFormProps = {
-  viewMode: 'book' | 'kindle';
-};
 
-
-const MessageForm: React.FC<MessageFormProps> = ({ viewMode }) => {
+const MessageForm = () => {
   const [content, setContent] = useState<string>('');
   const [images, setImages] = useState<ImageAttachment[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -71,13 +67,9 @@ const MessageForm: React.FC<MessageFormProps> = ({ viewMode }) => {
       </button>
 
       {isFormVisible && (
-        <div className="fixed inset-0 bg-black/30 z-40 flex items-center justify-center" onClick={() => setIsFormVisible(false)}>
+        <div id="message-form-modal" className="fixed inset-0 bg-black/30 z-40 flex items-center justify-center" onClick={() => setIsFormVisible(false)}>
           <div 
-            className={`max-w-md w-full relative ${
-              viewMode === 'kindle' 
-                ? 'bg-[#f6f6f6] rounded-lg p-6 shadow-xl' 
-                : 'bg-book-light p-8 rounded-lg shadow-2xl border-2 border-book-accent/20'
-            }`}
+            className={`max-w-md w-full relative bg-book-light p-8 rounded-lg shadow-2xl border-2 border-book-accent/20`}
             onClick={(e) => e.stopPropagation()}
             style={{
               maxHeight: '90vh',
@@ -92,8 +84,8 @@ const MessageForm: React.FC<MessageFormProps> = ({ viewMode }) => {
               ✕
             </button>
 
-            <h2 className={`text-2xl font-bold mb-4 ${viewMode === 'kindle' ? 'text-gray-800' : 'text-book-dark'}`}>
-              {viewMode === 'kindle' ? 'New Message' : 'הוסף ברכה'}
+            <h2 className={`text-2xl font-bold mb-4 text-book-dark`}>
+              'הוסף ברכה'
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -104,11 +96,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ viewMode }) => {
                   value={displayName || ''}
                   disabled={true}
                   placeholder="התחבר כדי להשאיר ברכה"
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
-                    viewMode === 'kindle' 
-                      ? 'bg-[#f6f6f6] border-gray-300 focus:border-gray-500' 
-                      : 'bg-white border-book-accent/30 focus:border-book-accent'
-                  }`}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none bg-white border-book-accent/30 focus:border-book-accent`}
                   tabIndex={0}
                   aria-label="Your name (from your profile)"
                   required
@@ -121,11 +109,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ viewMode }) => {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="כתוב את הברכה שלך כאן..."
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none min-h-[120px] resize-y ${
-                    viewMode === 'kindle' 
-                      ? 'bg-[#f6f6f6] border-gray-300 focus:border-gray-500 text-right' 
-                      : 'bg-white border-book-accent/30 focus:border-book-accent text-right'
-                  }`}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none min-h-[120px] resize-y bg-white border-book-accent/30 focus:border-book-accent text-right`}
                   disabled={isSubmitting}
                   tabIndex={0}
                   aria-label="Your message"
@@ -134,9 +118,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ viewMode }) => {
               </div>
               
               <div>
-                <label className={`block text-sm font-medium mb-1 ${
-                  viewMode === 'kindle' ? 'text-gray-700' : 'text-book-dark/80'
-                }`}>
+                <label className={`block text-sm font-medium mb-1 text-book-dark/80`}>
                   Images (optional)
                 </label>
                 <FileUpload
@@ -149,11 +131,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ viewMode }) => {
               
               <button
                 type="submit"
-                className={`w-full py-2 px-4 font-medium rounded-md transition-colors ${
-                  viewMode === 'kindle'
-                    ? 'bg-gray-800 text-white hover:bg-gray-700'
-                    : 'bg-book-accent text-white hover:bg-book-dark'
-                }`}
+                className={`w-full py-2 px-4 font-medium rounded-md transition-colors bg-book-accent text-white hover:bg-book-dark`}
                 disabled={isSubmitting}
                 tabIndex={0}
               >
