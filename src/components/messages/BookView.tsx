@@ -87,13 +87,21 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   }, []);
 
   const handlers = useSwipeable({
-    onSwipedRight: () => handleNextPage(),
     onSwipedLeft: () => {
-      if (currentSpread === 0 && !isMobile) {
+      if (!isBookOpen) {
+        handleOpenBook();
+      } else if (currentSpread === 0 && !isMobile) {
         setIsBookOpen(false);
         setCurrentSpread(0);
       } else {
         handlePrevPage();
+      }
+    },
+    onSwipedRight: () => {
+      if (!isBookOpen) {
+        handleOpenBook();
+      } else {
+        handleNextPage();
       }
     },
     preventScrollOnSwipe: true,
