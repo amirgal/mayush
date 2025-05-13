@@ -42,6 +42,7 @@ export type ReactionWithCount = {
 // User type
 export type User = Doc<{
   username: string;
+  displayName: string;
   passwordHash: string;
   isAdmin: boolean;
   createdAt: number;
