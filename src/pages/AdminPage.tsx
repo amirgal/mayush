@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/utils/authUtils';
 import Header from '../components/layout/Header';
@@ -19,10 +19,12 @@ const AdminPage = () => {
   
   const { getAllUsers, createUser, deleteUser } = useConvexAdmin();
   
-  if (!isAuthenticated || !isAdmin) {
-    navigate('/');
-    return null;
+  useEffect(() => {
+    if (!isAuthenticated || !isAdmin) {
+      navigate('/');
+    }
   }
+  , [isAuthenticated, navigate, isAdmin]);
   
   const users = getAllUsers();
   
