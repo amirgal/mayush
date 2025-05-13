@@ -44,7 +44,7 @@ const GuestbookPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-book-light">
+    <div className="flex flex-col h-screen bg-book-light">
       <Header 
         isAdmin={isAdmin} 
         onAdminClick={handleAdminPage} 
@@ -52,25 +52,17 @@ const GuestbookPage = () => {
         viewMode={viewMode}
         onToggleView={handleToggleView}
       />
-      
-      <div className={`container mx-auto px-2 ${isMobile ? 'pt-4' : 'pt-8'} pb-8`}>
-        {/* <h1 className="text-4xl font-bold text-center mb-8 text-book-dark handwritten">
-          !יום הולדת שמח
-        </h1> */}
-        
-        
-        <div className="">
-          {/* <h2 className="text-2xl font-bold mb-6 text-book-dark">
-            ברכות ואיחולים
-          </h2>
-           */}
-          <MessageList 
-            messages={messages} 
-            viewMode={viewMode} 
-            isAdmin={isAdmin}
-          />
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <div className={`container mx-auto px-2 ${isMobile ? 'pt-4' : 'pt-8'} pb-8 h-full flex flex-col`}>
+          <div className="flex-1 flex flex-col min-h-0">
+            <MessageList 
+              messages={messages} 
+              viewMode={viewMode} 
+              isAdmin={isAdmin}
+            />
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
