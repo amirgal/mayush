@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import type { FC } from 'react';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
@@ -13,6 +14,55 @@ type MessageCardProps = {
 
 const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
   const [showReactionPicker, setShowReactionPicker] = useState(false);
+const [pickerPosition, setPickerPosition] = useState<{ left: number; top: number } | null>(null);
+const [pickerVisible, setPickerVisible] = useState(false);
+const reactionButtonRef = useRef<HTMLButtonElement | null>(null);
+const pickerRef = useRef<HTMLDivElement | null>(null);
+
+// Step 1: On open, set initial position (center X, above button)
+useEffect(() => {
+  if (showReactionPicker && reactionButtonRef.current) {
+    const rect = reactionButtonRef.current.getBoundingClientRect();
+    setPickerPosition({
+      left: rect.left + rect.width / 2,
+      top: rect.top - 50, // 40px above the button, adjust as needed
+    });
+    setPickerVisible(false); // We'll measure picker width next
+  } else {
+    setPickerPosition(null);
+    setPickerVisible(false);
+  }
+}, [showReactionPicker]);
+
+// Step 2: After picker renders, measure its width and update position for true centering
+useLayoutEffect(() => {
+  if (showReactionPicker && pickerRef.current && pickerPosition && !pickerVisible) {
+    const pickerRect = pickerRef.current.getBoundingClientRect();
+    setPickerPosition(prev => prev ? {
+      left: prev.left - pickerRect.width / 2,
+      top: prev.top,
+    } : null);
+    setPickerVisible(true);
+  }
+}, [showReactionPicker, pickerPosition, pickerVisible]);
+
+useEffect(() => {
+  if (!showReactionPicker) return;
+  const handleClickOutside = (event: MouseEvent) => {
+    const picker = pickerRef.current;
+    const button = reactionButtonRef.current;
+    if (
+      picker &&
+      !picker.contains(event.target as Node) &&
+      button &&
+      !button.contains(event.target as Node)
+    ) {
+      setShowReactionPicker(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, [showReactionPicker]);
   const [selectedImage, setSelectedImage] = useState<{ url: string; altText: string } | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
@@ -246,6 +296,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
           
           <div className="relative">
             <button
+              ref={reactionButtonRef}
               onClick={() => setShowReactionPicker(!showReactionPicker)}
               onKeyDown={handleKeyDown(() => setShowReactionPicker(!showReactionPicker))}
               className="bg-book-light hover:bg-book-accent/20 rounded-full px-2 py-1 text-sm"
@@ -255,23 +306,32 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
             >
               <span>+</span>
             </button>
-            
-            {showReactionPicker && (
-              <div className="absolute bottom-full left-0 mb-2 bg-white shadow-lg rounded-md p-2 flex gap-2 z-10">
-                {emojis.map((emoji) => (
-                  <button
-                    key={emoji}
-                    onClick={() => handleReaction(emoji)}
-                    onKeyDown={handleKeyDown(() => handleReaction(emoji))}
-                    className="hover:bg-book-light p-1 rounded"
-                    aria-label={`React with ${emoji}`}
-                    tabIndex={0}
-                  >
-                    {emoji}
-                  </button>
-                ))}
-              </div>
-            )}
+            {showReactionPicker && pickerPosition &&
+              createPortal(
+                <div
+                  ref={pickerRef}
+                  className={`bg-white shadow-lg rounded-md p-2 flex gap-2 z-[9999] fixed transition-opacity duration-100 ${pickerVisible ? '' : 'opacity-0 pointer-events-none'}`}
+                  style={{
+                    left: pickerPosition.left,
+                    top: pickerPosition.top,
+                  }}
+                >
+                  {emojis.map((emoji) => (
+                    <button
+                      key={emoji}
+                      onClick={() => handleReaction(emoji)}
+                      onKeyDown={handleKeyDown(() => handleReaction(emoji))}
+                      className="hover:bg-book-light p-1 rounded"
+                      aria-label={`React with ${emoji}`}
+                      tabIndex={0}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>,
+                document.body
+              )
+            }
           </div>
         </div>
       </div>
