@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { FC } from 'react';
 import { useMutation, useQuery } from 'convex/react';
@@ -14,37 +14,30 @@ type MessageCardProps = {
 
 const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
   const [showReactionPicker, setShowReactionPicker] = useState(false);
-const [pickerPosition, setPickerPosition] = useState<{ left: number; top: number } | null>(null);
-const [pickerVisible, setPickerVisible] = useState(false);
+const [pickerTop, setPickerTop] = useState<number | null>(null);
+const [pickerLeft, setPickerLeft] = useState<number | null>(null);
+const [isMobile, setIsMobile] = useState<boolean>(false);
 const reactionButtonRef = useRef<HTMLButtonElement | null>(null);
 const pickerRef = useRef<HTMLDivElement | null>(null);
 
-// Step 1: On open, set initial position (center X, above button)
+// Calculate both vertical and horizontal position responsively
 useEffect(() => {
   if (showReactionPicker && reactionButtonRef.current) {
     const rect = reactionButtonRef.current.getBoundingClientRect();
-    setPickerPosition({
-      left: rect.left + rect.width / 2,
-      top: rect.top - 50, // 40px above the button, adjust as needed
-    });
-    setPickerVisible(false); // We'll measure picker width next
+    const mobile = window.innerWidth < 640;
+    setIsMobile(mobile);
+    setPickerTop(rect.top - 56); // 56px above the button, adjust as needed
+    if (!mobile) {
+      setPickerLeft(rect.left);
+    } else {
+      setPickerLeft(null);
+    }
   } else {
-    setPickerPosition(null);
-    setPickerVisible(false);
+    setPickerTop(null);
+    setPickerLeft(null);
+    setIsMobile(false);
   }
 }, [showReactionPicker]);
-
-// Step 2: After picker renders, measure its width and update position for true centering
-useLayoutEffect(() => {
-  if (showReactionPicker && pickerRef.current && pickerPosition && !pickerVisible) {
-    const pickerRect = pickerRef.current.getBoundingClientRect();
-    setPickerPosition(prev => prev ? {
-      left: prev.left - pickerRect.width / 2,
-      top: prev.top,
-    } : null);
-    setPickerVisible(true);
-  }
-}, [showReactionPicker, pickerPosition, pickerVisible]);
 
 useEffect(() => {
   if (!showReactionPicker) return;
@@ -306,14 +299,15 @@ useEffect(() => {
             >
               <span>+</span>
             </button>
-            {showReactionPicker && pickerPosition &&
+            {showReactionPicker && pickerTop !== null &&
               createPortal(
                 <div
                   ref={pickerRef}
-                  className={`bg-white shadow-lg rounded-md p-2 flex gap-2 z-[9999] fixed transition-opacity duration-100 ${pickerVisible ? '' : 'opacity-0 pointer-events-none'}`}
+                  className="fixed z-[9999] bg-white shadow-lg rounded-md p-2 flex gap-2 w-56 max-w-xs sm:max-w-sm px-2"
                   style={{
-                    left: pickerPosition.left,
-                    top: pickerPosition.top,
+                    top: pickerTop,
+                    left: isMobile ? '50%' : pickerLeft ?? 0,
+                    transform: isMobile ? 'translateX(-50%)' : undefined,
                   }}
                 >
                   {emojis.map((emoji) => (
