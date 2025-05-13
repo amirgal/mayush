@@ -14,6 +14,7 @@ type MessageCardProps = {
 const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
   const [showReactionPicker, setShowReactionPicker] = useState(false);
   const [selectedImage, setSelectedImage] = useState<{ url: string; altText: string } | null>(null);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   const togglePin = useMutation(api.messages.togglePin);
   const addReaction = useMutation(api.reactions.addReaction);
@@ -82,6 +83,10 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
     if (e.key === 'Enter' || e.key === ' ') {
       callback();
     }
+  };
+
+  const handleImageLoad = (imageUrl: string) => {
+    setLoadedImages(prev => new Set([...prev, imageUrl]));
   };
 
   const emojis = ['❤️', '👍', '🎂', '🎁', '🎉', '🥳', '😊'];
@@ -162,6 +167,8 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
           {message.imageUrls.map((image, index) => {
             // Generate a random slight rotation between -5 and 5 degrees for the polaroid effect
             const randomRotation = Math.floor(Math.random() * 11) - 5;
+            const isLoaded = loadedImages.has(image.url);
+            console.log(`Image loaded: ${image.url}, Loaded: ${isLoaded}`);
             
             return (
               <div 
@@ -188,11 +195,15 @@ const MessageCard: FC<MessageCardProps> = ({ message, isAdmin }) => {
                 role="button"
                 aria-label={`View enlarged image ${index + 1} shared by ${message.author}`}
               >
-                <div className="overflow-hidden">
+                <div className="overflow-hidden relative">
+                  {!isLoaded && (
+                    <div className="w-[200px] absolute inset-0 bg-gray-100 animate-pulse" />
+                  )}
                   <img
                     src={image.url}
                     alt={`Image ${index + 1} shared by ${message.author}`}
-                    className="w-full h-[150px] object-cover"
+                    className={`w-full h-[150px] object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    onLoad={() => handleImageLoad(image.url)}
                   />
                 </div>
                 <div className="absolute bottom-2 left-0 right-0 text-center text-xs text-gray-500 font-handwritten">
