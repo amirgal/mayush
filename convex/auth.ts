@@ -1,6 +1,6 @@
 import { mutation, query, action } from "./_generated/server";
 import { v } from "convex/values";
-import { Id } from "./_generated/dataModel"; // Correct import for Id type
+import type { Id } from "./_generated/dataModel"; // Changed to type-only import
 import bcrypt from "bcryptjs";
 import { api } from "./_generated/api";
 
