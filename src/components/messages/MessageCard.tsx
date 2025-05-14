@@ -212,6 +212,7 @@ useEffect(() => {
             const randomRotation = Math.floor(Math.random() * 11) - 5;
             const isLoaded = loadedImages.has(image.url);
             console.log(`Image loaded: ${image.url}, Loaded: ${isLoaded}`);
+            console.log(isLoaded);
             
             return (
               <div 
@@ -238,9 +239,13 @@ useEffect(() => {
                 role="button"
                 aria-label={`View enlarged image ${index + 1} shared by ${message.author}`}
               >
-                <div className="overflow-hidden relative">
+                <div className="overflow-hidden relative min-w-[150px] min-h-[150px]">
                   {!isLoaded && (
-                    <div className="w-[200px] absolute inset-0 bg-gray-100 animate-pulse" />
+                    <div
+                      className="absolute inset-0 bg-black/50 animate-bg-black-to-white"
+                      aria-label="Image loading background transition"
+                      tabIndex={0}
+                    />
                   )}
                   <img
                     src={image.url}
@@ -249,9 +254,9 @@ useEffect(() => {
                     onLoad={() => handleImageLoad(image.url)}
                   />
                 </div>
-                <div className="absolute bottom-2 left-0 right-0 text-center text-xs text-gray-500 font-handwritten">
+                {/* <div className="absolute bottom-2 left-0 right-0 text-center text-xs text-gray-500 font-handwritten">
                   {new Date(message.createdAt).toLocaleDateString('he-IL', {month: 'short', year: 'numeric'})}
-                </div>
+                </div> */}
                 {/* Tape effect at the top */}
                 <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-gray-200/70 rounded-sm rotate-1"></div>
               </div>

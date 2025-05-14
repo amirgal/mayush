@@ -22,6 +22,7 @@ export default {
         'book-card': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       },
       animation: {
+        'bg-black-to-white': 'bgBlackToWhite 3s ease-in-out forwards',
         'page-turn': 'pageTurn 0.5s ease-in-out',
         'fade-in': 'fade-in 0.5s ease-out forwards',
         'hover-lift': 'hoverLift 0.3s ease-in-out',
@@ -29,6 +30,10 @@ export default {
         'fade-scale': 'fade-scale 0.5s ease-out forwards',
       },
       keyframes: {
+        bgBlackToWhite: {
+          '0%': { backgroundColor: 'rgb(0, 0, 0)' },
+          '100%': { backgroundColor: 'rgb(255, 255, 255)' },
+        },
         pageTurn: {
           '0%': { transform: 'rotateY(0deg)' },
           '100%': { transform: 'rotateY(180deg)' },
