@@ -7,7 +7,6 @@ type AuthContextType = {
   isAdmin: boolean;
   isAuthenticated: boolean;
   setAuth: (userId: Id<"users">, username: string, displayName: string, isAdmin: boolean) => void;
-  logout: () => void;
   user: { _id: Id<"users"> } | null;
 };
 

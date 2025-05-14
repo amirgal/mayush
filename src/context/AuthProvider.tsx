@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useConvexAuth } from '../hooks/useConvexAuth';
 import type { ReactNode } from 'react';
 import { AuthContext } from './utils/authUtils';
 import type { Id } from "../../convex/_generated/dataModel";
@@ -6,6 +7,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const { register } = useConvexAuth();
   const [username, setUsername] = useState<string | null>(() => localStorage.getItem('username') || null);
   const [displayName, setDisplayName] = useState<string | null>(() => localStorage.getItem('displayName') || null);
   const [userId, setUserId] = useState<Id<"users"> | null>(() => {
@@ -21,11 +23,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     userId ? { userId } : "skip"
   );
 
+  // Automatic onboarding
   useEffect(() => {
-    if (userQuery) {
-      setIsAdmin(userQuery.isAdmin);
-      setDisplayName(userQuery.displayName); // Optional: keep displayName in sync with backend
-    }
+    const onboard = async () => {
+      const localUserId = localStorage.getItem('userId');
+      if (!localUserId) {
+        const randomString = () =>
+          Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+        const username = `user_${randomString()}`;
+        const displayName = `Guest_${randomString().slice(0, 6)}`;
+        const password = randomString() + randomString();
+        const result = await register(username, displayName, password, false, false);
+        // Type guard for register result
+        if (result && typeof result === 'object' && 'success' in result && result.success && 'userId' in result && result.userId) {
+          setAuth(result.userId as Id<'users'>, username, displayName, false);
+        }
+      } else if (userQuery) {
+        setAuth(userQuery._id, userQuery.username, userQuery.displayName, userQuery.isAdmin);
+      }
+    };
+    onboard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userQuery]);
 
   const setAuth = (userId: Id<"users">, username: string, displayName: string, admin: boolean) => {
@@ -41,18 +59,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('isAuthenticated', 'true');
   };
 
-  const logout = () => {
-    setUserId(null);
-    setUsername(null);
-    setDisplayName(null);
-    setIsAdmin(false);
-    setIsAuthenticated(false);
-    localStorage.removeItem('userId');
-    localStorage.removeItem('username');
-    localStorage.removeItem('displayName');
-    localStorage.removeItem('isAuthenticated');
-  };
-
   return (
     <AuthContext.Provider value={{ 
       username, 
@@ -61,7 +67,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAdmin, 
       isAuthenticated, 
       setAuth, 
-      logout, 
       user: userQuery ? { _id: userQuery._id } : null 
     }}>
       {children}

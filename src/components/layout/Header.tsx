@@ -1,12 +1,10 @@
 import { type FC } from "react";
-import { useAuthContext } from "../../context/utils/authUtils";
 
 type HeaderProps = {
   isAdmin: boolean;
   viewMode: "book" | "kindle";
   isAdminPage?: boolean;
   onAdminClick: () => void;
-  onLogout: () => void;
   onToggleView: () => void;
 };
 
@@ -15,11 +13,8 @@ const Header: FC<HeaderProps> = ({
   viewMode,
   isAdminPage = false,
   onAdminClick,
-  onLogout,
   onToggleView,
 }) => {
-  const { username } = useAuthContext();
-  const welcomeMessage = username ? `ברוך הבא, ${username}!` : "ברוך הבא!";
 
   const handleKeyDown = (callback: () => void) => (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -101,33 +96,8 @@ const Header: FC<HeaderProps> = ({
               <span className="hidden md:inline">ניהול</span>
             </button>
           )}
-
-          <button
-            onClick={onLogout}
-            onKeyDown={handleKeyDown(onLogout)}
-            className="text-white hover:text-book-accent transition-colors flex items-center"
-            aria-label="התנתק"
-            title="התנתק"
-            tabIndex={0}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 md:ml-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            <span className="hidden md:inline">התנתק</span>
-          </button>
         </div>
-        <div className="text-lg text-white/80">{welcomeMessage}</div>
+        <div className="text-lg text-white/80">ברוך הבא!</div>
       </div>
     </header>
   );
