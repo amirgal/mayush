@@ -122,7 +122,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
       : activeMessages[currentPage - 1]; // -1 because first page is title
 
   return (
-    <div {...handlers} className="w-full flex justify-center min-h-screen">
+    <div {...handlers} className="w-full flex justify-center min-h-screen flex-col items-center">
       <div className={`${isMobile ? 'w-full h-[600px]' : 'w-[90%] max-w-[600px] h-[800px]'} relative cursor-[grab] hover:cursor-[grab]`}>
         {/* Kindle-like dark border with more rounded corners - non-interactive border */}
         <div className="absolute inset-0 border-[25px] border-b-[70px] bg-[#f6f6f6] border-[#2F2F2F] rounded-[30px] pointer-events-none">
@@ -276,6 +276,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
       </div>
 
       {/* Add Message Button */}
+      {isMobile ? (
         <button 
           onClick={handleShowForm}
           className="fixed bottom-6 right-6 bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 z-50 flex items-center justify-center"
@@ -286,6 +287,20 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
           </svg>
           <span className="mr-2 hidden md:inline">הוסף ברכה</span>
         </button>
+      ) : (
+        <div className="w-full flex justify-center mt-8">
+          <button 
+            onClick={handleShowForm}
+            className="bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 flex items-center justify-center"
+            aria-label="הוסף ברכה"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span className="mr-2 hidden md:inline">הוסף ברכה</span>
+          </button>
+        </div>
+      )}
 
       {selectedImage && (
         <ImageModal
