@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
     onboard();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, [userQuery]);
 
   const setAuth = (userId: Id<"users">, admin: boolean) => {
     setUserId(userId);

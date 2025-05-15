@@ -23,7 +23,8 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previousPage, setPreviousPage] = useState<number>(0);
   const [frozenMessages, setFrozenMessages] = useState<Message[]>([]);
-  const { displayName, user } = useAuthContext();
+  const [author, setAuthor] = useState('');
+  const { user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
   
   // Use frozen messages or live messages based on form state
@@ -47,6 +48,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
     // Reset form fields
     setFormContent('');
     setFormImages([]);
+    setAuthor('');
     // Hide the form page
     setIsFormPage(false);
     // Clear frozen messages
@@ -73,7 +75,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   const handleSubmitMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!displayName || !formContent.trim() || !user) {
+    if (!user || !formContent.trim() || !author) {
       alert('Please log in and fill in your message');
       return;
     }
@@ -82,7 +84,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
     
     try {
       await addMessage({
-        author: displayName,
+        author,
         content: formContent.trim(),
         imageUrls: formImages.length > 0 ? formImages.map(({ storageId, url }) => ({ storageId, url })) : undefined,
         userId: user._id
@@ -91,6 +93,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
       // Reset form after successful submission
       setFormContent('');
       setFormImages([]);
+      setAuthor('');
       setIsFormPage(false);
       setFrozenMessages([]); // Clear frozen messages
       
@@ -211,10 +214,11 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                         <label className="block text-sm font-medium text-gray-700 mb-1 text-right">שם</label>
                         <input
                           type="text"
-                          value={displayName || ''}
-                          disabled={true}
+                          onChange={(e) => setAuthor(e.target.value)}
+                          value={author || ''}
+                          placeholder='שם'
+                          required
                           className="w-full px-3 py-2 border border-gray-300 rounded-md bg-[#f6f6f6] text-right"
-                          readOnly
                         />
                       </div>
                       

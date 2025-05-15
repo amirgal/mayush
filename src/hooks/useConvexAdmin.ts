@@ -1,4 +1,4 @@
-import { useAction, useQuery, useMutation } from 'convex/react';
+import {  useQuery, useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import type { Id } from '../../convex/_generated/dataModel';
 import { useAuthContext } from '../context/utils/authUtils';
@@ -6,17 +6,10 @@ import { useAuthContext } from '../context/utils/authUtils';
 // Define types for admin-related results
 export type User = {
   _id: Id<'users'>;
-  username: string;
-  displayName: string;
   isAdmin: boolean;
   createdAt: number;
 };
 
-export type CreateUserResult = {
-  success: boolean;
-  userId?: string;
-  message?: string;
-};
 
 export type DeleteUserResult = {
   success: boolean;
@@ -30,7 +23,6 @@ export const useConvexAdmin = () => {
   
   // Use the type-safe query and mutation references
   const getAllUsersQuery = useQuery(api.auth.getAllUsers, { isAdmin });
-  const registerUserMutation = useAction(api.auth.registerUserAction);
   const deleteUserMutation = useMutation(api.auth.deleteUser);
 
   // Wrapper functions with proper typing
@@ -46,21 +38,6 @@ export const useConvexAdmin = () => {
     }
   };
 
-  const createUser = async (username: string, displayName: string, password: string, isAdmin: boolean): Promise<CreateUserResult> => {
-    try {
-      const result = await registerUserMutation({ 
-        username, 
-        displayName,
-        password, 
-        isAdmin, 
-        adminRequest: true // This is an admin creating the user
-      });
-      return result as CreateUserResult;
-    } catch (error) {
-      console.error('Error creating user:', error);
-      return { success: false, message: 'An error occurred while creating the user' };
-    }
-  };
 
   const deleteUser = async (userId: Id<"users">): Promise<DeleteUserResult> => {
     try {
@@ -75,7 +52,6 @@ export const useConvexAdmin = () => {
 
   return {
     getAllUsers,
-    createUser,
     deleteUser
   };
 };
