@@ -21,7 +21,6 @@ const Header: FC<HeaderProps> = ({
       callback();
     }
   };
-console.log(isAdmin);
 
   return (
     <header className="bg-book-dark text-white py-4 shadow-md sticky top-0 z-50">
