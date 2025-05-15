@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useAuthContext } from '../../context/utils/authUtils';
 import FileUpload from '../ui/FileUpload';
 import type { ImageAttachment } from '../../types';
 
 type BookFormPageProps = {
-  onSubmit: (content: string, images: ImageAttachment[]) => Promise<void>;
+  onSubmit: (author: string, content: string, images: ImageAttachment[]) => Promise<void>;
   onCancel: () => void;
   isSubmitting: boolean;
 };
@@ -12,12 +11,11 @@ type BookFormPageProps = {
 const BookFormPage: React.FC<BookFormPageProps> = ({ onSubmit, onCancel, isSubmitting }) => {
   const [content, setContent] = useState<string>('');
   const [images, setImages] = useState<ImageAttachment[]>([]);
-  const { displayName } = useAuthContext();
-
+  const [author, setAuthor] = useState<string>('');
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (content.trim()) {
-      await onSubmit(content, images);
+    if (content.trim() && author.trim()) {
+      await onSubmit(author, content, images);
     }
   };
 
@@ -30,10 +28,11 @@ const BookFormPage: React.FC<BookFormPageProps> = ({ onSubmit, onCancel, isSubmi
           <label className="block text-sm font-medium mb-1 text-book-dark/80 text-right">שם</label>
           <input
             type="text"
-            value={displayName || ''}
-            disabled={true}
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            placeholder='שם'
             className="w-full px-3 py-2 border rounded-md focus:outline-none bg-white border-book-accent/30 focus:border-book-accent text-right"
-            readOnly
+            required
           />
         </div>
         

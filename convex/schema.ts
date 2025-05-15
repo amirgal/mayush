@@ -28,10 +28,7 @@ export default defineSchema({
     .index("by_user_message_emoji", ["userId", "messageId", "emoji"]),
 
   users: defineTable({
-    username: v.string(),
-    displayName: v.string(),
-    passwordHash: v.string(),
     isAdmin: v.boolean(),
     createdAt: v.number(),
-  }).index("by_username", ["username"]),
+  }),
 });

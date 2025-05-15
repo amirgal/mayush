@@ -9,31 +9,17 @@ export type VerifyLoginResult =
 export type RegisterUserResult = {
   success: boolean;
   message?: string;
+  userId?: string;
 };
 
 // Custom hook for authentication-related Convex functions
 export const useConvexAuth = () => {
   // Use the type-safe action references
-  const loginUser = useAction(api.auth.verifyLoginAction);
   const registerUserAction = useAction(api.auth.registerUserAction);
 
-  // Wrapper functions with proper typing
-  const login = async (username: string, password: string): Promise<VerifyLoginResult> => {
-    try {
-      const result = await loginUser({ username, password });
-      return result as VerifyLoginResult;
-    } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, isAdmin: false, message: 'An error occurred during login' };
-    }
-  };
-
-  const register = async (username: string, displayName: string, password: string, isAdmin: boolean = false, adminRequest: boolean = false): Promise<RegisterUserResult> => {
+  const register = async (isAdmin: boolean = false, adminRequest: boolean = false): Promise<RegisterUserResult> => {
     try {
       const result = await registerUserAction({
-        username,
-        displayName,
-        password,
         isAdmin,
         adminRequest,
       });
@@ -45,7 +31,6 @@ export const useConvexAuth = () => {
   };
 
   return {
-    login,
     register
   };
 };

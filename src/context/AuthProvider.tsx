@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useConvexAuth } from '../hooks/useConvexAuth';
 import type { ReactNode } from 'react';
 import { AuthContext } from './utils/authUtils';
@@ -8,66 +8,55 @@ import { api } from "../../convex/_generated/api";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { register } = useConvexAuth();
-  const [username, setUsername] = useState<string | null>(() => localStorage.getItem('username') || null);
-  const [displayName, setDisplayName] = useState<string | null>(() => localStorage.getItem('displayName') || null);
   const [userId, setUserId] = useState<Id<"users"> | null>(() => {
     const savedId = localStorage.getItem('userId');
     return savedId ? (savedId as Id<"users">) : null;
   });
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => localStorage.getItem('isAuthenticated') === 'true');
-
-  // Securely fetch user by userId from Convex
+  const [user, setUser] = useState<{ _id: Id<'users'> } | null>(null);
   const userQuery = useQuery(
     api.auth.getUserById,
     userId ? { userId } : "skip"
   );
 
   // Automatic onboarding
+  const registeringRef = useRef(false);
   useEffect(() => {
     const onboard = async () => {
-      const localUserId = localStorage.getItem('userId');
-      if (!localUserId) {
-        const randomString = () =>
-          Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
-        const username = `user_${randomString()}`;
-        const displayName = `Guest_${randomString().slice(0, 6)}`;
-        const password = randomString() + randomString();
-        const result = await register(username, displayName, password, false, false);
-        // Type guard for register result
+      if (!userId && !registeringRef.current) {
+        registeringRef.current = true;
+        // New user: register, set auth, DO NOT run userQuery
+        const result = await register(false, false);
         if (result && typeof result === 'object' && 'success' in result && result.success && 'userId' in result && result.userId) {
-          setAuth(result.userId as Id<'users'>, username, displayName, false);
+          setAuth(result.userId as Id<'users'>, false);
         }
-      } else if (userQuery) {
-        setAuth(userQuery._id, userQuery.username, userQuery.displayName, userQuery.isAdmin);
+        registeringRef.current = false;
+      } else if (userId && userQuery) {
+        // Returning user: use query result
+        setAuth(userQuery._id as Id<'users'>, userQuery.isAdmin);
       }
     };
     onboard();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userQuery]);
+  }, [userId]);
 
-  const setAuth = (userId: Id<"users">, username: string, displayName: string, admin: boolean) => {
-    console.log('Setting auth state:', { userId, username, displayName, admin });
+  const setAuth = (userId: Id<"users">, admin: boolean) => {
     setUserId(userId);
-    setUsername(username);
-    setDisplayName(displayName);
     setIsAdmin(admin);
     setIsAuthenticated(true);
+    setUser(userQuery ? { _id: userQuery._id } : { _id: userId });
     localStorage.setItem('userId', userId);
-    localStorage.setItem('username', username);
-    localStorage.setItem('displayName', displayName);
     localStorage.setItem('isAuthenticated', 'true');
   };
 
   return (
     <AuthContext.Provider value={{ 
-      username, 
-      displayName, 
       userId, 
       isAdmin, 
       isAuthenticated, 
-      setAuth, 
-      user: userQuery ? { _id: userQuery._id } : null 
+      setAuth,
+      user 
     }}>
       {children}
     </AuthContext.Provider>

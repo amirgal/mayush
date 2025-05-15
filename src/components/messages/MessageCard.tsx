@@ -211,8 +211,6 @@ useEffect(() => {
             // Generate a random slight rotation between -5 and 5 degrees for the polaroid effect
             const randomRotation = Math.floor(Math.random() * 11) - 5;
             const isLoaded = loadedImages.has(image.url);
-            console.log(`Image loaded: ${image.url}, Loaded: ${isLoaded}`);
-            console.log(isLoaded);
             
             return (
               <div 

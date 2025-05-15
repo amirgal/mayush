@@ -23,7 +23,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const [lockedFormPosition, setLockedFormPosition] = useState<'left' | 'right' | null>(null);
   const [frozenMessages, setFrozenMessages] = useState<Message[]>([]);
   const [previousSpread, setPreviousSpread] = useState<number>(0);
-  const { displayName, user } = useAuthContext();
+  const { user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
   
   // Use frozen messages or live messages based on form state
@@ -140,9 +140,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     setCurrentSpread(previousSpread);
   };
 
-  const handleSubmitMessage = async (content: string, images: ImageAttachment[]) => {
-    if (!displayName || !content.trim() || !user) {
-      alert('Please log in and fill in your message');
+  const handleSubmitMessage = async (author: string, content: string, images: ImageAttachment[]) => {
+    if (!content.trim() || !author.trim() || !user) {
       return;
     }
     
@@ -150,7 +149,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     
     try {
       await addMessage({
-        author: displayName,
+        author: author.trim(),
         content: content.trim(),
         imageUrls: images.length > 0 ? images.map(({ storageId, url }) => ({ storageId, url })) : undefined,
         userId: user._id
