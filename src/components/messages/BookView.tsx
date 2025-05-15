@@ -25,25 +25,25 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const [previousSpread, setPreviousSpread] = useState<number>(0);
   const { user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
-  
+
   // Use frozen messages or live messages based on form state
   const activeMessages = isFormPage ? frozenMessages : messages;
 
   // Calculate total spreads including form page if needed
-  const totalSpreads = isMobile 
-    ? activeMessages.length + (isFormPage ? 1 : 0) 
+  const totalSpreads = isMobile
+    ? activeMessages.length + (isFormPage ? 1 : 0)
     : Math.ceil((activeMessages.length + (isFormPage ? 1 : 0)) / 2);
 
   const handlePrevPage = useCallback(() => {
     // Check if we're on the form page
     const isOnFormPage = isFormPage && currentSpread === totalSpreads - 1;
-    
+
     if (isOnFormPage) {
       // If we're on the form page, exit form mode before navigating
       setIsFormPage(false);
       setLockedFormPosition(null); // Reset locked position
       setFrozenMessages([]); // Clear frozen messages
-      
+
       // Navigate to the last message spread
       const lastMessageSpread = isMobile ? messages.length - 1 : Math.ceil(messages.length / 2) - 1;
       setCurrentSpread(Math.max(0, lastMessageSpread));
@@ -68,14 +68,14 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
 
   // Check if we're on the form spread (last spread when isFormPage is true)
   const isFormSpread = isFormPage && currentSpread === totalSpreads - 1;
-  
+
   // Determine if form should be in first or second position (based on even/odd message count)
   const isEvenMessageCount = activeMessages.length % 2 === 0;
-  
+
   // Use locked form position if available, otherwise calculate based on current message count
   const formInFirstPosition = !isMobile && isFormSpread && (lockedFormPosition === 'left' || (lockedFormPosition === null && isEvenMessageCount));
   const formInSecondPosition = isFormSpread && (lockedFormPosition === 'right' || (lockedFormPosition === null && (!isEvenMessageCount || isMobile)));
-  
+
   // Get messages for current spread, accounting for form page
   const firstPageMessage = isMobile ? null : (formInFirstPosition ? null : activeMessages[currentSpread * 2]);
   const secondPageMessage = isMobile ? (formInSecondPosition ? null : activeMessages[currentSpread]) : (formInSecondPosition ? null : activeMessages[currentSpread * 2 + 1]);
@@ -115,10 +115,10 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const handleShowForm = () => {
     // Save the current spread to return to later
     setPreviousSpread(currentSpread);
-    
+
     // Freeze the current messages
     setFrozenMessages([...messages]);
-    
+
     // Determine and lock the form position based on current message count
     if (!isMobile) {
       const shouldBeOnLeft = messages.length % 2 === 0;
@@ -126,7 +126,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     } else {
       setLockedFormPosition('right'); // Mobile always uses full width
     }
-    
+
     setIsFormPage(true);
     const newTotalSpreads = isMobile ? messages.length + 1 : Math.ceil((messages.length + 1) / 2);
     setCurrentSpread(newTotalSpreads - 1);
@@ -144,9 +144,9 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     if (!content.trim() || !author.trim() || !user) {
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       await addMessage({
         author: author.trim(),
@@ -154,12 +154,12 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         imageUrls: images.length > 0 ? images.map(({ storageId, url }) => ({ storageId, url })) : undefined,
         userId: user._id
       });
-      
+
       // Reset form after successful submission
       setIsFormPage(false);
       setLockedFormPosition(null); // Reset locked position
       setFrozenMessages([]); // Clear frozen messages
-      
+
       // Navigate to the position where the new message will appear
       // We calculate this directly based on the current message count
       // The new message will be at position messages.length (0-indexed)
@@ -167,7 +167,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       const newMessageSpread = isMobile
         ? newMessagePosition // In mobile, each message is its own spread
         : Math.floor(newMessagePosition / 2); // In desktop, two messages per spread
-      
+
       // Set the current spread to show the new message
       setCurrentSpread(newMessageSpread);
     } catch (err) {
@@ -446,70 +446,102 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                 )}
               </div>
             </div>
-            {/* Navigation Controls */}
-            <div className="flex justify-between items-center mt-8">
+            {/* Navigation Arrows on Book Sides */}
+            {!isMobile && (
+              <>
+                <div className="absolute inset-y-0 left-0 flex items-center -ml-16">
+                  <button
+                    onClick={handleNextPage}
+                    className={`transform transition-all duration-300 ease-in-out rounded-full p-3 bg-white/90 hover:bg-white shadow-lg ${!canGoToNextPage ? 'opacity-0 pointer-events-none' : 'opacity-70 hover:scale-110'}`}
+                    onKeyDown={handleKeyDown(handleNextPage)}
+                    aria-label="העמוד הבא"
+                    tabIndex={0}
+                    disabled={!canGoToNextPage}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8 text-book-dark"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="absolute inset-y-0 right-0 flex items-center -mr-16">
+                  <button
+                    onClick={handlePrevPage}
+                    className={`transform transition-all duration-300 ease-in-out rounded-full p-3 bg-white/90 hover:bg-white shadow-lg ${!canGoToPrevPage ? 'opacity-0 pointer-events-none' : 'opacity-70 hover:scale-110'}`}
+                    onKeyDown={handleKeyDown(handlePrevPage)}
+                    aria-label="העמוד הקודם"
+                    tabIndex={0}
+                    disabled={!canGoToPrevPage}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8 text-book-dark"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </>
+            )}
+            {/* Page Info */}
+            <div className="text-book-dark/70 font-book-title text-lg mt-4">
+              {isMobile
+                ? `עמוד ${currentSpread + 1} מתוך ${messages.length}`
+                : `עמודים ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} מתוך ${messages.length}`
+              }
+            </div>
+            
+            {/* Mobile Floating Action Button */}
+            {isMobile && (
               <button
-                onClick={handlePrevPage}
-                className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${!canGoToPrevPage ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'}`}
-                onKeyDown={handleKeyDown(handlePrevPage)}
-                aria-label="העמוד הקודם"
+                onClick={handleShowForm}
+                className="fixed bottom-6 right-6 bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 z-50 flex items-center justify-center"
+                onKeyDown={handleKeyDown(handleShowForm)}
+                aria-label="הוסף ברכה"
                 tabIndex={0}
-                disabled={!canGoToPrevPage}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-book-dark"
+                  className="h-6 w-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
+                <span className="mr-2 hidden md:inline">הוסף ברכה</span>
               </button>
-              <div className="text-book-dark/70 font-book-title text-lg">
-                {isMobile
-                  ? `עמוד ${currentSpread + 1} מתוך ${messages.length}`
-                  : `עמודים ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} מתוך ${messages.length}`
-                }
-              </div>
-              <div className="flex gap-4">
-                <button
-                  onClick={handleShowForm}
-                  className="transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-accent/10 hover:bg-book-accent/20 hover:scale-110"
-                  onKeyDown={handleKeyDown(handleShowForm)}
-                  aria-label="הוסף ברכה"
-                  tabIndex={0}
+            )}
+            
+            {/* Desktop Add Message Button */}
+            {!isMobile && (
+              <button
+                onClick={handleShowForm}
+                className="mt-4 transform transition-all duration-300 ease-in-out rounded-full px-6 py-3 bg-book-accent/10 hover:bg-book-accent/20 hover:scale-105 flex items-center gap-2 shadow-md"
+                onKeyDown={handleKeyDown(handleShowForm)}
+                aria-label="הוסף ברכה"
+                tabIndex={0}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-book-accent"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-book-accent"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                </button>
-                <button
-                  onClick={handleNextPage}
-                  className={`transform transition-all duration-300 ease-in-out rounded-full p-4 bg-book-dark/5 hover:bg-book-dark/10 ${!canGoToNextPage ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110'}`}
-                  onKeyDown={handleKeyDown(handleNextPage)}
-                  aria-label="העמוד הבא"
-                  tabIndex={0}
-                  disabled={!canGoToNextPage}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-book-dark"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span className="text-book-accent font-medium">הוסף ברכה</span>
+              </button>
+            )}
           </div>
         </div>
       )}
