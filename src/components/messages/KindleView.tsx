@@ -76,7 +76,6 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
     e.preventDefault();
     
     if (!user || !formContent.trim() || !author) {
-      alert('Please log in and fill in your message');
       return;
     }
     
@@ -104,7 +103,6 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
       setCurrentPage(newMessagePosition + 1);
     } catch (err) {
       console.error(err);
-      alert('Failed to add message. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

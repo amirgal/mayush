@@ -172,7 +172,6 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       setCurrentSpread(newMessageSpread);
     } catch (err) {
       console.error(err);
-      alert('Failed to add message. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

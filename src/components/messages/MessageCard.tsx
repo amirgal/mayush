@@ -76,14 +76,12 @@ useEffect(() => {
       await togglePin({ messageId: message._id, isAdmin });
     } catch (err) {
       console.error(err);
-      alert('Failed to toggle pin status');
     }
   };
 
   const handleReaction = async (emoji: string) => {
     try {
       if (!user) {
-        alert('Please log in to add a reaction');
         return;
       }
       await addReaction({
@@ -101,7 +99,6 @@ useEffect(() => {
   const handleRemoveReaction = async (emoji: string) => {
     try {
       if (!user) {
-        alert('Please log in to remove a reaction');
         return;
       }
 
@@ -306,7 +303,7 @@ useEffect(() => {
               createPortal(
                 <div
                   ref={pickerRef}
-                  className="fixed z-[9999] bg-white shadow-lg rounded-md p-2 flex gap-2 w-56 max-w-xs sm:max-w-sm px-2"
+                  className="fixed z-[9999] bg-white shadow-lg rounded-md p-2 flex gap-2 max-w-xs sm:max-w-sm px-2"
                   style={{
                     top: pickerTop,
                     left: isMobile ? '50%' : pickerLeft ?? 0,
