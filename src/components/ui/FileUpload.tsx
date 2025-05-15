@@ -12,12 +12,12 @@ type FileUploadProps = {
   maxSizeMB?: number;
 };
 
-const FileUpload: React.FC<FileUploadProps> = ({
+const FileUpload = <T extends { url: string; storageId: string } & Record<string, any>>({
   onImagesChange,
   disabled = false,
   maxFiles = 3,
   maxSizeMB = 5,
-}) => {
+}: FileUploadProps<T>) => {
   const [images, setImages] = useState<ImageAttachment[]>([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,20 +91,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
       return;
     }
     
-    // Check file types and sizes
+    // Filter out non-image files and check file size
     const validFiles = files.filter(file => {
-      // Check file type
-      if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-        setError('Only JPEG and PNG images are allowed');
-        return false;
-      }
-      
-      // Check file size
+      if (!file.type.startsWith('image/')) return false;
       if (file.size > maxSizeMB * 1024 * 1024) {
-        setError(`Files must be smaller than ${maxSizeMB}MB`);
+        setError(`File ${file.name} exceeds the maximum size of ${maxSizeMB}MB`);
         return false;
       }
-      
       return true;
     });
     
@@ -143,10 +136,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
         // Create a temporary blob URL for preview in the upload area
         const previewUrl = URL.createObjectURL(file);
         
+        // Return an object that matches the ImageAttachment type
         return {
-          storageId: storageId as Id<'_storage'>,
-          url, // Permanent URL for database storage
-          previewUrl, // Temporary URL for preview
+          storageId: storageId as Id<"_storage">,
+          url,
+          previewUrl,
         };
       });
       

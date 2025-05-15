@@ -86,6 +86,42 @@ export const togglePin = mutation({
   },
 });
 
+// Update a message
+export const update = mutation({
+  args: {
+    messageId: v.id("messages"),
+    author: v.string(),
+    content: v.string(),
+    imageUrls: v.optional(v.array(v.object({
+      storageId: v.id('_storage'),
+      url: v.string()
+    }))),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    // Get the message to check ownership
+    const message = await ctx.db.get(args.messageId);
+    if (!message) {
+      throw new Error("Message not found");
+    }
+
+    // Only the original author can update the message
+    if (message.userId !== args.userId) {
+      throw new Error("Unauthorized: You can only update your own messages");
+    }
+
+    // Update the message
+    await ctx.db.patch(args.messageId, {
+      author: args.author,
+      content: args.content,
+      imageUrls: args.imageUrls,
+      updatedAt: Date.now(),
+    });
+
+    return true;
+  },
+});
+
 // Delete a message (admin only)
 export const remove = mutation({
   args: {

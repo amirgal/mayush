@@ -25,6 +25,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const [previousSpread, setPreviousSpread] = useState<number>(0);
   const { user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
+  const updateMessage = useMutation(api.messages.update);
+  const [editingMessage, setEditingMessage] = useState<Message | null>(null);
 
   // Use frozen messages or live messages based on form state
   const activeMessages = isFormPage ? frozenMessages : messages;
@@ -112,7 +114,13 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     setIsBookOpen(true);
   };
 
-  const handleShowForm = () => {
+  const handleShowForm = (message?: Message) => {
+    if (message) {
+      setEditingMessage(message);
+    } else {
+      setEditingMessage(null);
+    }
+
     // Save the current spread to return to later
     setPreviousSpread(currentSpread);
 
@@ -136,6 +144,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     setIsFormPage(false);
     setLockedFormPosition(null); // Reset locked position
     setFrozenMessages([]); // Clear frozen messages
+    setEditingMessage(null); // Reset editing state
     // Return to the spread the user was on before opening the form
     setCurrentSpread(previousSpread);
   };
@@ -148,28 +157,42 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     setIsSubmitting(true);
 
     try {
-      await addMessage({
-        author: author.trim(),
-        content: content.trim(),
-        imageUrls: images.length > 0 ? images.map(({ storageId, url }) => ({ storageId, url })) : undefined,
-        userId: user._id
-      });
+      if (editingMessage) {
+        // Update existing message
+        await updateMessage({
+          messageId: editingMessage._id,
+          author: author.trim(),
+          content: content.trim(),
+          userId: user._id,
+          imageUrls: images.length > 0 ? images.map(({ storageId, url }) => ({ storageId, url })) : undefined,
+        });
+      } else {
+        // Add new message
+        await addMessage({
+          author: author.trim(),
+          content: content.trim(),
+          imageUrls: images.length > 0 ? images.map(({ storageId, url }) => ({ storageId, url })) : undefined,
+          userId: user._id
+        });
+      }
 
       // Reset form after successful submission
       setIsFormPage(false);
       setLockedFormPosition(null); // Reset locked position
       setFrozenMessages([]); // Clear frozen messages
+      setEditingMessage(null);
 
-      // Navigate to the position where the new message will appear
-      // We calculate this directly based on the current message count
-      // The new message will be at position messages.length (0-indexed)
-      const newMessagePosition = messages.length;
+      // Navigate to the position where the new/updated message will appear
+      const messagePosition = editingMessage 
+        ? messages.findIndex(m => m._id === editingMessage._id)
+        : messages.length;
+        
       const newMessageSpread = isMobile
-        ? newMessagePosition // In mobile, each message is its own spread
-        : Math.floor(newMessagePosition / 2); // In desktop, two messages per spread
+        ? messagePosition // In mobile, each message is its own spread
+        : Math.floor(messagePosition / 2); // In desktop, two messages per spread
 
-      // Set the current spread to show the new message
-      setCurrentSpread(newMessageSpread);
+      // Set the current spread to show the message
+      setCurrentSpread(Math.max(0, newMessageSpread));
     } catch (err) {
       console.error(err);
     } finally {
@@ -306,6 +329,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                     <MessageCard
                       message={firstPageMessage}
                       isAdmin={isAdmin}
+                      onEdit={user?._id === firstPageMessage.userId ? () => handleShowForm(firstPageMessage) : undefined}
                     />
                   </div>
 
@@ -347,6 +371,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                     <MessageCard
                       message={secondPageMessage}
                       isAdmin={isAdmin}
+                      onEdit={user?._id === secondPageMessage.userId ? () => handleShowForm(secondPageMessage) : undefined}
                     />
                   </div>
 
@@ -502,9 +527,17 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             {/* Add Message Button */}
             {isMobile ? (
               <button
-                onClick={handleShowForm}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleShowForm();
+                }}
                 className="fixed bottom-6 right-6 bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 z-50 flex items-center justify-center"
-                onKeyDown={handleKeyDown(handleShowForm)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleShowForm();
+                  }
+                }}
                 aria-label="הוסף ברכה"
                 tabIndex={0}
               >
@@ -522,9 +555,17 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             ) : (
               <div className="w-full flex justify-center mt-8">
                 <button
-                  onClick={handleShowForm}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleShowForm();
+                  }}
                   className="bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 flex items-center justify-center"
-                  onKeyDown={handleKeyDown(handleShowForm)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleShowForm();
+                    }
+                  }}
                   aria-label="הוסף ברכה"
                   tabIndex={0}
                 >

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import FileUpload from '../ui/FileUpload';
 import type { ImageAttachment } from '../../types';
 
@@ -6,12 +6,33 @@ type BookFormPageProps = {
   onSubmit: (author: string, content: string, images: ImageAttachment[]) => Promise<void>;
   onCancel: () => void;
   isSubmitting: boolean;
+  message?: {
+    author: string;
+    content: string;
+    imageUrls?: Array<{ url: string; storageId: string }>;
+  } | null;
 };
 
-const BookFormPage: React.FC<BookFormPageProps> = ({ onSubmit, onCancel, isSubmitting }) => {
-  const [content, setContent] = useState<string>('');
-  const [images, setImages] = useState<ImageAttachment[]>([]);
-  const [author, setAuthor] = useState<string>('');
+const BookFormPage: React.FC<BookFormPageProps> = ({ 
+  onSubmit, 
+  onCancel, 
+  isSubmitting, 
+  message = null 
+}) => {
+  const [content, setContent] = useState<string>(message?.content || '');
+  const [author, setAuthor] = useState<string>(message?.author || '');
+  const [images, setImages] = useState<ImageAttachment[]>(() => {
+    if (!message?.imageUrls) return [];
+    return message.imageUrls.map(img => ({
+      url: img.url,
+      storageId: img.storageId as ImageAttachment['storageId']
+    }));
+  });
+
+  const handleImagesChange = useCallback((newImages: ImageAttachment[]) => {
+    setImages(newImages);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (content.trim() && author.trim()) {
@@ -21,7 +42,9 @@ const BookFormPage: React.FC<BookFormPageProps> = ({ onSubmit, onCancel, isSubmi
 
   return (
     <div className="relative z-[1] flex-1 p-4">
-      <h2 className="text-2xl font-bold mb-6 text-book-dark text-center">הוסף ברכה</h2>
+      <h2 className="text-2xl font-bold mb-6 text-book-dark text-center">
+        {message ? 'ערוך ברכה' : 'הוסף ברכה'}
+      </h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
@@ -51,7 +74,7 @@ const BookFormPage: React.FC<BookFormPageProps> = ({ onSubmit, onCancel, isSubmi
         <div>
           <label className="block text-sm font-medium mb-1 text-book-dark/80 text-right">תמונות (אופציונלי)</label>
           <FileUpload
-            onImagesChange={setImages}
+            onImagesChange={handleImagesChange}
             disabled={isSubmitting}
             maxFiles={3}
             maxSizeMB={5}
@@ -71,7 +94,7 @@ const BookFormPage: React.FC<BookFormPageProps> = ({ onSubmit, onCancel, isSubmi
             className="px-4 py-2 bg-book-accent text-white rounded-md hover:bg-book-dark transition-colors"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'שולח...' : 'שלח ברכה'}
+            {isSubmitting ? 'שומר...' : message ? 'עדכן ברכה' : 'שלח ברכה'}
           </button>
         </div>
       </form>

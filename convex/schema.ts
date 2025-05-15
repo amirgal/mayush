@@ -10,6 +10,7 @@ export default defineSchema({
       url: v.string()
     }))),
     createdAt: v.float64(),
+    updatedAt: v.optional(v.float64()),
     isPinned: v.boolean(),
     userId: v.id('users'),
   })
