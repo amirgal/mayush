@@ -19,6 +19,8 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
   isSubmitting, 
   message = null 
 }) => {
+  console.log(message);
+  
   const [content, setContent] = useState<string>(message?.content || '');
   const [author, setAuthor] = useState<string>(message?.author || '');
   const [images, setImages] = useState<ImageAttachment[]>(() => {
