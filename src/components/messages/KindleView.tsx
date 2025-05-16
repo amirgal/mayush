@@ -207,7 +207,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                   <div className="pt-8">
                     <h2 className="text-2xl font-sans mb-8 text-gray-800">השאר ברכה חדשה</h2>
                     
-                    <form onSubmit={handleSubmitMessage} className="space-y-6">
+                    <form onSubmit={handleSubmitMessage} className="space-y-6 mb-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1 text-right">שם</label>
                         <input
@@ -242,7 +242,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                         />
                       </div>
                       
-                      <div className="flex justify-between mt-8">
+                      <div className="flex justify-between">
                         <button
                           type="button"
                           onClick={handleCancelForm}
