@@ -10,15 +10,17 @@ type FileUploadProps = {
   disabled?: boolean;
   maxFiles?: number;
   maxSizeMB?: number;
+  editedImages?: ImageAttachment[];
 };
 
-const FileUpload = <T extends { url: string; storageId: string } & Record<string, any>>({
+const FileUpload = ({
   onImagesChange,
   disabled = false,
   maxFiles = 3,
   maxSizeMB = 5,
-}: FileUploadProps<T>) => {
-  const [images, setImages] = useState<ImageAttachment[]>([]);
+  editedImages = []
+}: FileUploadProps) => {
+  const [images, setImages] = useState<ImageAttachment[]>(editedImages);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);

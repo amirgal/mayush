@@ -19,8 +19,6 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
   isSubmitting, 
   message = null 
 }) => {
-  console.log(message);
-  
   const [content, setContent] = useState<string>(message?.content || '');
   const [author, setAuthor] = useState<string>(message?.author || '');
   const [images, setImages] = useState<ImageAttachment[]>(() => {
@@ -30,7 +28,6 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
       storageId: img.storageId as ImageAttachment['storageId']
     }));
   });
-
   const handleImagesChange = useCallback((newImages: ImageAttachment[]) => {
     setImages(newImages);
   }, []);
@@ -80,6 +77,7 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
             disabled={isSubmitting}
             maxFiles={3}
             maxSizeMB={5}
+            editedImages={images}
           />
         </div>
         

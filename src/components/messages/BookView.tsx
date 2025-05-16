@@ -27,7 +27,6 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const addMessage = useMutation(api.messages.add);
   const updateMessage = useMutation(api.messages.update);
   const [editingMessage, setEditingMessage] = useState<Message | null>(null);
-console.log(editingMessage);
   // Use frozen messages or live messages based on form state
   const activeMessages = isFormPage ? frozenMessages : messages;
 
