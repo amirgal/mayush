@@ -1,4 +1,3 @@
-import React from 'react';
 import type { FC, MouseEvent, KeyboardEvent } from 'react';
 
 type AddMessageButtonProps = {

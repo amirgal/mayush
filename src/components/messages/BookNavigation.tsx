@@ -1,4 +1,3 @@
-import React from 'react';
 import type { FC, KeyboardEvent } from 'react';
 
 type BookNavigationProps = {

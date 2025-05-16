@@ -1,4 +1,3 @@
-import React from 'react';
 import type { FC } from 'react';
 import type { Message } from '../../types';
 import MessageCard from './MessageCard';
