@@ -6,6 +6,7 @@ import { useSwipeable } from 'react-swipeable';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useAuthContext } from '../../context/utils/authUtils';
 import { useMutation } from 'convex/react';
+import type { Id } from '../../../convex/_generated/dataModel';
 import { api } from '../../../convex/_generated/api';
 import BookFormPage from './BookFormPage';
 
@@ -26,6 +27,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const { user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
   const updateMessage = useMutation(api.messages.update);
+  const deleteMessage = useMutation(api.messages.deleteMessage);
   const [editingMessage, setEditingMessage] = useState<Message | null>(null);
   // Use frozen messages or live messages based on form state
   const activeMessages = isFormPage ? frozenMessages : messages;
@@ -146,6 +148,26 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     setEditingMessage(null); // Reset editing state
     // Return to the spread the user was on before opening the form
     setCurrentSpread(previousSpread);
+  };
+
+  const handleDeleteMessage = async (messageId: Id<'messages'>) => {
+    if (!user) {
+      console.error('User must be logged in to delete messages');
+      return;
+    }
+    
+    try {
+      await deleteMessage({ 
+        messageId, 
+        userId: user._id // user is guaranteed to be defined here
+      });
+      // If we're on the last message and it's deleted, go back one page
+      if (currentSpread * 2 >= messages.length - 1) {
+        setCurrentSpread(Math.max(0, currentSpread - 1));
+      }
+    } catch (error) {
+      console.error('Failed to delete message:', error);
+    }
   };
 
   const handleSubmitMessage = async (author: string, content: string, images: ImageAttachment[]) => {
@@ -330,6 +352,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                       message={firstPageMessage}
                       isAdmin={isAdmin}
                       onEdit={user?._id === firstPageMessage.userId ? () => handleShowForm(firstPageMessage) : undefined}
+                      onDelete={user?._id === firstPageMessage.userId || isAdmin ? () => handleDeleteMessage(firstPageMessage._id) : undefined}
                     />
                   </div>
 
@@ -372,6 +395,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                       message={secondPageMessage}
                       isAdmin={isAdmin}
                       onEdit={user?._id === secondPageMessage.userId ? () => handleShowForm(secondPageMessage) : undefined}
+                      onDelete={user?._id === secondPageMessage.userId || isAdmin ? () => handleDeleteMessage(secondPageMessage._id) : undefined}
                     />
                   </div>
 

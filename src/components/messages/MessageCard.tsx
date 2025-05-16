@@ -6,14 +6,17 @@ import { api } from '../../../convex/_generated/api';
 import type { Message, Reaction, ReactionWithCount } from '../../types';
 import { useAuthContext } from '../../context/utils/authUtils';
 import ImageModal from '../ui/ImageModal';
+import ConfirmationDialog from '../ui/ConfirmationDialog';
 
 type MessageCardProps = {
   message: Message;
   isAdmin: boolean;
   onEdit?: () => void;
+  onDelete?: () => void;
 };
 
-const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, onEdit }) => {
+const MessageCard: FC<MessageCardProps> = ({ message, isAdmin, onEdit, onDelete }) => {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showReactionPicker, setShowReactionPicker] = useState(false);
 const [pickerTop, setPickerTop] = useState<number | null>(null);
 const [pickerLeft, setPickerLeft] = useState<number | null>(null);
@@ -120,10 +123,25 @@ useEffect(() => {
     }
   };
 
-  const handleKeyDown = (callback: () => void) => (e: React.KeyboardEvent) => {
+  const handleKeyDown = (callback: (e?: React.KeyboardEvent) => void) => (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      callback();
+      e.preventDefault();
+      callback(e);
     }
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    setShowDeleteConfirm(false);
+    onDelete?.();
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
   };
 
   const handleImageLoad = (imageUrl: string) => {
@@ -144,30 +162,62 @@ useEffect(() => {
     <div className={`${cardClassName} flex flex-col`}>
       <div className="flex justify-between items-start mb-4 pb-2 border-b border-book-dark/10">
         <div className="flex items-center gap-2">
-          {onEdit && (
-            <button
-              onClick={onEdit}
-              onKeyDown={handleKeyDown(onEdit)}
-              className="text-book-dark/60 hover:text-book-dark p-1"
-              aria-label="Edit message"
-              tabIndex={0}
+          <div className="flex items-center gap-1">
+        {onEdit && (
+          <button
+            onClick={onEdit}
+            onKeyDown={handleKeyDown(onEdit)}
+            className="text-book-dark/60 hover:text-book-dark p-1 rounded-full hover:bg-book-light/50 transition-colors"
+            aria-label="Edit message"
+            tabIndex={0}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
-              </svg>
-            </button>
-          )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+          </button>
+        )}
+        {onDelete && (
+          <button
+            onClick={handleDeleteClick}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('click') as unknown as React.MouseEvent;
+                handleDeleteClick(mouseEvent);
+              }
+            }}
+            className="text-red-500/70 hover:text-red-600 p-1 rounded-full hover:bg-red-50 transition-colors"
+            aria-label="Delete message"
+            tabIndex={0}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </button>
+        )}
+      </div>
           {isAdmin ? (
             <button
               onClick={handleTogglePin}
@@ -361,6 +411,16 @@ useEffect(() => {
           onClose={() => setSelectedImage(null)}
         />
       )}
+      
+      <ConfirmationDialog
+        isOpen={showDeleteConfirm}
+        title="מחיקת הודעה"
+        message="האם אתה בטוח שברצונך למחוק הודעה זו? פעולה זו לא ניתנת לביטול."
+        confirmText="מחק"
+        cancelText="ביטול"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 };

@@ -134,6 +134,47 @@ export const remove = mutation({
       throw new Error("Unauthorized: Only admins can delete messages");
     }
 
+    const message = await ctx.db.get(args.messageId);
+    if (!message) {
+      throw new Error("Message not found");
+    }
+
+    // Delete any associated images from storage
+    if (message.imageUrls && message.imageUrls.length > 0) {
+      await Promise.all(
+        message.imageUrls.map((img) => ctx.storage.delete(img.storageId))
+      );
+    }
+
+    await ctx.db.delete(args.messageId);
+    return true;
+  },
+});
+
+// Delete a message (for users to delete their own messages)
+export const deleteMessage = mutation({
+  args: {
+    messageId: v.id("messages"),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const message = await ctx.db.get(args.messageId);
+    if (!message) {
+      throw new Error("Message not found");
+    }
+
+    // Only allow deletion if the user is the author
+    if (message.userId !== args.userId) {
+      throw new Error("Unauthorized: You can only delete your own messages");
+    }
+
+    // Delete any associated images from storage
+    if (message.imageUrls && message.imageUrls.length > 0) {
+      await Promise.all(
+        message.imageUrls.map((img) => ctx.storage.delete(img.storageId))
+      );
+    }
+
     await ctx.db.delete(args.messageId);
     return true;
   },
