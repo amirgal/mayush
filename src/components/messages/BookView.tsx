@@ -110,6 +110,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
+      if(isFormPage) return;
       if (!isBookOpen) {
         handleOpenBook();
       } else if (currentSpread === 0 && !isMobile) {
@@ -120,6 +121,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       }
     },
     onSwipedRight: () => {
+      if(isFormPage) return;
       if (!isBookOpen) {
         handleOpenBook();
       } else {
