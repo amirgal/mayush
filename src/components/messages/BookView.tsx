@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import type { FC } from 'react';
 import type { Message, ImageAttachment } from '../../types';
 import { useSwipeable } from 'react-swipeable';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useAuthContext } from '../../context/utils/authUtils';
+import { useForm } from '../../context/FormContext';
 import { useMutation } from 'convex/react';
 import type { Id } from '../../../convex/_generated/dataModel';
 import { api } from '../../../convex/_generated/api';
@@ -24,63 +25,67 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const isMobile = useDeviceDetect();
   const [currentSpread, setCurrentSpread] = useState(0);
   const [isBookOpen, setIsBookOpen] = useState(false);
-  const [isFormPage, setIsFormPage] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lockedFormPosition, setLockedFormPosition] = useState<'left' | 'right' | null>(null);
   const [frozenMessages, setFrozenMessages] = useState<Message[]>([]);
   const [previousSpread, setPreviousSpread] = useState<number>(0);
-  const [editingMessage, setEditingMessage] = useState<Message | null>(null);
   
+  const { isFormOpen, editingMessage, closeForm } = useForm();
   const { user } = useAuthContext();
   const addMessage = useMutation(api.messages.add);
   const updateMessage = useMutation(api.messages.update);
   const deleteMessage = useMutation(api.messages.deleteMessage);
   
   // Use frozen messages or live messages based on form state
-  const activeMessages = isFormPage ? frozenMessages : messages;
+  const activeMessages = isFormOpen ? frozenMessages : messages;
 
   // Calculate total spreads including form page if needed
   const totalSpreads = useMemo(() => 
     isMobile
-      ? activeMessages.length + (isFormPage ? 1 : 0)
-      : Math.ceil((activeMessages.length + (isFormPage ? 1 : 0)) / 2),
-    [activeMessages.length, isFormPage, isMobile]
+      ? activeMessages.length + (isFormOpen ? 1 : 0)
+      : Math.ceil((activeMessages.length + (isFormOpen ? 1 : 0)) / 2),
+    [activeMessages.length, isFormOpen, isMobile]
   );
 
   const handlePrevPage = useCallback(() => {
     // Check if we're on the form page
-    const isOnFormPage = isFormPage && currentSpread === totalSpreads - 1;
+    const isOnFormPage = isFormOpen && currentSpread === totalSpreads - 1;
 
     if (isOnFormPage) {
       // If we're on the form page, exit form mode before navigating
-      setIsFormPage(false);
+      closeForm();
       setLockedFormPosition(null); // Reset locked position
       setFrozenMessages([]); // Clear frozen messages
 
       // Navigate to the last message spread
       const lastMessageSpread = isMobile ? messages.length - 1 : Math.ceil(messages.length / 2) - 1;
+      console.log('lastMessageSpread', lastMessageSpread);
       setCurrentSpread(Math.max(0, lastMessageSpread));
     } else if (currentSpread > 0) {
       // Normal navigation to previous spread
+      console.log('currentSpread', currentSpread);
       setCurrentSpread(currentSpread - 1);
     } else {
       // Close book when on first page
       setIsBookOpen(false);
       setCurrentSpread(0);
     }
-  }, [currentSpread, isFormPage, totalSpreads, isMobile, messages.length]);
+  }, [currentSpread, isFormOpen, totalSpreads, isMobile, messages.length, closeForm]);
 
   const handleNextPage = useCallback(() => {
+    console.log('handleNextPage', currentSpread, totalSpreads);
     if (currentSpread < totalSpreads - 1) {
+      console.log('currentSpread2', currentSpread);
       setCurrentSpread(currentSpread + 1);
     }
   }, [currentSpread, totalSpreads]);
+console.log(currentSpread);
 
   const canGoToPrevPage = currentSpread > 0 || !isBookOpen;
   const canGoToNextPage = currentSpread < totalSpreads - 1;
 
-  // Check if we're on the form spread (last spread when isFormPage is true)
-  const isFormSpread = isFormPage && currentSpread === totalSpreads - 1;
+  // Check if we're on the form spread (last spread when isFormOpen is true)
+  const isFormSpread = isFormOpen && currentSpread === totalSpreads - 1;
 
   // Determine if form should be in first or second position (based on even/odd message count)
   const isEvenMessageCount = activeMessages.length % 2 === 0;
@@ -110,18 +115,19 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
-      if(isFormPage) return;
+      if (isFormOpen) return;
       if (!isBookOpen) {
         handleOpenBook();
       } else if (currentSpread === 0 && !isMobile) {
         setIsBookOpen(false);
+        console.log('setCurrentSpread', currentSpread);
         setCurrentSpread(0);
       } else {
         handlePrevPage();
       }
     },
     onSwipedRight: () => {
-      if(isFormPage) return;
+      if (isFormOpen) return;
       if (!isBookOpen) {
         handleOpenBook();
       } else {
@@ -136,40 +142,41 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     setIsBookOpen(true);
   }, []);
 
-  const handleShowForm = useCallback((message?: Message) => {
-    if (message) {
-      setEditingMessage(message);
+  const { openForm } = useForm();
+
+  // Effect to handle form state changes
+  useEffect(() => {
+    if (isFormOpen) {
+      // When form is opened, freeze the current messages
+      setFrozenMessages([...messages]);
+      setPreviousSpread(currentSpread);
+      
+      // Determine and lock the form position based on current message count
+      if (!isMobile) {
+        const shouldBeOnLeft = messages.length % 2 === 0;
+        setLockedFormPosition(shouldBeOnLeft ? 'left' : 'right');
+      } else {
+        setLockedFormPosition('right'); // Mobile always uses full width
+      }
+      
+      // Navigate to the form page
+      const newTotalSpreads = isMobile ? messages.length + 1 : Math.ceil((messages.length + 1) / 2);
+      console.log('newTotalSpreads', newTotalSpreads);
+      setCurrentSpread(newTotalSpreads - 1);
     } else {
-      setEditingMessage(null);
+      // When form is closed, reset form-related state
+      setLockedFormPosition(null);
+      setFrozenMessages([]);
+      
+      // If we were on the form page, return to the previous spread
+      console.log('previousSpread', previousSpread);
+      console.log('currentSpread', currentSpread);
+      if (previousSpread !== null) {
+        // console.log('setCurrentSpread', previousSpread);
+        // setCurrentSpread(previousSpread);
+      }
     }
-
-    // Save the current spread to return to later
-    setPreviousSpread(currentSpread);
-
-    // Freeze the current messages
-    setFrozenMessages([...messages]);
-
-    // Determine and lock the form position based on current message count
-    if (!isMobile) {
-      const shouldBeOnLeft = messages.length % 2 === 0;
-      setLockedFormPosition(shouldBeOnLeft ? 'left' : 'right');
-    } else {
-      setLockedFormPosition('right'); // Mobile always uses full width
-    }
-
-    setIsFormPage(true);
-    const newTotalSpreads = isMobile ? messages.length + 1 : Math.ceil((messages.length + 1) / 2);
-    setCurrentSpread(newTotalSpreads - 1);
-  }, [currentSpread, isMobile, messages]);
-
-  const handleCancelForm = useCallback(() => {
-    setIsFormPage(false);
-    setLockedFormPosition(null); // Reset locked position
-    setFrozenMessages([]); // Clear frozen messages
-    setEditingMessage(null); // Reset editing state
-    // Return to the spread the user was on before opening the form
-    setCurrentSpread(previousSpread);
-  }, [previousSpread]);
+  }, [isFormOpen, messages, currentSpread, isMobile, previousSpread]);
 
   const handleDeleteMessage = useCallback(async (messageId: Id<'messages'>) => {
     if (!user) {
@@ -198,7 +205,6 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     }
 
     setIsSubmitting(true);
-
     try {
       const trimmedAuthor = author.trim();
       const trimmedContent = content.trim();
@@ -228,11 +234,10 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
         });
       }
 
-      // Reset form after successful submission
-      setIsFormPage(false);
+      // Close form after successful submission
+      closeForm();
       setLockedFormPosition(null);
       setFrozenMessages([]);
-      setEditingMessage(null);
 
       // Navigate to the position where the new/updated message will appear
       const messagePosition = editingMessage 
@@ -250,7 +255,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [editingMessage, user, updateMessage, addMessage, isMobile, messages, setCurrentSpread, setIsFormPage, setLockedFormPosition, setFrozenMessages, setEditingMessage, setIsSubmitting]);
+  }, [editingMessage, user, updateMessage, addMessage, isMobile, messages, closeForm]);
 
   // Render the closed book cover or the open book content
   return (
@@ -290,7 +295,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                 <BookFormPageWrapper
                   position={isMobile ? 'mobile' : 'left'}
                   onSubmit={handleSubmitMessage}
-                  onCancel={handleCancelForm}
+                  onCancel={closeForm}
                   isSubmitting={isSubmitting}
                   message={editingMessage}
                 />
@@ -300,7 +305,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                   message={firstPageMessage}
                   isAdmin={isAdmin}
                   onEdit={user?._id === firstPageMessage.userId
-                    ? () => handleShowForm(firstPageMessage)
+                    ? () => openForm(firstPageMessage)
                     : undefined}
                   onDelete={(user?._id === firstPageMessage.userId || isAdmin)
                     ? () => handleDeleteMessage(firstPageMessage._id)
@@ -310,13 +315,13 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               )}
 
               {/* Second Page */}
-              {secondPageMessage && !isFormPage ? (
+              {secondPageMessage && !isFormOpen ? (
                 <BookPage
                   key={secondPageMessage._id}
                   message={secondPageMessage}
                   isAdmin={isAdmin}
                   onEdit={user?._id === secondPageMessage.userId
-                    ? () => handleShowForm(secondPageMessage)
+                    ? () => openForm(secondPageMessage)
                     : undefined}
                   onDelete={(user?._id === secondPageMessage.userId || isAdmin)
                     ? () => handleDeleteMessage(secondPageMessage._id)
@@ -327,7 +332,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                 <BookFormPageWrapper
                   position={isMobile ? 'mobile' : 'right'}
                   onSubmit={handleSubmitMessage}
-                  onCancel={handleCancelForm}
+                  onCancel={closeForm}
                   isSubmitting={isSubmitting}
                   message={editingMessage}
                 />
@@ -384,7 +389,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             <AddMessageButton 
               onClick={(e) => {
                 e.stopPropagation();
-                handleShowForm();
+                openForm();
               }} 
               isMobile={isMobile} 
             />

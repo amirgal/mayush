@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { useForm } from "../../context/FormContext";
 
 type HeaderProps = {
   isAdmin: boolean;
@@ -15,6 +16,7 @@ const Header: FC<HeaderProps> = ({
   onAdminClick,
   onToggleView,
 }) => {
+  const { openForm } = useForm();
 
   const handleKeyDown = (callback: () => void) => (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -26,6 +28,16 @@ const Header: FC<HeaderProps> = ({
     <header className="bg-book-dark text-white py-4 shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center gap-6">
+          {!isAdminPage && (
+            <button
+              onClick={() => openForm()}
+              onKeyDown={handleKeyDown(() => openForm())}
+              className="px-4 py-2 bg-book-primary hover:bg-book-primary-dark text-white rounded-lg transition-colors"
+              aria-label="Add new message"
+            >
+              Add Message
+            </button>
+          )}
           {!isAdminPage && (
             <button
               onClick={onToggleView}
