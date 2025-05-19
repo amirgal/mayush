@@ -12,7 +12,6 @@ import BookCover from './BookCover';
 import BookPage from './BookPage';
 import BookFormPageWrapper from './BookFormPageWrapper';
 import BookNavigation from './BookNavigation';
-import AddMessageButton from './AddMessageButton';
 import PageNumbers from './PageNumbers';
 import LineGuide from './LineGuide';
 
@@ -375,15 +374,6 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                 : `עמודים ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} מתוך ${messages.length}`
               }
             </div>
-            
-            {/* Add Message Button */}
-            <AddMessageButton 
-              onClick={(e) => {
-                e.stopPropagation();
-                openForm();
-              }} 
-              isMobile={isMobile} 
-            />
           </div>
         </div>
       )}
