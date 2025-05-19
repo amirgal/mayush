@@ -1,11 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { FC } from 'react';
 import type { Message, ImageAttachment } from '../../types';
 import { useSwipeable } from 'react-swipeable';
 import ImageModal from '../ui/ImageModal';
 import useDeviceDetect from '../../hooks/useDeviceDetect';
 import { useAuthContext } from '../../context/utils/authUtils';
+import { useForm } from '../../context/FormContext';
 import { useMutation } from 'convex/react';
+import type { Id } from '../../../convex/_generated/dataModel';
 import { api } from '../../../convex/_generated/api';
 import FileUpload from '../ui/FileUpload';
 
@@ -17,20 +19,23 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   const isMobile = useDeviceDetect();
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedImage, setSelectedImage] = useState<{ url: string; altText: string } | null>(null);
-  const [isFormPage, setIsFormPage] = useState(false);
-  const [formContent, setFormContent] = useState('');
   const [formImages, setFormImages] = useState<ImageAttachment[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previousPage, setPreviousPage] = useState<number>(0);
   const [frozenMessages, setFrozenMessages] = useState<Message[]>([]);
+  const [formContent, setFormContent] = useState('');
   const [author, setAuthor] = useState('');
+  
   const { user } = useAuthContext();
+  const { isFormOpen, editingMessage, openForm, closeForm } = useForm();
   const addMessage = useMutation(api.messages.add);
+  const updateMessage = useMutation(api.messages.update);
   
   // Use frozen messages or live messages based on form state
-  const activeMessages = isFormPage ? frozenMessages : messages;
+  const activeMessages = isFormOpen ? frozenMessages : messages;
   
-  const totalPages = activeMessages.length + 1 + (isFormPage ? 1 : 0); // +1 for first Kindle page, +1 for form page if visible
+  // Calculate total pages: 1 for title page + number of messages + 1 for form if open
+  const totalPages = activeMessages.length + 1 + (isFormOpen ? 1 : 0);
 
   const handlePrevPage = useCallback(() => {
     if (currentPage > 0) {
@@ -44,65 +49,108 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
     }
   }, [currentPage, totalPages]);
 
+  // Effect to handle form state changes
+  useEffect(() => {
+    if (isFormOpen) {
+      // When form is opened, freeze the current messages
+      setFrozenMessages([...messages]);
+      setPreviousPage(currentPage);
+      
+      // If editing an existing message, pre-fill the form
+      if (editingMessage) {
+        setAuthor(editingMessage.author);
+        setFormContent(editingMessage.content);
+        if (editingMessage.imageUrls?.length) {
+          setFormImages(editingMessage.imageUrls.map(img => ({
+            storageId: img.storageId as Id<"_storage">,
+            url: img.url
+          })));
+        }
+      }
+      
+      // Calculate the form page position (last page)
+      const newTotalPages = messages.length + 2; // +1 for title page, +1 for form page
+      setCurrentPage(newTotalPages - 1);
+    } else {
+      // When form is closed, reset form-related state
+      setFormContent('');
+      setFormImages([]);
+      setAuthor('');
+      setFrozenMessages([]);
+      
+      // Return to the previous page if we were on the form
+      if (previousPage !== null) {
+        setCurrentPage(previousPage);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFormOpen]);
+
   const handleCancelForm = () => {
-    // Reset form fields
-    setFormContent('');
-    setFormImages([]);
-    setAuthor('');
-    // Hide the form page
-    setIsFormPage(false);
-    // Clear frozen messages
-    setFrozenMessages([]);
-    // Return to the page the user was on before opening the form
-    setCurrentPage(previousPage);
+    closeForm();
   };
 
   const handleShowForm = () => {
-    // Save the current page to return to later
-    setPreviousPage(currentPage);
-    
-    // Freeze the current messages
-    setFrozenMessages([...messages]);
-    
-    // Set the form page flag to true
-    setIsFormPage(true);
-    // Then calculate the new total pages which now includes the form page
-    const newTotalPages = messages.length + 1 + 1; // +1 for title page, +1 for form page
-    // Navigate directly to the form page (last page)
-    setCurrentPage(newTotalPages - 1);
+    openForm();
   };
 
   const handleSubmitMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!user || !formContent.trim() || !author) {
+    if (!user || !formContent.trim() || !author.trim()) {
       return;
     }
     
     setIsSubmitting(true);
     
     try {
-      await addMessage({
-        author,
+      // Prepare the message data
+      const messageData = {
+        author: author.trim(),
         content: formContent.trim(),
-        imageUrls: formImages.length > 0 ? formImages.map(({ storageId, url }) => ({ storageId, url })) : undefined,
+        imageUrls: formImages.length > 0 ? formImages.map(({ storageId, url }) => ({
+          storageId: storageId as Id<"_storage">,
+          url
+        })) : [],
         userId: user._id
-      });
+      };
+
+      if (editingMessage) {
+        // Update existing message
+        await updateMessage({
+          messageId: editingMessage._id,
+          author: messageData.author,
+          content: messageData.content,
+          imageUrls: messageData.imageUrls,
+          userId: messageData.userId
+        });
+      } else {
+        // Add new message
+        await addMessage(messageData);
+      }
       
-      // Reset form after successful submission
+      // Reset form state
       setFormContent('');
       setFormImages([]);
       setAuthor('');
-      setIsFormPage(false);
-      setFrozenMessages([]); // Clear frozen messages
       
-      // Navigate to the position where the new message will appear
-      // We calculate this directly based on the current message count
-      const newMessagePosition = messages.length;
-      // Add 1 for the title page
-      setCurrentPage(newMessagePosition + 1);
+      // Close the form
+      closeForm();
+      
+      // Navigate to the position where the message appears
+      if (editingMessage) {
+        // For updates, find the message in the list
+        const messageIndex = messages.findIndex(m => m._id === editingMessage._id);
+        if (messageIndex !== -1) {
+          setCurrentPage(messageIndex + 1); // +1 for title page
+        }
+      } else {
+        // For new messages, go to the last page
+        setCurrentPage(messages.length + 1); // +1 for title page, +1 for 0-based index
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Error saving message:', err);
+      // Consider showing an error message to the user here
     } finally {
       setIsSubmitting(false);
     }
@@ -117,8 +165,8 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   // Determine what to display on the current page
   const currentPageMessage = currentPage === 0 
     ? null // First page is the title page
-    : isFormPage && currentPage === totalPages - 1 
-      ? null // Last page is the form when isFormPage is true
+    : isFormOpen && currentPage === totalPages - 1 
+      ? null // Last page is the form when isFormOpen is true
       : activeMessages[currentPage - 1]; // -1 because first page is title
 
   return (
@@ -202,10 +250,12 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                     </div>
                   </div>
                 </div>
-              ) : isFormPage ? (
+              ) : isFormOpen ? (
                 <div className="min-h-full">
                   <div className="pt-8">
-                    <h2 className="text-2xl font-sans mb-8 text-gray-800">השאר ברכה חדשה</h2>
+                    <h2 className="text-2xl font-sans mb-8 text-gray-800">
+                      {editingMessage ? 'ערוך ברכה' : 'השאר ברכה חדשה'}
+                    </h2>
                     
                     <form onSubmit={handleSubmitMessage} className="space-y-6 mb-4">
                       <div>
@@ -255,7 +305,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                           className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
                           disabled={isSubmitting}
                         >
-                          {isSubmitting ? 'שולח...' : 'שלח ברכה'}
+                          {isSubmitting ? 'שומר...' : editingMessage ? 'עדכן ברכה' : 'שלח ברכה'}
                         </button>
                       </div>
                     </form>
