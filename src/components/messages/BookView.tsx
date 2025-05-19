@@ -59,11 +59,9 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
 
       // Navigate to the last message spread
       const lastMessageSpread = isMobile ? messages.length - 1 : Math.ceil(messages.length / 2) - 1;
-      console.log('lastMessageSpread', lastMessageSpread);
       setCurrentSpread(Math.max(0, lastMessageSpread));
     } else if (currentSpread > 0) {
       // Normal navigation to previous spread
-      console.log('currentSpread', currentSpread);
       setCurrentSpread(currentSpread - 1);
     } else {
       // Close book when on first page
@@ -73,13 +71,10 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   }, [currentSpread, isFormOpen, totalSpreads, isMobile, messages.length, closeForm]);
 
   const handleNextPage = useCallback(() => {
-    console.log('handleNextPage', currentSpread, totalSpreads);
     if (currentSpread < totalSpreads - 1) {
-      console.log('currentSpread2', currentSpread);
       setCurrentSpread(currentSpread + 1);
     }
   }, [currentSpread, totalSpreads]);
-console.log(currentSpread);
 
   const canGoToPrevPage = currentSpread > 0 || !isBookOpen;
   const canGoToNextPage = currentSpread < totalSpreads - 1;
@@ -120,7 +115,6 @@ console.log(currentSpread);
         handleOpenBook();
       } else if (currentSpread === 0 && !isMobile) {
         setIsBookOpen(false);
-        console.log('setCurrentSpread', currentSpread);
         setCurrentSpread(0);
       } else {
         handlePrevPage();
@@ -161,7 +155,6 @@ console.log(currentSpread);
       
       // Navigate to the form page
       const newTotalSpreads = isMobile ? messages.length + 1 : Math.ceil((messages.length + 1) / 2);
-      console.log('newTotalSpreads', newTotalSpreads);
       setCurrentSpread(newTotalSpreads - 1);
     } else {
       // When form is closed, reset form-related state
@@ -169,14 +162,12 @@ console.log(currentSpread);
       setFrozenMessages([]);
       
       // If we were on the form page, return to the previous spread
-      console.log('previousSpread', previousSpread);
-      console.log('currentSpread', currentSpread);
       if (previousSpread !== null) {
-        // console.log('setCurrentSpread', previousSpread);
-        // setCurrentSpread(previousSpread);
+        setCurrentSpread(previousSpread);
       }
     }
-  }, [isFormOpen, messages, currentSpread, isMobile, previousSpread]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFormOpen]);
 
   const handleDeleteMessage = useCallback(async (messageId: Id<'messages'>) => {
     if (!user) {
