@@ -36,7 +36,7 @@ const ImageModal: FC<ImageModalProps> = ({ imageUrl, altText, onClose, applyEInk
       aria-label="Image Viewer"
     >
       <div className="w-screen h-screen flex items-center justify-center p-4" onClick={handleBackdropClick}>
-        <div className="relative max-w-4xl w-full" onClick={e => e.stopPropagation()}>
+        <div className="relative max-w-5xl w-full" onClick={e => e.stopPropagation()}>
           <div className={`${applyEInkEffect ? 'bg-[#f6f6f6]' : 'bg-white'} rounded-xl shadow-2xl p-4 relative`}>
             <div className="relative">
               <img

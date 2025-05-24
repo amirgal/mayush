@@ -249,7 +249,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
 
   // Render the closed book cover or the open book content
   return (
-    <div className="container mx-auto max-w-4xl">
+    <div className="container mx-auto max-w-5xl">
       {!isBookOpen ? (
         <BookCover onOpen={handleOpenBook} />
       ) : (
