@@ -27,7 +27,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
   const [author, setAuthor] = useState('');
   
   const { user } = useAuthContext();
-  const { isFormOpen, editingMessage, openForm, closeForm } = useForm();
+  const { isFormOpen, editingMessage, closeForm } = useForm();
   const addMessage = useMutation(api.messages.add);
   const updateMessage = useMutation(api.messages.update);
   
@@ -90,9 +90,6 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
     closeForm();
   };
 
-  const handleShowForm = () => {
-    openForm();
-  };
 
   const handleSubmitMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -324,33 +321,6 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
         </div>
 
       </div>
-
-      {/* Add Message Button */}
-      {isMobile ? (
-        <button 
-          onClick={handleShowForm}
-          className="fixed bottom-6 right-6 bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 z-50 flex items-center justify-center"
-          aria-label="הוסף ברכה"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          <span className="mr-2 hidden md:inline">הוסף ברכה</span>
-        </button>
-      ) : (
-        <div className="w-full flex justify-center mt-8">
-          <button 
-            onClick={handleShowForm}
-            className="bg-book-dark text-white p-4 rounded-full shadow-2xl hover:bg-book-accent transition-colors duration-300 flex items-center justify-center"
-            aria-label="הוסף ברכה"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="mr-2 hidden md:inline">הוסף ברכה</span>
-          </button>
-        </div>
-      )}
 
       {selectedImage && (
         <ImageModal
