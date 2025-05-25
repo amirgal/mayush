@@ -40,7 +40,7 @@ const GuestbookPage = () => {
         onToggleView={handleToggleView}
       />
       <main className="flex-1 flex flex-col overflow-hidden">
-        <div className={`container mx-auto px-2 ${isMobile ? 'pt-4 overflow-y-auto max-h-[90vh]' : 'pt-8'} pb-8 h-full flex flex-col`}>
+        <div className={`container mx-auto px-2 overflow-y-auto ${isMobile ? 'pt-4 max-h-[90vh]' : 'pt-8'} pb-8 h-full flex flex-col [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}>
           <div className="flex-1 flex flex-col min-h-0">
             <MessageList
               messages={messages}

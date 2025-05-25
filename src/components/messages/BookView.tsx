@@ -368,7 +368,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             )}
 
             {/* Page Info */}
-            <div className="text-book-dark/70 font-book-title text-lg mt-4">
+            <div className="text-book-dark/70 font-book-title text-lg my-4">
               {isMobile
                 ? `עמוד ${currentSpread + 1} מתוך ${messages.length}`
                 : `עמודים ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} מתוך ${messages.length}`
