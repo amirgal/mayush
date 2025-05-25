@@ -1,5 +1,6 @@
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import { useForm } from "../../context/FormContext";
+import InfoModal from "../common/InfoModal";
 
 type HeaderProps = {
   isAdmin: boolean;
@@ -24,21 +25,45 @@ const Header: FC<HeaderProps> = ({
     }
   };
 
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+
+  const toggleInfoModal = () => {
+    setIsInfoModalOpen(!isInfoModalOpen);
+  };
+
   return (
-    <header className="bg-book-dark text-white py-4 shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        <div className="flex items-center gap-6">
-          {!isAdminPage && (
-            <button
-              onClick={() => openForm()}
-              onKeyDown={handleKeyDown(() => openForm())}
-              className="px-4 py-2 bg-book-primary hover:bg-book-primary-dark text-white rounded-lg transition-colors"
-              aria-label="Add new message"
-            >
-              Add Message
-            </button>
-          )}
-          {!isAdminPage && (
+    <>
+      <header className="bg-book-dark text-white py-4 shadow-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center gap-6">
+            {!isAdminPage && (
+              <>
+                <button
+                  onClick={() => openForm()}
+                  onKeyDown={handleKeyDown(() => openForm())}
+                  className="px-4 py-2 bg-book-primary hover:bg-book-primary-dark text-white rounded-lg transition-colors"
+                  aria-label="Add new message"
+                >
+                  Add Message
+                </button>
+                <button
+                  onClick={toggleInfoModal}
+                  onKeyDown={handleKeyDown(toggleInfoModal)}
+                  className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors flex items-center gap-2"
+                  aria-label="Show instructions"
+                  title="Show instructions"
+                >
+                  <span className="text-lg">?</span>
+                  <span className="hidden sm:inline">Help</span>
+                </button>
+              </>
+            )}
+          </div>
+          
+          <div className="text-lg text-white/80">ברוך הבא!</div>
+          
+          <div className="flex items-center gap-4">
+            {!isAdminPage && (
             <button
               onClick={onToggleView}
               onKeyDown={handleKeyDown(onToggleView)}
@@ -107,11 +132,12 @@ const Header: FC<HeaderProps> = ({
               </svg>
               <span className="hidden md:inline">ניהול</span>
             </button>
-          )}
+            )}
+          </div>
         </div>
-        <div className="text-lg text-white/80">ברוך הבא!</div>
-      </div>
-    </header>
+      </header>
+      <InfoModal isOpen={isInfoModalOpen} onClose={toggleInfoModal} />
+    </>
   );
 };
 
