@@ -192,8 +192,36 @@ const FileUpload = ({
           tabIndex={-1} // We're using the div for keyboard interaction
         />
         
+        {images.length > 0 && (
+          <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+            {images.map((image, index) => (
+              <div key={image.storageId} className="relative rounded-md overflow-hidden h-16 w-16 bg-gray-100">
+                <img 
+                  src={image.previewUrl || image.url} 
+                  alt={`Uploaded preview ${index + 1}`} 
+                  className="h-full w-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeImage(index);
+                  }}
+                  className="absolute top-0.5 right-0.5 bg-black/50 rounded-full p-1 text-white hover:bg-black/70 transition-colors"
+                  aria-label="Remove image"
+                  tabIndex={0}
+                  disabled={disabled}
+                >
+                  <XMarkIcon className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        
         <div className="flex flex-col items-center justify-center py-3">
           <PhotoIcon className="h-10 w-10 text-gray-400 mb-2" />
+          
           <p className="text-sm text-gray-500">
             {uploading ? (
               'Uploading...'
@@ -212,33 +240,6 @@ const FileUpload = ({
       
       {error && (
         <p className="text-red-500 text-sm mt-1">{error}</p>
-      )}
-      
-      {images.length > 0 && (
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          {images.map((image, index) => (
-            <div key={image.storageId} className="relative rounded-md overflow-hidden h-24 bg-gray-100">
-              <img 
-                src={image.previewUrl || image.url} 
-                alt={`Uploaded preview ${index + 1}`} 
-                className="h-full w-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeImage(index);
-                }}
-                className="absolute top-1 right-1 bg-black/50 rounded-full p-1 text-white hover:bg-black/70 transition-colors"
-                aria-label="Remove image"
-                tabIndex={0}
-                disabled={disabled}
-              >
-                <XMarkIcon className="h-4 w-4" />
-              </button>
-            </div>
-          ))}
-        </div>
       )}
     </div>
   );
