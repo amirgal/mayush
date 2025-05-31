@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import FileUpload from '../ui/FileUpload';
 import type { ImageAttachment } from '../../types';
+import useDeviceDetect from '../../hooks/useDeviceDetect';
 
 type BookFormPageProps = {
   onSubmit: (author: string, content: string, images: ImageAttachment[]) => Promise<void>;
@@ -19,6 +20,7 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
   isSubmitting, 
   message = null 
 }) => {
+  const isMobile = useDeviceDetect();
   const [content, setContent] = useState<string>(message?.content || '');
   const [author, setAuthor] = useState<string>(message?.author || '');
   const [images, setImages] = useState<ImageAttachment[]>(() => {
@@ -40,7 +42,7 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
   };
 
   return (
-    <div className="relative z-[1] flex-1 p-4">
+    <div className={`relative z-[1] flex-1 ${isMobile ? '' : 'p-4'}`}>
       <h2 className="text-2xl font-bold mb-6 text-book-dark text-center">
         {message ? 'ערוך ברכה' : 'הוסף ברכה'}
       </h2>
