@@ -352,7 +352,10 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
               <PageNumbers 
                 currentPage={currentSpread} 
                 totalPages={messages.length} 
-                isMobile={isMobile} 
+                isMobile={isMobile}
+                isFormOpen={isFormOpen}
+                formInFirstPosition={formInFirstPosition}
+                formInSecondPosition={formInSecondPosition}
               />
             </div>
 
@@ -370,8 +373,12 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
             {/* Page Info */}
             <div className="text-book-dark/70 font-book-title text-lg my-4">
               {isMobile
-                ? `עמוד ${currentSpread + 1} מתוך ${messages.length}`
-                : `עמודים ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} מתוך ${messages.length}`
+                ? `עמוד ${currentSpread + 1} מתוך ${isFormOpen ? messages.length + 1 : messages.length}`
+                : isFormSpread
+                  ? formInFirstPosition
+                    ? `עמוד ${messages.length + 1} מתוך ${messages.length + 1}` // Only show form page when it's on the left
+                    : `עמודים ${Math.min(currentSpread * 2 + 1, messages.length)} - ${messages.length + 1} מתוך ${messages.length + 1}` // Show message page and form page
+                  : `עמודים ${currentSpread * 2 + 1} - ${Math.min(currentSpread * 2 + 2, messages.length)} מתוך ${isFormOpen ? messages.length + 1 : messages.length}`
               }
             </div>
           </div>
