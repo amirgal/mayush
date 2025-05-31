@@ -140,6 +140,9 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   // Effect to handle form state changes
   useEffect(() => {
     if (isFormOpen) {
+      // When form is opened, make sure the book is open
+      setIsBookOpen(true);
+      
       // When form is opened, freeze the current messages
       setFrozenMessages([...messages]);
       setPreviousSpread(currentSpread);

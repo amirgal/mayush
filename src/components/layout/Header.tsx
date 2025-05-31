@@ -35,7 +35,6 @@ const Header: FC<HeaderProps> = ({
     <>
       <header className="bg-book-dark text-white py-2 shadow-lg sticky top-0 z-50">
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <div className="flex items-center gap-6">
             {!isAdminPage && (
               <>
                 <button
@@ -50,7 +49,6 @@ const Header: FC<HeaderProps> = ({
                 </button>
               </>
             )}
-          </div>
           <div className="flex items-center gap-4">
             {!isAdminPage && (
               <>
