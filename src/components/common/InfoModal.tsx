@@ -47,25 +47,28 @@ const InfoModal: FC<InfoModalProps> = ({ isOpen, onClose }) => {
           >
             <button
               onClick={onClose}
-              className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition-colors p-2 -ml-2 rounded-full hover:bg-gray-100"
+              className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100 w-10 h-10 flex items-center justify-center"
               aria-label="Close modal"
             >
-              <span className="text-lg font-bold">X</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
             
             <div className="space-y-6">
               <div className="text-center">
-                <h2 className="text-2xl font-bold text-book-dark mb-2">הוראות הוספת הודעה</h2>
-                <p className="text-gray-600">כל מה שצריך לדעת כדי להוסיף ברכה לספר האורחים</p>
+                <h2 className="text-2xl font-bold text-book-dark mb-2">למאיה יש יום הולדת!</h2>
+                <p className="text-gray-600">אנחנו כאן כדי לברך אותה, הנה איך לעשות את זה</p>
               </div>
               
               <div className="space-y-5">
                 <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                   <CheckCircle />
                   <div>
-                    <h3 className="font-medium text-book-dark">לחצו על כפתור "הוסף הודעה"</h3>
+                    <h3 className="font-medium text-book-dark text-right">שמרו על זה בסוד!</h3>
                     <p className="text-gray-600 mt-1 text-right">
-                      הכפתור ממוקם בפינה השמאלית העליונה של הדף
+                      בכדי שנוכל להפתיע אותה, חשוב שהיא לא תדע על זה.
                     </p>
                   </div>
                 </div>
@@ -73,9 +76,9 @@ const InfoModal: FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                   <CheckCircle />
                   <div>
-                    <h3 className="font-medium text-book-dark">מלאו את פרטי ההודעה</h3>
+                    <h3 className="font-medium text-book-dark text-right">לחצו על ברכה חדשה</h3>
                     <p className="text-gray-600 mt-1 text-right">
-                      הכניסו את שמכם ואת ברכתכם האישית בטופס שיופיע
+                      הכפתור נמצא בראש העמוד מצד ימין.
                     </p>
                   </div>
                 </div>
@@ -83,9 +86,18 @@ const InfoModal: FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                   <CheckCircle />
                   <div>
-                    <h3 className="font-medium text-book-dark">הוסיפו תמונות (אופציונלי)</h3>
+                    <h3 className="font-medium text-book-dark text-right">ברכו אותה מכל הלב!</h3>
                     <p className="text-gray-600 mt-1 text-right">
-                      ניתן לצרף תמונות לברכה שלכם
+                      תכתבו את שמכם וברכו את מאיה באיזו צורה שתרצו.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                  <CheckCircle />
+                  <div>
+                    <h3 className="font-medium text-book-dark text-right">הוסיפו תמונות (אופציונלי)</h3>
+                    <p className="text-gray-600 mt-1 text-right">
+                      הוסיפו תמונות שישמחו אותה. תמונות שלכם ביחד עדיפות (עד 3 תמונות לברכה).
                     </p>
                   </div>
                 </div>
@@ -93,19 +105,14 @@ const InfoModal: FC<InfoModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                   <CheckCircle />
                   <div>
-                    <h3 className="font-medium text-book-dark">שלחו את ההודעה</h3>
+                    <h3 className="font-medium text-book-dark text-right">שלחו לה את הברכה</h3>
                     <p className="text-gray-600 mt-1 text-right">
-                      לחצו על כפתור השליחה כדי להוסיף את הברכה לספר
+                      לחצו על כפתור השליחה כדי להוסיף את הברכה לספר.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 mt-6 border-t border-gray-100 text-center">
-                <p className="text-sm text-gray-500">
-                  צריכים עזרה? צרו קשר עם התמיכה שלנו
-                </p>
-              </div>
             </div>
           </motion.div>
         </div>
