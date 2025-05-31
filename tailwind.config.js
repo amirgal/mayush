@@ -80,7 +80,7 @@ export default {
       fontFamily: {
         serif: ['Heebo', 'Merriweather', 'serif'],
         cursive: ['Dancing Script', 'cursive'],
-        sans: ['Heebo', 'Assistant', 'system-ui', 'sans-serif'],
+        sans: ['Assistant', 'Heebo', 'system-ui', 'sans-serif'],
         'handwritten': ['"Caveat"', 'cursive'],
         'book-title': ['Heebo', '"Playfair Display"', 'serif'],
       },

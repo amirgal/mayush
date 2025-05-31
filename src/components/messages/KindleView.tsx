@@ -184,8 +184,8 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
             <div className={`p-5 ${currentPage === 0 ? 'h-full' : ''}`}>
               {currentPage === 0 ? (
                 <div className="min-h-full flex flex-col justify-center items-center text-center">
-                  <h1 className="text-5xl font-sans font-bold text-gray-800 mb-4">ספר ברכות</h1>
-                  <p className="text-gray-600 text-xl">החליקו להתחיל</p>
+                  <h1 className="text-5xl font-sans font-bold text-gray-800 mb-4">ספר הברכות של מאיה</h1>
+                  <p className="text-gray-600 text-xl">החליקו לפתיחה</p>
                 </div>
               ) : currentPageMessage ? (
 

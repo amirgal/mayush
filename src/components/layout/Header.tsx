@@ -44,7 +44,7 @@ const Header: FC<HeaderProps> = ({
                   className="px-4 py-2 bg-book-primary hover:bg-book-primary-dark text-white rounded-lg transition-colors"
                   aria-label="Add new message"
                 >
-                  Add Message
+                  ברכה חדשה!
                 </button>
               </>
             )}
