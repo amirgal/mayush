@@ -163,13 +163,13 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       setLockedFormPosition(null);
       setFrozenMessages([]);
       
-      // If we were on the form page, return to the previous spread
-      if (previousSpread !== null) {
+      // If we were on the form page, return to the previous spread only if we're not submitting
+      if (previousSpread !== null && !isSubmitting) {
         setCurrentSpread(previousSpread);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFormOpen]);
+  }, [isFormOpen, isSubmitting]);
 
   const handleDeleteMessage = useCallback(async (messageId: Id<'messages'>) => {
     if (!user) {
