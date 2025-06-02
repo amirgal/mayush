@@ -44,7 +44,7 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
   return (
     <div className={`relative z-[1] flex-1 ${isMobile ? '' : 'p-4'}`}>
       <h2 className="text-2xl font-bold mb-6 text-book-dark text-center">
-        {message ? 'ערוך ברכה' : 'הוסף ברכה'}
+        {message ? 'עריכת ברכה' : 'הוספת ברכה'}
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -65,7 +65,7 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="כתוב את הברכה שלך כאן..."
+            placeholder="כאן כותבים את הברכה שלך..."
             className="w-full px-3 py-2 border rounded-md focus:outline-none min-h-[120px] resize-y bg-white border-book-accent/30 focus:border-book-accent text-right"
             disabled={isSubmitting}
             required
@@ -96,7 +96,7 @@ const BookFormPage: React.FC<BookFormPageProps> = ({
             className="px-4 py-2 bg-book-accent text-white rounded-md hover:bg-book-dark transition-colors"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'שומר...' : message ? 'עדכן ברכה' : 'שלח ברכה'}
+            {isSubmitting ? 'שומר...' : message ? 'שמירה' : 'הוספה'}
           </button>
         </div>
       </form>

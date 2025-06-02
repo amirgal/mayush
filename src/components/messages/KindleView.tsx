@@ -272,7 +272,7 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
                         <textarea
                           value={formContent}
                           onChange={(e) => setFormContent(e.target.value)}
-                          placeholder="כתוב את הברכה שלך כאן..."
+                          placeholder="כאן כותבים את הברכה שלך..."
                           className="w-full px-3 py-2 border border-gray-300 rounded-md bg-[#f6f6f6] min-h-[120px] resize-y text-right"
                           disabled={isSubmitting}
                           required
