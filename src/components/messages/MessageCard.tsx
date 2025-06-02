@@ -272,9 +272,9 @@ useEffect(() => {
         </div>
         <div className="text-book-dark/60 text-sm">{formattedDate}</div>
       </div>
-      <h3 className="font-bold text-lg text-book-dark">{message.author}</h3>
+      <h3 className="font-bold text-lg text-book-dark mb-2">{message.author}</h3>
       
-      <div className="handwritten text-lg leading-relaxed mb-4 whitespace-pre-wrap">{message.content}</div>
+      <div className="text-lg leading-relaxed mb-4 whitespace-pre-wrap">{message.content}</div>
       
       {/* Display images from imageUrls array (new format) */}
       {message.imageUrls && message.imageUrls.length > 0 && (
