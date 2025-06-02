@@ -83,6 +83,7 @@ export default {
         sans: ['Assistant', 'system-ui', 'sans-serif'],
         'handwritten': ['"Caveat"', 'cursive'],
         'book-title': ['Assistant', 'serif'],
+        'kindle': ['Bookerly', 'serif'],
       },
     },
   },

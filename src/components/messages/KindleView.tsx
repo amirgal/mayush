@@ -180,19 +180,19 @@ const KindleView: FC<KindleViewProps> = ({ messages }) => {
         {/* Content Area - this will be scrollable */}
         <div className="absolute inset-[25px] bottom-[70px] overflow-hidden bg-[#f6f6f6] z-10 flex flex-col">
           {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
             <div className={`p-5 ${currentPage === 0 ? 'h-full' : ''}`}>
               {currentPage === 0 ? (
                 <div className="min-h-full flex flex-col justify-center items-center text-center">
-                  <h1 className="text-5xl font-sans font-bold text-gray-800 mb-4">ספר הברכות של מאיה</h1>
-                  <p className="text-gray-600 text-xl">החליקו לפתיחה</p>
+                  <h1 className="text-5xl font-kindle font-bold text-gray-800 mb-4">ספר הברכות של מאיה</h1>
+                  <p className="text-gray-600 font-kindle text-xl">החליקו לפתיחה</p>
                 </div>
               ) : currentPageMessage ? (
 
                 <div className="min-h-full">
                   <div className="pt-8">
-                    <h2 className="text-2xl font-sans mb-8 text-gray-800">{currentPageMessage.author}</h2>
-                    <p className="text-gray-800 text-md leading-relaxed font-sans text-right">{currentPageMessage.content}</p>
+                    <h2 className="text-2xl font-kindle mb-8 text-gray-800">{currentPageMessage.author}</h2>
+                    <p className="text-gray-800 text-md leading-relaxed font-kindle text-right">{currentPageMessage.content}</p>
                     
                     {/* Display images from imageUrls array (new format) with Kindle e-ink effect */}
                     {currentPageMessage.imageUrls && currentPageMessage.imageUrls.length > 0 && (
