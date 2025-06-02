@@ -83,12 +83,12 @@ useEffect(() => {
     }
   };
 
-  const handleReaction = async (emoji: string) => {
+  const handleReaction = (emoji: string) => {
     try {
       if (!user) {
         return;
       }
-      await addReaction({
+      addReaction({
         messageId: message._id,
         emoji,
         userId: user._id,
@@ -100,7 +100,7 @@ useEffect(() => {
   };
 
   // Handle removing a reaction
-  const handleRemoveReaction = async (emoji: string) => {
+  const handleRemoveReaction = (emoji: string) => {
     try {
       if (!user) {
         return;
@@ -114,7 +114,7 @@ useEffect(() => {
       const userReaction = reactionGroup.reactions.find((r: Reaction) => r.userId === user._id);
       if (!userReaction) return;
 
-      await removeReaction({
+      removeReaction({
         reactionId: userReaction._id,
         userId: user._id,
       });
