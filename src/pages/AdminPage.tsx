@@ -28,15 +28,9 @@ const AdminPage = () => {
     if (!userToDelete) return;
 
     try {
-      const result = await deleteUser(userToDelete._id);
-      if (result.success) {
-        alert(`המשתמש נמחק בהצלחה`);
-      } else {
-        alert(result.message || 'מחיקת המשתמש נכשלה');
-      }
+      await deleteUser(userToDelete._id);
     } catch (error) {
-      console.error(error);
-      alert('אירעה שגיאה במחיקת המשתמש');
+      console.error('Error deleting user:', error);
     } finally {
       setUserToDelete(null);
     }
