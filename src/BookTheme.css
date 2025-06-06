@@ -1,17 +1,23 @@
-/* Book Theme Styles */
-@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Playfair+Display:wght@400;700&family=Assistant:wght@300;400;500;600;700&display=swap');
+/* Book Theme Styles - Naama Bezalel Edition */
+@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Playfair+Display:wght@400;500;600;700&family=Assistant:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.cdnfonts.com/css/bookerly');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
 
 body {
-  background-color: #F4ECD8;
+  background-color: #FCF5F0;
   font-family: 'Assistant', serif;
   direction: rtl;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C98474' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 .book-page {
-  background: linear-gradient(to right, #F4ECD8 0%, #FFFAF0 100%);
+  background: linear-gradient(to right, #FCF5F0 0%, #FFF5EE 100%);
   background-attachment: fixed;
   min-height: 100vh;
+  background-image: 
+    linear-gradient(to right, rgba(252, 245, 240, 0.96), rgba(255, 245, 238, 0.96)),
+    url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238C5775' fill-opacity='0.08'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 .page-curl {
@@ -49,34 +55,41 @@ body {
 }
 
 .message-card {
-  background: rgba(255, 250, 240, 0.8);
-  border: 1px solid rgba(139, 69, 19, 0.1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 249, 245, 0.9);
+  border: 1px solid rgba(201, 132, 116, 0.2);
+  box-shadow: 0 4px 8px rgba(140, 87, 117, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 8px;
 }
 
 .message-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 15px rgba(140, 87, 117, 0.2);
+  border-color: rgba(201, 132, 116, 0.4);
 }
 
 .book-border {
-  border: 3px double #8B4513;
-  border-radius: 10px;
+  border: 2px solid rgba(201, 132, 116, 0.4);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 249, 245, 0.8), rgba(255, 245, 238, 0.95));
+  box-shadow: 0 6px 12px rgba(140, 87, 117, 0.12);
 }
 
 .parchment-texture {
-  background-image: linear-gradient(rgba(255, 250, 240, 0.9), rgba(255, 250, 240, 0.95)),
-                    url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23D4AF37' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: linear-gradient(rgba(255, 249, 245, 0.92), rgba(255, 245, 238, 0.96)),
+                    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C98474' fill-opacity='0.08' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(140, 87, 117, 0.08);
 }
 
 .gold-foil-effect {
-  background: linear-gradient(45deg, #D4AF37, #FFD700);
+  background: linear-gradient(45deg, #D8BE8C, #E8D4B2);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
   font-weight: bold;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 @keyframes pageTurn {

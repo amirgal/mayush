@@ -8,13 +8,14 @@ export default {
     extend: {
       colors: {
         book: {
-          light: '#F4ECD8',  // Cream
-          dark: '#4A3933',    // Rich brown
-          accent: '#8B4513',  // Saddle brown
-          burgundy: '#800020', // Deep burgundy
-          gold: '#D4AF37',   // Gold
-          ivory: '#FFFFF0',   // Ivory
-          page: '#FFFAF0',    // Page background
+          light: '#FCF5F0',     // Soft peach cream
+          dark: '#8C5775',     // Dusty rose
+          accent: '#C98474',   // Terracotta pink
+          secondary: '#74A4BC', // Vintage blue
+          tertiary: '#6B8E7E',  // Sage green
+          gold: '#D8BE8C',     // Antique gold
+          ivory: '#FFF9F5',    // Warm ivory
+          page: '#FFF5EE',     // Seashell white
         },
       },
       boxShadow: {
@@ -78,11 +79,11 @@ export default {
         },
       },
       fontFamily: {
-        serif: ['Assistant', 'Merriweather', 'serif'],
+        serif: ['Assistant', 'Playfair Display', 'serif'],
         cursive: ['Dancing Script', 'cursive'],
         sans: ['Assistant', 'system-ui', 'sans-serif'],
         'handwritten': ['"Caveat"', 'cursive'],
-        'book-title': ['Assistant', 'serif'],
+        'book-title': ['Playfair Display', 'serif'],
         'kindle': ['Bookerly', 'serif'],
       },
     },
