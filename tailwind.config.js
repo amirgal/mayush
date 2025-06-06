@@ -9,8 +9,8 @@ export default {
       colors: {
         book: {
           light: '#FCF5F0',     // Soft peach cream
-          dark: '#8C5775',     // Dusty rose
-          accent: '#C98474',   // Terracotta pink
+          dark: '#593549',     // Dusty rose
+          accent: '#A86E61',   // Terracotta pink
           secondary: '#74A4BC', // Vintage blue
           tertiary: '#6B8E7E',  // Sage green
           gold: '#D8BE8C',     // Antique gold
