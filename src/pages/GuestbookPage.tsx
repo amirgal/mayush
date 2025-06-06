@@ -32,7 +32,7 @@ const GuestbookPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-book-light">
+    <div className="flex flex-col h-screen">
       <Header
         isAdmin={isAdmin}
         onAdminClick={handleAdminPage}
