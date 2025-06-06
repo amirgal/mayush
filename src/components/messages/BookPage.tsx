@@ -21,7 +21,8 @@ const RandomImageBackground: FC = () => {
   
   const imageOptions = useMemo(() => [
     '/images/astronaut.png',
-    '/images/planet.png'
+    '/images/planet.png',
+    '/images/planet3.png',
   ], []);
   
   // Generate an array of image cells
