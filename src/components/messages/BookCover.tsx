@@ -1,37 +1,62 @@
+import { useState, useEffect } from 'react';
 import type { FC } from 'react';
+import { motion } from 'framer-motion';
 
 type BookCoverProps = {
   onOpen: () => void;
 };
 
-const BookCover: FC<BookCoverProps> = ({ onOpen }) => (
-  <div
-    onClick={onOpen}
-    className={`
-      cursor-pointer
-      mx-auto
-      relative
-      min-h-[80vh]
-      max-w-[600px]
-      rounded-lg
-      shadow-[0_10px_30px_rgba(0,0,0,0.4)]
-      transform 
-      transition-all 
-      duration-500
-      hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)]
-      hover:-translate-y-1
-      flex
-      flex-col
-      items-center
-      justify-center
-      overflow-hidden
-    `}
-    style={{
-      backgroundImage: 'url("/images/book-cover.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }}
-  >
+const BookCover: FC<BookCoverProps> = ({ onOpen }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.src = '/images/book-cover.png';
+    
+    // If the image is already cached, it might load immediately
+    if (img.complete) {
+      setImageLoaded(true);
+    }
+  }, []);
+  
+  if (!imageLoaded) {
+    return null;
+  }
+  
+  return (
+    <motion.div
+      onClick={onOpen}
+      className={`
+        cursor-pointer
+        mx-auto
+        relative
+        min-h-[80vh]
+        max-w-[600px]
+        rounded-lg
+        shadow-[0_10px_30px_rgba(0,0,0,0.4)]
+        hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)]
+        hover:-translate-y-1
+        flex
+        flex-col
+        items-center
+        justify-center
+        overflow-hidden
+      `}
+      style={{
+        backgroundImage: 'url("/images/book-cover.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 260, 
+        damping: 20, 
+        duration: 0.5 
+      }}
+    >
     {/* Semi-transparent overlay to ensure text readability */}
     <div className="absolute inset-0 bg-book-dark/40 z-0"></div>
     
@@ -70,7 +95,8 @@ const BookCover: FC<BookCoverProps> = ({ onOpen }) => (
     {/* Edge shadows */}
     <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/20 to-transparent z-10"></div>
     <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
-  </div>
-);
+  </motion.div>
+  );
+};
 
 export default BookCover;
