@@ -59,8 +59,7 @@ const Header: FC<HeaderProps> = ({
                   aria-label="Show instructions"
                   title="Show instructions"
                 >
-                  <span className="text-lg">?</span>
-                  <span className="hidden sm:inline">Help</span>
+                  <span className="hidden sm:inline">עזרה ?</span>
                 </button>
                 {/* <button
                   onClick={onToggleView}

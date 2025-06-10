@@ -150,7 +150,7 @@ useEffect(() => {
 
   const emojis = ['❤️', '👍', '🎂', '🎁', '🎉', '🥳', '😊'];
 
-  const formattedDate = new Date(message.createdAt).toLocaleDateString('en-US', {
+  const formattedDate = new Date(message.createdAt).toLocaleDateString('he-IL', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
