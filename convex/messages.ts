@@ -156,6 +156,7 @@ export const deleteMessage = mutation({
   args: {
     messageId: v.id("messages"),
     userId: v.id("users"),
+    isAdmin: v.boolean(),
   },
   handler: async (ctx, args) => {
     const message = await ctx.db.get(args.messageId);
@@ -163,8 +164,8 @@ export const deleteMessage = mutation({
       throw new Error("Message not found");
     }
 
-    // Only allow deletion if the user is the author
-    if (message.userId !== args.userId) {
+    // Allow deletion if the user is the author or an admin
+    if (message.userId !== args.userId && !args.isAdmin) {
       throw new Error("Unauthorized: You can only delete your own messages");
     }
 

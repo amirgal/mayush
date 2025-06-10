@@ -181,7 +181,8 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     try {
       await deleteMessage({ 
         messageId, 
-        userId: user._id
+        userId: user._id,
+        isAdmin,
       });
       // If we're on the last message and it's deleted, go back one page
       if (currentSpread * 2 >= messages.length - 1) {
@@ -190,7 +191,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     } catch (error) {
       console.error('Failed to delete message:', error);
     }
-  }, [currentSpread, deleteMessage, messages.length, user]);
+  }, [currentSpread, deleteMessage, messages.length, user, isAdmin]);
 
   // Handle form submission
   const handleSubmitMessage = useCallback(async (author: string, content: string, images: ImageAttachment[]) => {
