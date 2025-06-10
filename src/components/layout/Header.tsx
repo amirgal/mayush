@@ -55,11 +55,12 @@ const Header: FC<HeaderProps> = ({
                 <button
                   onClick={toggleInfoModal}
                   onKeyDown={handleKeyDown(toggleInfoModal)}
-                  className="px-4 py-1.5 bg-white/15 hover:bg-white/25 text-white rounded-full transition-all duration-300 flex items-center gap-2 border border-white/20 hover:border-white/30 shadow-sm"
+                  className="px-4 py-1.5 bg-white/15 hover:bg-white/25 text-white rounded-full transition-all duration-300 flex items-center gap-1 border border-white/20 hover:border-white/30 shadow-sm"
                   aria-label="Show instructions"
                   title="Show instructions"
                 >
-                  <span className="hidden sm:inline">עזרה ?</span>
+                  <span className="hidden sm:inline">עזרה</span>
+                  <span className="text-lg">?</span>
                 </button>
                 {/* <button
                   onClick={onToggleView}
