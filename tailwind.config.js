@@ -9,8 +9,8 @@ export default {
       colors: {
         book: {
           light: '#FCF5F0',     // Soft peach cream
-          dark: '#4A3933',     // Dusty rose
-          accent: '#8B4513',   // Terracotta pink
+          dark: '#8C5775',     // Brighter dusty rose
+          accent: '#C98474',   // Brighter terracotta pink
           secondary: '#74A4BC', // Vintage blue
           tertiary: '#6B8E7E',  // Sage green
           gold: '#D8BE8C',     // Antique gold
@@ -79,11 +79,11 @@ export default {
         },
       },
       fontFamily: {
-        serif: ['Assistant', 'Playfair Display', 'serif'],
+        serif: ['Assistant','serif'],
         cursive: ['Dancing Script', 'cursive'],
         sans: ['Assistant', 'system-ui', 'sans-serif'],
         'handwritten': ['"Caveat"', 'cursive'],
-        'book-title': ['Playfair Display', 'serif'],
+        'book-title': ['Assistant', 'sans'],
         'kindle': ['Bookerly', 'serif'],
       },
     },

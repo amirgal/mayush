@@ -30,7 +30,7 @@ const BookCover: FC<BookCoverProps> = ({ onOpen }) => (
     `}
   >
     <div className="absolute inset-4 border-2 border-book-gold/30 rounded"></div>
-    <h1 className="text-5xl font-bold text-book-light mb-4">ספר הברכות של מאיה</h1>
+    <h1 className="text-5xl font-bold text-book-light mb-4 book-title">ספר הברכות של מאיה</h1>
     <p className="text-book-light/80 text-lg mb-8">לחצו לפתיחה</p>
     <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/20 to-transparent"></div>
     <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-black/20 to-transparent"></div>

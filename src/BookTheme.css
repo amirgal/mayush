@@ -1,14 +1,13 @@
-/* Book Theme Styles - Naama Bezalel Edition */
-@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Playfair+Display:wght@400;500;600;700&family=Assistant:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.cdnfonts.com/css/bookerly');
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
 
 body {
-  background-color: #FCF5F0;
+  background-color: #fcf5f0d6;
   font-family: 'Assistant', serif;
   direction: rtl;
-  background-image: 
-    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C98474' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url('/images/library.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-blend-mode: overlay;
 }
 
 .book-page {

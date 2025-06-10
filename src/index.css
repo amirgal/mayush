@@ -22,16 +22,16 @@
   }
   
   body {
-    @apply bg-book-light text-book-dark font-sans;
-    font-family: 'Assistant', system-ui, sans-serif;
+    @apply bg-book-light text-book-dark font-serif;
+    font-family: 'Assistant', serif;
   }
   
   h1, h2, h3 {
-    @apply font-sans font-bold;
+    @apply font-serif font-bold;
   }
   
   p, span, div, button, input, textarea {
-    @apply font-sans;
+    @apply font-serif;
   }
 }
 
