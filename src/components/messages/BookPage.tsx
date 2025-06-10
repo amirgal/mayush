@@ -28,7 +28,9 @@ const RandomImageBackground: FC<RandomImageBackgroundProps> = ({ pageNumber }) =
   const imageOptions = useMemo(() => [
     '/images/astronaut.png',
     '/images/planet3.png',
-    '/images/chocolate.png'
+    '/images/chocolate2.png',
+    '/images/boardgame.png',
+    '/images/book2.png',
   ], []);
   
   // Select image based on page number (cycling through available images)
@@ -78,7 +80,7 @@ const RandomImageBackground: FC<RandomImageBackgroundProps> = ({ pageNumber }) =
             style={{
               filter: 'grayscale(100%) var(--soft-theme-filter)',
               transform: `rotate(${cell.rotation}deg)`,
-              opacity: 1
+              opacity: 0.06
             }}
           />
         </div>
