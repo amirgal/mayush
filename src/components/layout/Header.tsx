@@ -33,7 +33,7 @@ const Header: FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="bg-gradient-to-r from-book-dark to-book-accent text-white py-3 shadow-md sticky top-0 z-50 border-b border-book-gold/30">
+      <header className="bg-gradient-to-r from-book-dark to-book-accent text-white py-3 shadow-md sticky top-0 z-50 border-b border-book-gold/30 xl:rounded-b-[25px]">
         <div className="container mx-auto px-4 flex justify-between items-center font-book-title">
             {!isAdminPage && (
               <>
