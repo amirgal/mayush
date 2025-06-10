@@ -12,7 +12,7 @@ const BookCover: FC<BookCoverProps> = ({ onOpen }) => {
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
-    img.src = '/images/book-cover.png';
+    img.src = '/images/book-cover.webp';
     
     // If the image is already cached, it might load immediately
     if (img.complete) {
@@ -44,7 +44,7 @@ const BookCover: FC<BookCoverProps> = ({ onOpen }) => {
         overflow-hidden
       `}
       style={{
-        backgroundImage: 'url("/images/book-cover.png")',
+        backgroundImage: 'url("/images/book-cover.webp")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
