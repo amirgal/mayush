@@ -12,10 +12,10 @@ type HeaderProps = {
 
 const Header: FC<HeaderProps> = ({
   isAdmin,
-  viewMode,
+  // viewMode,
   isAdminPage = false,
   onAdminClick,
-  onToggleView,
+  // onToggleView,
 }) => {
   const { openForm } = useForm();
 
@@ -62,7 +62,7 @@ const Header: FC<HeaderProps> = ({
                   <span className="text-lg">?</span>
                   <span className="hidden sm:inline">Help</span>
                 </button>
-                <button
+                {/* <button
                   onClick={onToggleView}
                   onKeyDown={handleKeyDown(onToggleView)}
                   className="text-white hover:text-book-gold transition-all duration-300 flex items-center gap-1 px-3 py-1 rounded-full hover:bg-white/10"
@@ -96,7 +96,7 @@ const Header: FC<HeaderProps> = ({
                   <span className="hidden md:inline">
                     {viewMode === "book" ? "קינדל" : "ספר"}
                   </span>
-                </button>
+                </button> */}
               </>
             )}
 
