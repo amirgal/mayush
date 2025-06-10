@@ -1,3 +1,4 @@
+import React from 'react';
 import type { FC } from 'react';
 
 type BookCoverProps = {
@@ -14,7 +15,6 @@ const BookCover: FC<BookCoverProps> = ({ onOpen }) => (
       min-h-[80vh]
       max-w-[600px]
       rounded-lg
-      bg-gradient-to-br from-book-dark to-book-accent
       shadow-[0_10px_30px_rgba(0,0,0,0.4)]
       transform 
       transition-all 
@@ -25,15 +25,29 @@ const BookCover: FC<BookCoverProps> = ({ onOpen }) => (
       flex-col
       items-center
       justify-center
-      p-8
-      text-center
+      overflow-hidden
     `}
+    style={{
+      backgroundImage: 'url("/images/book-cover.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }}
   >
-    <div className="absolute inset-4 border-2 border-book-gold/30 rounded"></div>
-    <h1 className="text-5xl font-bold text-book-light mb-4 book-title">ספר הברכות של מאיה</h1>
-    <p className="text-book-light/80 text-lg mb-8">לחצו לפתיחה</p>
-    <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/20 to-transparent"></div>
-    <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-black/20 to-transparent"></div>
+    {/* Semi-transparent overlay to ensure text readability */}
+    <div className="absolute inset-0 bg-book-dark/40 z-0"></div>
+    
+    {/* Gold border */}
+    <div className="absolute inset-4 border-2 border-book-gold/50 rounded z-10"></div>
+    
+    {/* Content */}
+    <div className="relative z-20 p-8 text-center">
+      <h1 className="text-5xl font-bold text-book-light mb-4 book-title">ספר הברכות של מאיה</h1>
+      <p className="text-book-light/90 text-lg mb-8">לחצו לפתיחה</p>
+    </div>
+    
+    {/* Edge shadows */}
+    <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/20 to-transparent z-10"></div>
+    <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
   </div>
 );
 
