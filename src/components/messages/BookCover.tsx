@@ -41,8 +41,31 @@ const BookCover: FC<BookCoverProps> = ({ onOpen }) => (
     
     {/* Content */}
     <div className="relative z-20 p-8 text-center">
-      <h1 className="text-5xl font-bold text-book-light mb-4 book-title">ספר הברכות של מאיה</h1>
-      <p className="text-book-light/90 text-lg mb-8">לחצו לפתיחה</p>
+      <div className="mb-6 flex flex-col items-center space-y-2">
+        <h1 className="text-7xl font-bold text-book-gold book-title tracking-wide" 
+            style={{
+              textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+              letterSpacing: '0.05em',
+            }}>
+          ספר הברכות
+        </h1>
+        <div className="text-3xl font-medium text-book-gold/90 book-title"
+             style={{
+               textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
+             }}>
+          של
+        </div>
+        <div className="text-6xl font-bold text-book-gold book-title"
+             style={{
+               textShadow: '1px 1px 3px rgba(0,0,0,0.4)',
+             }}>
+          מאיה
+        </div>
+      </div>
+      <p className="text-book-light/90 text-lg mb-8 tracking-wider"
+         style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.3)' }}>
+        לחצו לפתיחה
+      </p>
     </div>
     
     {/* Edge shadows */}
