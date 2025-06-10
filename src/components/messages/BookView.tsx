@@ -305,6 +305,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                     ? () => handleDeleteMessage(firstPageMessage._id)
                     : undefined}
                   position={isMobile ? 'mobile' : 'left'}
+                  pageNumber={currentSpread}
                 />
               )}
 
@@ -321,6 +322,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
                     ? () => handleDeleteMessage(secondPageMessage._id)
                     : undefined}
                   position={isMobile ? 'mobile' : 'right'}
+                  pageNumber={currentSpread}
                 />
               ) : formInSecondPosition ? (
                 <BookFormPageWrapper

@@ -33,14 +33,14 @@ const Header: FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="bg-book-dark text-white py-2 shadow-lg sticky top-0 z-50">
-        <div className="container mx-auto px-4 flex justify-between items-center">
+      <header className="bg-gradient-to-r from-book-dark to-book-accent text-white py-3 shadow-md sticky top-0 z-50 border-b border-book-gold/30">
+        <div className="container mx-auto px-4 flex justify-between items-center font-book-title">
             {!isAdminPage && (
               <>
                 <button
                   onClick={() => openForm()}
                   onKeyDown={handleKeyDown(() => openForm())}
-                  className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-1.5 bg-white/15 hover:bg-white/25 text-white rounded-full transition-all duration-300 flex items-center gap-2 border border-white/20 hover:border-white/30 shadow-sm"
                   aria-label="Add new message"
                   title="Add new message"
                 >
@@ -55,7 +55,7 @@ const Header: FC<HeaderProps> = ({
                 <button
                   onClick={toggleInfoModal}
                   onKeyDown={handleKeyDown(toggleInfoModal)}
-                  className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-1.5 bg-white/15 hover:bg-white/25 text-white rounded-full transition-all duration-300 flex items-center gap-2 border border-white/20 hover:border-white/30 shadow-sm"
                   aria-label="Show instructions"
                   title="Show instructions"
                 >
@@ -65,7 +65,7 @@ const Header: FC<HeaderProps> = ({
                 <button
                   onClick={onToggleView}
                   onKeyDown={handleKeyDown(onToggleView)}
-                  className="text-white hover:text-book-accent transition-colors flex items-center"
+                  className="text-white hover:text-book-gold transition-all duration-300 flex items-center gap-1 px-3 py-1 rounded-full hover:bg-white/10"
                   aria-label={`עבור לתצוגת ${viewMode === "book" ? "קינדל" : "ספר"}`}
                   title={viewMode === "book" ? "קינדל" : "ספר"}
                   tabIndex={0}
@@ -104,7 +104,7 @@ const Header: FC<HeaderProps> = ({
               <button
                 onClick={onAdminClick}
                 onKeyDown={handleKeyDown(onAdminClick)}
-                className="text-white hover:text-book-accent transition-colors flex items-center"
+                className="text-white hover:text-book-gold transition-all duration-300 flex items-center gap-1 px-3 py-1 rounded-full hover:bg-white/10"
                 aria-label="ניהול"
                 title="ניהול"
                 tabIndex={0}
