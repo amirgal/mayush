@@ -10,39 +10,50 @@ type BookPageProps = {
   onEdit: (() => void) | undefined;
   onDelete: (() => void) | undefined;
   position: 'left' | 'right' | 'mobile';
+  pageNumber?: number; // Current spread/page number from BookView
 };
 
 // Random background image component
-const RandomImageBackground: FC = () => {
+type RandomImageBackgroundProps = {
+  pageNumber: number; // Page number to determine which image to use
+};
+
+const RandomImageBackground: FC<RandomImageBackgroundProps> = ({ pageNumber }) => {
   // Define grid configuration
   const rows = 6;
   const columns = 4;
   const totalCells = rows * columns;
   
+  // Define all available background image options
   const imageOptions = useMemo(() => [
     '/images/astronaut.png',
-    '/images/planet.png',
     '/images/planet3.png',
+    '/images/chocolate.png'
   ], []);
   
-  // Generate an array of image cells
+  // Select image based on page number (cycling through available images)
+  const selectedImage = useMemo(() => {
+    // Use modulo to cycle through the available images
+    const imageIndex = pageNumber % imageOptions.length;
+    return imageOptions[imageIndex];
+  }, [imageOptions, pageNumber]);
+
+  // Generate an array of image cells all with the same image
   const imageCells = useMemo(() => {
     const cells = [];
     
     for (let i = 0; i < totalCells; i++) {
-      // Alternate between images
-      const imageIndex = i % imageOptions.length;
       // Random rotation between -30 and 30 degrees
       const rotation = Math.floor(Math.random() * 60) - 30;
       
       cells.push({
-        src: imageOptions[imageIndex],
+        src: selectedImage,
         rotation
       });
     }
     
     return cells;
-  }, [imageOptions, totalCells]);
+  }, [selectedImage, totalCells]);
 
   return (
     <div 
@@ -65,9 +76,9 @@ const RandomImageBackground: FC = () => {
             alt="" 
             className="w-full h-auto object-contain"
             style={{
-              filter: 'var(--soft-theme-filter)',
+              filter: 'grayscale(100%) var(--soft-theme-filter)',
               transform: `rotate(${cell.rotation}deg)`,
-              opacity: 0.1
+              opacity: 1
             }}
           />
         </div>
@@ -76,12 +87,28 @@ const RandomImageBackground: FC = () => {
   );
 };
 
+// Calculate the actual page number based on the spread index and page position
+const calculateActualPageNumber = (spreadNumber: number, position: 'left' | 'right' | 'mobile'): number => {
+  if (position === 'mobile') {
+    // For mobile, we use a different distribution approach
+    // Multiply by a prime number to get better distribution when using modulo
+    return (spreadNumber + 1) * 3;
+  } else if (position === 'left') {
+    // Left page is odd-numbered
+    return spreadNumber * 2 + 1;
+  } else { // position === 'right'
+    // Right page is even-numbered
+    return spreadNumber * 2 + 2;
+  }
+};
+
 const BookPage: FC<BookPageProps> = ({ 
   message, 
   isAdmin, 
   onEdit, 
   onDelete,
-  position 
+  position,
+  pageNumber = 0 // Default to 0 if not provided
 }) => {
   const isMobile = position === 'mobile';
   
@@ -105,7 +132,7 @@ const BookPage: FC<BookPageProps> = ({
       }}
     >
       {/* Random background images */}
-      <RandomImageBackground />
+      <RandomImageBackground pageNumber={calculateActualPageNumber(pageNumber, position)} />
       
       {/* Original background gradients */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)] z-[1]"></div>
