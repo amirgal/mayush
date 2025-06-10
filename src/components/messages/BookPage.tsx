@@ -20,7 +20,7 @@ type RandomImageBackgroundProps = {
 
 const RandomImageBackground: FC<RandomImageBackgroundProps> = ({ pageNumber }) => {
   // Define grid configuration
-  const rows = 6;
+  const rows = 5;
   const columns = 4;
   const totalCells = rows * columns;
   
