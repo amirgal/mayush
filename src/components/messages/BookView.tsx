@@ -28,6 +28,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   const [lockedFormPosition, setLockedFormPosition] = useState<'left' | 'right' | null>(null);
   const [frozenMessages, setFrozenMessages] = useState<Message[]>([]);
   const [previousSpread, setPreviousSpread] = useState<number>(0);
+  const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
   
   const { isFormOpen, editingMessage, closeForm } = useForm();
   const { user } = useAuthContext();
@@ -163,11 +164,15 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       setLockedFormPosition(null);
       setFrozenMessages([]);
       
-      // If we were on the form page and editing an existing message, return to the previous spread
-      // Only go back to previous page when editing, not when creating a new message
-      if (previousSpread !== null && editingMessage) {
+      // If we were on the form page, return to the previous spread only if:
+      // 1. The form was canceled (not submitted) OR
+      // 2. We were editing an existing message (not adding a new one)
+      if (previousSpread !== null && (!isFormSubmitted || editingMessage)) {
         setCurrentSpread(previousSpread);
       }
+      
+      // Reset the form submission state
+      setIsFormSubmitted(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFormOpen]);
@@ -199,6 +204,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
       return;
     }
 
+    setIsFormSubmitted(true);
     setIsSubmitting(true);
     try {
       const trimmedAuthor = author.trim();
