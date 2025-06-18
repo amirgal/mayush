@@ -4,9 +4,10 @@ import { motion } from 'framer-motion';
 
 type BookCoverProps = {
   onOpen: () => void;
+  isMobile: boolean;
 };
 
-const BookCover: FC<BookCoverProps> = ({ onOpen }) => {
+const BookCover: FC<BookCoverProps> = ({ onOpen, isMobile }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   
   useEffect(() => {
@@ -88,7 +89,7 @@ const BookCover: FC<BookCoverProps> = ({ onOpen }) => {
       </div>
       <p className="text-base sm:text-lg mb-6 sm:mb-8 tracking-wider text-book-light/90"
          style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.3)' }}>
-        לחצו לפתיחה
+        {isMobile ? 'לחצו/החליקו לפתיחה' : 'לחצו לפתיחה'}
       </p>
     </div>
     

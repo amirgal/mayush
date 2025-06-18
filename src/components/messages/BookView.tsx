@@ -112,7 +112,7 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
     onSwipedLeft: () => {
       if (isFormOpen) return;
       if (!isBookOpen) {
-        handleOpenBook();
+        return;
       } else if (currentSpread === 0 && !isMobile) {
         setIsBookOpen(false);
         setCurrentSpread(0);
@@ -262,7 +262,9 @@ const BookView: FC<BookViewProps> = ({ messages, isAdmin }) => {
   return (
     <div className="container mx-auto max-w-5xl">
       {!isBookOpen ? (
-        <BookCover onOpen={handleOpenBook} />
+        <div {...handlers}>
+          <BookCover onOpen={handleOpenBook} isMobile={isMobile}/>
+        </div>
       ) : (
         <div className="animate-fade-scale">
           <div className="container mx-auto max-w-5xl" {...handlers}>
